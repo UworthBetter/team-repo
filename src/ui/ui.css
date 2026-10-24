@@ -127,6 +127,21 @@
 .sticker { min-width: 74px; text-align: center; padding: 10px 12px; border: 2.5px dashed var(--line); border-radius: 14px; color: var(--muted); font: 900 16px var(--font-ui); }
 .sticker.on { border: 3px solid var(--red); border-radius: 50%; color: var(--red); transform: rotate(-8deg); background: #FFF6F1; }
 
+/* ---------- Boot menu. Above the hand (z 40); toasts lift above it while it is open. ---------- */
+.menu-layer { z-index: 50; background: var(--paper); cursor: auto; overflow: auto; }
+.menu-layer:not([hidden]) { display: grid; align-content: safe center; }
+.layer.menu-layer[hidden] { display: none; }
+body:has(.menu-layer:not([hidden])) .hand { visibility: hidden; }
+body:has(.menu-layer:not([hidden])) #ui .toasts { z-index: 60; }
+.menu-sheet { width: min(860px, 94vw); margin: 16px auto; display: grid; justify-items: center; gap: 8px; }
+.menu-title { margin: 0; font: 400 64px var(--font-display); line-height: 1; }
+.menu-sub { margin: 0; font: 900 22px var(--font-ui); color: var(--muted); }
+.menu-card { width: 100%; display: grid; gap: 8px; }
+.menu-hint, .menu-foot { margin: 0; text-align: center; font: 900 20px var(--font-ui); }
+.menu-hint { color: var(--muted); }
+.menu-go { font-size: 22px; padding: 14px 36px; }
+.menu-go:active { transform: scale(0.96); }
+
 /* ---------- D4/D8 food map (board 7) ---------- */
 .route-panel { width: min(920px, 94vw); }
 .route-map svg { width: 100%; height: auto; display: block; border: 3px solid var(--ink); border-radius: 14px; background: var(--paper); }

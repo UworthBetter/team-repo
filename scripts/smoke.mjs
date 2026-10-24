@@ -57,7 +57,7 @@ async function open(path, label) {
 
 // 2. Isolate input from gesture timing; real moves are exercised by the auto-play checks.
 {
-  const { page, errors } = await open('?firstperson&fresh&debug=0&mute&stub=moves-home', 'first-person');
+  const { page, errors } = await open('?kitchen=home&fresh&debug=0&mute&stub=moves-home', 'first-person');
   let stage = 'capture mouse';
   try {
     page.setDefaultTimeout(8000);
@@ -116,19 +116,20 @@ async function open(path, label) {
     await page.keyboard.press('Escape');
     stage = 'release mouse';
     await page.waitForFunction(() => document.pointerLockElement === null);
-    await page.keyboard.press('f');
-    stage = 'return to overview';
-    await page.waitForFunction(() => window.__sizzle.ctx.three.camera.position.y > 2.5);
-    await page.keyboard.press('f');
-    stage = 'preserve progress across view switches';
-    await page.waitForFunction(() => window.__sizzle.ctx.three.camera.position.y === 1.6);
+    // First person is the only view: clicking again must recapture without
+    // disturbing the walk pose or the dish progress.
+    stage = 'recapture the mouse';
+    await page.locator('canvas').click();
+    await page.waitForFunction(() => document.pointerLockElement?.tagName === 'CANVAS');
+    if (await page.evaluate(() => window.__sizzle.ctx.three.camera.position.y) !== 1.6)
+      throw new Error('camera left the walk view');
     const progress = await page.evaluate(() => ({
       active: document.querySelector('.dish-steps .active')?.getAttribute('data-step'),
       done: document.querySelector('[data-step="crack"]')?.classList.contains('done'),
       starts: window.__sizzle.log.filter((e) => e.name === 'dish:start').length,
     }));
     if (progress.active !== 'whisk' || !progress.done || progress.starts !== 1)
-      throw new Error(`view switch reset dish progress: ${JSON.stringify(progress)}`);
+      throw new Error(`pointer recapture reset dish progress: ${JSON.stringify(progress)}`);
     // Stub mode makes this an input/runner test even after B's gesture moves are merged.
     for (const stepId of ['whisk', 'flip', 'stack', 'drizzle']) {
       stage = `finish ${stepId} in first-person`;
@@ -137,7 +138,7 @@ async function open(path, label) {
     }
     stage = 'show real dish result';
     await page.waitForFunction(() => window.__sizzle.log.some((e) => e.name === 'result:shown' && e.payload.dishId === 'pancake_tower'));
-    console.log('✓ first-person: free look, real grab/snap, HUD progress, view switches, and dish result');
+    console.log('✓ first-person: free look, real grab/snap, HUD progress, pointer recapture, and dish result');
   } catch (err) {
     failures.push(`first-person (${stage}): ${err.message}`);
   }
@@ -179,7 +180,7 @@ async function open(path, label) {
 
 // 4. Rapid navigation should build only the last requested kitchen.
 {
-  const { page, errors } = await open('?fresh&debug=0&mute', 'rapid navigation');
+  const { page, errors } = await open('?kitchen=home&fresh&debug=0&mute', 'rapid navigation');
   try {
     await page.waitForFunction(() => window.__sizzle?.ctx.world.kitchenId === 'home');
     await page.evaluate(() => {

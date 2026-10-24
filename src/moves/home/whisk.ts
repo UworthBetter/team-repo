@@ -99,7 +99,6 @@ export const whisk = defineMove({
         lastAngle = ang;
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish(0.8))); // demo escape hatch
     if (ctx.flags.auto) {
       offs.push(ctx.after(900, () => finish(0.92)));
       offs.push(

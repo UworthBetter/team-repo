@@ -1,5 +1,6 @@
 import { defineModule } from '@core/api';
 import { createHud } from './hud';
+import { createMenu } from './menu';
 import { createPanels } from './panels';
 import { createResult } from './result';
 import './ui.css';
@@ -12,5 +13,7 @@ export default defineModule({
     const panels = createPanels(ctx);
     createHud(ctx, panels.open);
     createResult(ctx);
+    const { scene, auto, kitchen, dish } = ctx.flags;
+    if (!scene && !auto && !kitchen && !dish) createMenu(ctx);
   },
 });

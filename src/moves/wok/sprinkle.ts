@@ -154,7 +154,6 @@ export const sprinkle = defineMove({
         }
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish(qualityFor(amount).q, false))); // demo escape hatch
     offs.push(
       ctx.input.onKey('KeyO', () => {
         if (done) return;

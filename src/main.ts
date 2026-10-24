@@ -47,8 +47,12 @@ async function boot() {
   console.info(`[modules] ${loaded.join(' · ')}`);
   core.finishSetup();
 
+  // Bare boot stays on the front menu (ui). A kitchen/dish/auto URL still drops
+  // straight into the stove so demo links and smoke do not grow an extra click.
   if (flags.scene) core.runScene(flags.scene);
-  else core.ctx.bus.emit('kitchen:enter', { kitchenId: flags.kitchen ?? content.route.nodes[0]!.kitchenId });
+  else if (flags.auto || flags.kitchen || flags.dish) {
+    core.ctx.bus.emit('kitchen:enter', { kitchenId: flags.kitchen ?? content.route.nodes[0]!.kitchenId });
+  }
   core.start();
 }
 

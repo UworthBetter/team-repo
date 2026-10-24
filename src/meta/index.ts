@@ -135,6 +135,10 @@ function setupMeta(ctx: Ctx) {
     f.add({ r: () => (localStorage.removeItem(SAVE_KEY), location.reload()) }, 'r').name('reset save');
     f.close();
   }
+
+  // Front menu reads coins / unlocked before any kitchen exists. ui mounts after
+  // meta, so it picks this up from the bus log rather than a live subscription.
+  publish();
 }
 
 export default defineModule({ id: 'meta', owner: 'D', setup: setupMeta });

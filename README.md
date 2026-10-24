@@ -41,12 +41,12 @@ Smoke test setup, once: `npm i --no-save playwright@1.48.2 && npx playwright ins
 
 ## URL flags
 
-`?scene=egg_crack` one isolated dev scene · `?kitchen=wok` · `?dish=fried_rice` · `?coins=999` · `?unlock=all` · `?fresh` ignore save · `?stub=meta,ui` / `?stub=all` · `?only=dishes,moves-home` · `?auto&fast=4` auto-play · `?log` · `?debug=0` · `?mute` · `?skipResult` · `?fps` FPS/draw-call counter · `?firstperson` walk the kitchen in first person
+`?scene=egg_crack` one isolated dev scene · `?kitchen=wok` · `?dish=fried_rice` · `?coins=999` · `?unlock=all` · `?fresh` ignore save · `?stub=meta,ui` / `?stub=all` · `?only=dishes,moves-home` · `?auto&fast=4` auto-play · `?log` · `?debug=0` · `?mute` · `?skipResult` · `?fps` FPS/draw-call counter
 
-Keys: `1–9` stations, `0` overview, `F` first-person walk (click to capture the mouse,
-move the mouse to look, WASD to walk, Shift to jog, Esc to release the mouse),
-`Space` / `O` on stub steps, `R` restart dish, `Esc` close panel,
-`Backspace` restart a dev scene.
+The camera is always first-person: click to capture the mouse, move the mouse to
+look, WASD to walk, Shift to jog, Esc to release the mouse. Keys: `1–9` glide to a
+station, `0` to the overview spot, `Space` / `O` on stub steps, `R` restart dish,
+`Esc` close panel, `Backspace` restart a dev scene.
 Console: `__sizzle.log`, `__sizzle.bus.emit('fx:pop', { text: '咔!' })`, `__sizzle.ctx`.
 
 ## First-hour setup (owner A)
