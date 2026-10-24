@@ -90,9 +90,11 @@ export function createHud(ctx: Ctx, open: (panel: 'shop' | 'route' | 'stickers')
     hintText.textContent = text;
     hint.hidden = false;
     // Re-trigger the pop so every NEW instruction physically announces itself.
-    hint.classList.remove('pop');
+    // 'hint-pop', NOT 'pop' — E's fx.css styles `.pop` as a 6px-stroked screen pop,
+    // which melted the pill text into unreadable cream blobs.
+    hint.classList.remove('hint-pop');
     void hint.offsetWidth;
-    hint.classList.add('pop');
+    hint.classList.add('hint-pop');
   });
   bus.on('hint:clear', () => (hint.hidden = true));
 
