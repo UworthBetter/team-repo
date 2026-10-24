@@ -25,8 +25,9 @@
 
 /* Centered via left/right + margin auto, NOT left:50% + translateX(-50%): the transform
  * parks the pill on a half pixel and its text rasterizes smeared. Layout centering keeps
- * the glyphs on the pixel grid; only the brief pop animation transforms it. */
-.hint-pill { position: absolute; bottom: 24px; left: 0; right: 0; margin: 0 auto; width: max-content; background: var(--teal); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 12px 26px; font: 900 21px var(--font-ui); white-space: nowrap; }
+ * the glyphs on the pixel grid; only the brief pop animation transforms it.
+ * teal-ink (not teal) + text-shadow: white-on-teal measured ~2.9:1 contrast — unreadable. */
+.hint-pill { position: absolute; bottom: 24px; left: 0; right: 0; margin: 0 auto; width: max-content; background: var(--teal-ink); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 14px 30px; font: 900 24px var(--font-ui); white-space: nowrap; text-shadow: 0 1px 0 rgba(20, 36, 39, 0.4); }
 .dock { position: absolute; bottom: 24px; left: 24px; padding: 6px 10px; }
 .dock-key { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--ink); background: #fff; color: var(--ink); font: 900 16px var(--font-ui); cursor: pointer; }
 .dock-key.on { background: var(--ink); color: var(--paper); }
@@ -105,7 +106,9 @@
 .dish-head { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; }
 .step-counter { font: 900 20px var(--font-ui); color: var(--teal-ink); background: var(--teal-tint); border-radius: 10px; padding: 2px 10px; }
 .hint-pill { display: flex; align-items: center; gap: 10px; }
-.hint-pill.pop { animation: hintpop 0.28s cubic-bezier(.2,1.6,.4,1); }
+/* 'hint-pop', NOT 'pop' — E's fx.css styles `.pop` as a 6px-stroked screen pop,
+   which melts the pill text into unreadable blobs. */
+.hint-pill.hint-pop { animation: hintpop 0.28s cubic-bezier(.2,1.6,.4,1); }
 @keyframes hintpop { from { transform: scale(0.85); } 60% { transform: scale(1.06); } to { transform: scale(1); } }
 .hint-pill svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .hint-count { background: rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 2px 12px; font-variant-numeric: tabular-nums; }
