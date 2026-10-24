@@ -19,6 +19,10 @@ export const MOVE_IDS = [
   'sprinkle',
   // Huaiyang knife family (B)
   'slice_lines',
+  // Wok-family prototypes (C), usable in isolated dev scenes.
+  'push_stir',
+  'rhythm_chop',
+  'pull_stretch',
 ] as const;
 export type MoveId = (typeof MOVE_IDS)[number];
 
