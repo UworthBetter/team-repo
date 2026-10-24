@@ -10,46 +10,49 @@ import type { Ctx } from '@core/api';
  */
 export function setupStyle(ctx: Ctx): void {
   const renderer = ctx.three.renderer;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
 
-  // Software GL (CI smoke runs SwiftShader) can't afford shadow maps or PMREM —
-  // they tank the frame rate so far the auto-play misses its beat windows.
-  // Real GPUs (the projector machine) get the full treatment.
+  // Software GL (CI smoke runs SwiftShader) can't afford any of this pass —
+  // even per-fragment ACES tonemapping slows the rasterizer enough that the
+  // ?fast=4 full-loop smoke misses its 90 s budget. The style pass is for the
+  // projector's real GPU; CI doesn't screenshot.
   const gl = renderer.getContext();
   const isSoftware = /swiftshader|llvmpipe|software/i.test(String(gl.getParameter(gl.RENDERER)));
-
-  if (!isSoftware) {
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    // Soft image-based ambient so flat-colored props stop looking cardboard-flat.
-    // Kept below the sun's weight so grounded shadows stay visible (reference look).
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    ctx.three.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    ctx.three.scene.environmentIntensity = 0.5;
-
-    let sun: THREE.DirectionalLight | null = null;
-    let hemi: THREE.HemisphereLight | null = null;
-    ctx.three.scene.traverse((o) => {
-      if (o instanceof THREE.DirectionalLight && !sun) sun = o;
-      if (o instanceof THREE.HemisphereLight && !hemi) hemi = o;
-    });
-    if (hemi) (hemi as THREE.HemisphereLight).intensity *= 0.72;
-    if (sun) {
-      const s = sun as THREE.DirectionalLight;
-      s.intensity *= 1.1; // golden-key weighting, reference look
-      s.castShadow = true;
-      s.shadow.mapSize.set(1024, 1024); // 2048 cost ~13 fps on the projector target; 1024 reads softer anyway
-      const c = s.shadow.camera;
-      c.left = -7; c.right = 7; c.top = 7; c.bottom = -7; c.near = 0.5; c.far = 25;
-      s.shadow.bias = -0.0002;
-      s.shadow.normalBias = 0.02;
-    }
+  if (isSoftware) {
+    ctx.bus.on('kitchen:ready', () => softenScene(ctx, true));
+    return;
   }
 
-  // Re-run whenever the kitchen (re)builds: core recreates meshes and toon materials per build.
-  ctx.bus.on('kitchen:ready', () => softenScene(ctx));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  // Soft image-based ambient so flat-colored props stop looking cardboard-flat.
+  // Kept below the sun's weight so grounded shadows stay visible (reference look).
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  ctx.three.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  ctx.three.scene.environmentIntensity = 0.5;
+
+  let sun: THREE.DirectionalLight | null = null;
+  let hemi: THREE.HemisphereLight | null = null;
+  ctx.three.scene.traverse((o) => {
+    if (o instanceof THREE.DirectionalLight && !sun) sun = o;
+    if (o instanceof THREE.HemisphereLight && !hemi) hemi = o;
+  });
+  if (hemi) (hemi as THREE.HemisphereLight).intensity *= 0.72;
+  if (sun) {
+    const s = sun as THREE.DirectionalLight;
+    s.intensity *= 1.1; // golden-key weighting, reference look
+    s.castShadow = true;
+    s.shadow.mapSize.set(1024, 1024); // 2048 cost ~13 fps on the projector target; 1024 reads softer anyway
+    const c = s.shadow.camera;
+    c.left = -7; c.right = 7; c.top = 7; c.bottom = -7; c.near = 0.5; c.far = 25;
+    s.shadow.bias = -0.0002;
+    s.shadow.normalBias = 0.02;
+  }
+
+  // Core rebuilds fresh meshes/materials per kitchen — re-apply casts + material softening.
+  ctx.bus.on('kitchen:ready', () => softenScene(ctx, false));
 
   if (ctx.dev.gui) {
     const folder = ctx.dev.gui.addFolder('Style (E)');
@@ -57,14 +60,14 @@ export function setupStyle(ctx: Ctx): void {
   }
 }
 
-function softenScene(ctx: Ctx): void {
+function softenScene(ctx: Ctx, isSoftware: boolean): void {
   ctx.three.scene.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
     const isHull = o.userData.outline === true;
     const isFloor = o.geometry instanceof THREE.PlaneGeometry && o.parent?.name === 'core-kitchen';
     o.castShadow = !isHull && !isFloor;
     o.receiveShadow = !isHull;
-    if (isHull) return;
+    if (isHull || isSoftware) return;
 
     const single = o.material as THREE.Material;
     if (Array.isArray(o.material)) {
@@ -75,10 +78,20 @@ function softenScene(ctx: Ctx): void {
   });
 }
 
+// Core rebuilds fresh toon materials on every kitchen build; replacing them with new
+// standard materials would recompile every shader program on each kitchen switch —
+// seconds per switch on SwiftShader, and the 90 s full-loop smoke budget died on it.
+// One cached standard material per color: same program reused across kitchens.
+const stdCache = new Map<string, THREE.MeshStandardMaterial>();
+
 function softenMaterial(m: THREE.Material): THREE.Material {
   if (m instanceof THREE.MeshToonMaterial) {
-    // Core builds greyboxes in toon; match them to the GLB standard materials.
-    const std = new THREE.MeshStandardMaterial({ color: m.color.clone(), roughness: 0.85, metalness: 0 });
+    const key = `#${m.color.getHexString()}`;
+    let std = stdCache.get(key);
+    if (!std) {
+      std = new THREE.MeshStandardMaterial({ color: m.color.clone(), roughness: 0.85, metalness: 0 });
+      stdCache.set(key, std);
+    }
     m.dispose();
     return std;
   }
