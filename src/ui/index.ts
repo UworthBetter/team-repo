@@ -17,7 +17,7 @@ export default defineModule({
     const { scene, auto, kitchen, dish } = ctx.flags;
     if (!scene && !auto && !kitchen && !dish) {
       const menu = createMenu(ctx, { initiallyHidden: true });
-      createTitle(ctx, { onStart: menu.continue, onMap: menu.show });
+      createTitle(ctx, { onStart: menu.show });
     }
   },
 });

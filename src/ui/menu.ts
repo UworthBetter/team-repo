@@ -78,7 +78,7 @@ export function createMenu(ctx: Ctx, options: { initiallyHidden?: boolean } = {}
         h('h1', { class: 'menu-title' }, '滋啦厨房'),
         h('p', { class: 'menu-sub' }, '一个厨房，一种菜系'),
         h('div', { class: 'card menu-card' }, map, h('p', { class: 'menu-hint' }, '红图钉可以进 · 雾里的还没开门')),
-        next ? h('button', { class: 'btn primary menu-go', onclick: () => enter(next) }, '开始做饭') : null,
+        next ? h('button', { class: 'btn primary menu-go', onclick: () => enter(next) }, `进入${content.kitchens.get(next)?.name ?? '厨房'}`) : null,
         h('p', { class: 'menu-foot' }, `金币 ${state.coins} · 已开 ${openCount} 个厨房`),
       ),
     );
@@ -113,11 +113,6 @@ export function createMenu(ctx: Ctx, options: { initiallyHidden?: boolean } = {}
       open = true;
       parkHud(true);
       render();
-    },
-    continue() {
-      if (gone) return;
-      const id = furthestMain(state);
-      if (id) enter(id);
     },
   };
 }

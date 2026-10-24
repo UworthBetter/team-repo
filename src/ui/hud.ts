@@ -58,6 +58,13 @@ export function createHud(ctx: Ctx, open: (panel: 'shop' | 'route' | 'stickers')
   const dock = h('div', { class: 'pill dock' });
   const retry = h('button', { class: 'round retry interactive', title: '重来 (R)', onclick: () => bus.emit('dish:restart', {}) }, '↺');
 
+  // Progress counters ("绕碗画圈搅拌 · 47%") re-emit hint:show on every pointer move.
+  // Rebuilding the pill and re-triggering the pop each time left it stuck mid-scale —
+  // blurry, unreadable text. So: swap the icon only when the gesture changes, update the
+  // text silently, and pop at most once per 600 ms (a genuinely NEW instruction).
+  let hintGesture: Gesture | null | undefined;
+  let hintShownAt = 0;
+
   root.append(card, topRight, hint, dock, retry);
   ctx.input.onKey('KeyR', () => bus.emit('dish:restart', {}));
 
@@ -85,16 +92,26 @@ export function createHud(ctx: Ctx, open: (panel: 'shop' | 'route' | 'stickers')
     li?.classList.add('done');
   });
   bus.on('hint:show', ({ text, gesture }) => {
-    const icon = gesture ? svgEl(GESTURE_SVG[gesture]) : null;
-    hint.replaceChildren(icon ?? '', hintText, hintCount);
+    const g = gesture ?? null;
+    if (g !== hintGesture) {
+      hintGesture = g;
+      hint.replaceChildren(g ? svgEl(GESTURE_SVG[g]) : '', hintText, hintCount);
+    }
     hintText.textContent = text;
     hint.hidden = false;
-    // Re-trigger the pop so every NEW instruction physically announces itself.
-    hint.classList.remove('pop');
-    void hint.offsetWidth;
-    hint.classList.add('pop');
+    const fresh = hintShownAt === 0;
+    if (fresh || performance.now() - hintShownAt >= 600) {
+      hintShownAt = performance.now();
+      // Re-trigger the pop so every NEW instruction physically announces itself.
+      hint.classList.remove('pop');
+      void hint.offsetWidth;
+      hint.classList.add('pop');
+    }
   });
-  bus.on('hint:clear', () => (hint.hidden = true));
+  bus.on('hint:clear', () => {
+    hint.hidden = true;
+    hintShownAt = 0;
+  });
 
   const setCoins = (s: Pick<MetaState, 'coins'>) => (coinNum.textContent = String(s.coins));
   bus.on('meta:state', setCoins);

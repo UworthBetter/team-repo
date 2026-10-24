@@ -51,7 +51,8 @@ async function boot() {
   // straight into the stove so demo links and smoke do not grow an extra click.
   if (flags.scene) core.runScene(flags.scene);
   else if (flags.auto || flags.kitchen || flags.dish) {
-    core.ctx.bus.emit('kitchen:enter', { kitchenId: flags.kitchen ?? content.route.nodes[0]!.kitchenId });
+    const requestedDish = flags.dish ? content.dishes.get(flags.dish) : undefined;
+    core.ctx.bus.emit('kitchen:enter', { kitchenId: flags.kitchen ?? requestedDish?.kitchen ?? content.route.nodes[0]!.kitchenId });
   }
   core.start();
 }

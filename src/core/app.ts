@@ -48,7 +48,8 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
   const ui = createUi(uiRoot);
   const walkLayer = ui.layer('first-person');
   const walkHint = document.createElement('div');
-  walkHint.style.cssText = 'position:absolute;left:50%;bottom:86px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 56px);padding:8px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font-size:13px;text-align:center;';
+  // margin-auto centering (no translateX transform) keeps the small text on the pixel grid.
+  walkHint.style.cssText = 'position:absolute;left:0;right:0;margin:0 auto;bottom:86px;width:max-content;max-width:calc(100% - 56px);padding:8px 14px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font-size:13px;text-align:center;';
   walkHint.textContent = '点击画面开始 · 移动鼠标环视 · WASD 走 · Shift 快走 · 左键抓取 · Esc 释放鼠标';
   const aim = document.createElement('div');
   aim.style.cssText = 'position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:6px;height:6px;border:2px solid var(--teal);border-radius:50%;background:var(--paper);';
@@ -126,7 +127,13 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
       whoosh.style.opacity = '0';
     });
   });
-  bus.on('dish:start', () => world.resetAll());
+  bus.on('dish:start', () => {
+    world.resetAll();
+    // While a dish runs, the teal step pill owns the bottom and world fx pops rise from
+    // the pan through this strip — walking controls can step aside until the dish ends.
+    walkHint.style.display = 'none';
+  });
+  bus.on('dish:complete', () => (walkHint.style.display = ''));
   bus.on('result:shown', () => {
     if (document.pointerLockElement === canvas) document.exitPointerLock();
   });

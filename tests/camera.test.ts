@@ -49,6 +49,17 @@ function expectOutsideCounters(f: ReturnType<typeof fixture>) {
 }
 
 describe('first-person camera (the only view)', () => {
+  it('keeps the picking matrix in sync on focus and faces the station once the glide lands', () => {
+    const f = fixture();
+    f.bus.emit('station:focus', { stationId: 'bowl' });
+    const matrixPosition = new THREE.Vector3().setFromMatrixPosition(f.camera.matrixWorld);
+    expect(matrixPosition.distanceTo(f.camera.position)).toBeLessThan(1e-8);
+    f.rig.update(0.5); // let the 0.45 s glide finish
+    const target = new THREE.Vector3(...f.world.kitchen.stations.find((s) => s.id === 'bowl')!.camera.target);
+    const expected = target.sub(f.camera.position).normalize();
+    const direction = f.camera.getWorldDirection(new THREE.Vector3());
+    expect(direction.distanceTo(expected)).toBeLessThan(1e-8);
+  });
   it('mouse motion turns without a button and keeps the horizon level', () => {
     const f = fixture();
     const before = f.camera.quaternion.clone();
@@ -66,10 +77,33 @@ describe('first-person camera (the only view)', () => {
       const f = fixture(kitchen.id);
       for (const s of kitchen.stations) {
         f.bus.emit('station:focus', { stationId: s.id });
+        f.rig.update(0.5); // complete the glide
         expect(f.camera.position.y).toBe(1.6);
         expectOutsideCounters(f);
       }
     }
+  });
+
+  it('glides to a focused station instead of teleporting (0.45 s ease, then free)', () => {
+    const f = fixture();
+    const station = f.world.kitchen.stations[0]!;
+    f.bus.emit('station:focus', { stationId: station.id });
+    const start = f.camera.position.clone();
+    f.rig.update(0.1);
+    const partway = f.camera.position.clone();
+    const goal = new THREE.Vector3(station.camera.pos[0], 1.6, station.camera.pos[2]);
+    // Under way but not arrived: a glide, not a snap.
+    expect(partway.distanceTo(start)).toBeGreaterThan(0.01);
+    expect(partway.distanceTo(goal)).toBeGreaterThan(0.05);
+    f.rig.update(0.5); // past the end of the glide
+    expect(f.camera.position.y).toBe(1.6);
+    expect(f.camera.position.distanceTo(goal)).toBeLessThan(1); // resolve() may nudge a little
+    expectOutsideCounters(f);
+    // The player is free again: walking answers on the very next step.
+    const after = f.camera.position.clone();
+    f.keys.add('KeyW');
+    f.rig.update(0.2);
+    expect(f.camera.position.distanceTo(after)).toBeGreaterThan(0.1);
   });
 
   it('cannot tunnel through a counter on a large fast-forward frame', () => {

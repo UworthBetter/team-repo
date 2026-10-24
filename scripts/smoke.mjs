@@ -32,6 +32,68 @@ async function open(path, label) {
   return { page, errors, label };
 }
 
+// 0. Bare boot shows one title, offers a map, and starts only after an explicit action.
+{
+  const { page, errors } = await open('?fresh&debug=0&mute', 'title and map');
+  try {
+    await page.locator('.title-start').waitFor({ state: 'visible' });
+    if (await page.evaluate(() => window.__sizzle.ctx.world.kitchenId) !== null)
+      throw new Error('kitchen started behind the title');
+    if (await page.locator('.menu-layer').isVisible()) throw new Error('two start screens overlap');
+    await page.locator('.title-start').click();
+    await page.locator('.menu-go').waitFor({ state: 'visible' });
+    if (await page.locator('.title-layer').count()) throw new Error('title still overlays the map');
+    if (await page.evaluate(() => window.__sizzle.ctx.world.kitchenId) !== null)
+      throw new Error('opening the map started cooking');
+    await page.locator('.menu-go').click();
+    await page.waitForFunction(() => window.__sizzle?.log.some((e) => e.name === 'step:start'));
+    if (await page.locator('.layer[inert]').count()) throw new Error('HUD remains inert after start');
+    if (await page.evaluate(() => window.__sizzle.ctx.three.camera.position.y) !== 1.6)
+      throw new Error('start did not enter the first-person camera');
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(200);
+    if (await page.evaluate(() => window.__sizzle.log.some((e) => e.name === 'step:complete')))
+      throw new Error('Space skipped a real cooking move');
+    console.log('✓ title → map → kitchen; one screen at a time, first-person view, real gestures');
+  } catch (err) {
+    failures.push(`title and map: ${err.message}`);
+  }
+  failures.push(...errors.map((e) => `title and map: ${e}`));
+  await page.close();
+}
+{
+  const { page, errors } = await open('?fresh&unlock=all&debug=0&mute', 'choose a kitchen');
+  try {
+    await page.locator('.title-start').click();
+    await page.locator('.menu-layer').waitFor({ state: 'visible' });
+    if (await page.evaluate(() => window.__sizzle.ctx.world.kitchenId) !== null)
+      throw new Error('start skipped the map');
+    await page.locator('.menu-layer .pin[data-kitchen="wok"]').click();
+    await page.waitForFunction(() => window.__sizzle?.ctx.world.kitchenId === 'wok');
+    if (await page.locator('.menu-layer').isVisible()) throw new Error('map did not close after choosing a kitchen');
+    const enters = await page.evaluate(() => window.__sizzle.log.filter((e) => e.name === 'kitchen:enter').length);
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(100);
+    if (await page.evaluate(() => window.__sizzle.log.filter((e) => e.name === 'kitchen:enter').length) !== enters)
+      throw new Error('dismissed title left its Enter shortcut active');
+  } catch (err) {
+    failures.push(`choose a kitchen: ${err.message}`);
+  }
+  failures.push(...errors.map((e) => `choose a kitchen: ${e}`));
+  await page.close();
+}
+{
+  const { page, errors } = await open('?dish=wensi_tofu&fresh&debug=0&mute', 'dish deep link');
+  try {
+    await page.waitForFunction(() => window.__sizzle?.ctx.world.kitchenId === 'huaiyang');
+    if (await page.locator('.title-layer').count()) throw new Error('dish deep link showed the title');
+  } catch (err) {
+    failures.push(`dish deep link: ${err.message}`);
+  }
+  failures.push(...errors.map((e) => `dish deep link: ${e}`));
+  await page.close();
+}
+
 // 1. Full loop on auto-play
 {
   const { page, errors } = await open('?auto&fast=4&fresh&coins=600&debug=0&mute', 'full loop');
@@ -62,6 +124,13 @@ async function open(path, label) {
   try {
     page.setDefaultTimeout(8000);
     await page.waitForFunction(() => document.querySelector('.dish-steps .active')?.getAttribute('data-step') === 'crack');
+    // Station focus now glides the first-person camera; let it land before aiming.
+    await page.waitForFunction(() => {
+      const ctx = window.__sizzle.ctx;
+      const station = ctx.content.kitchens.get('home').stations.find((s) => s.id === 'bowl');
+      const p = ctx.three.camera.position;
+      return Math.hypot(p.x - station.camera.pos[0], p.z - station.camera.pos[2]) < 0.001;
+    });
     if (await page.locator('.dish-title').innerText() !== '煎饼塔') throw new Error('real dish title missing from HUD');
     await page.locator('canvas').click();
     await page.waitForFunction(() => document.pointerLockElement?.tagName === 'CANVAS', null, { timeout: 5000 });

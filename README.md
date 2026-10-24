@@ -14,6 +14,10 @@ The integrated demo follows 煎饼塔 → shop → 猛火灶 → 宫保鸡丁 / 
 `http://localhost:5173/?auto&fast=4&fresh&coins=600` to watch the route play itself.
 Use `?stub=moves-home,moves-wok,moves-knife` for placeholder moves during debugging.
 
+The default entry shows the illustrated start screen. Click **开始游戏** to open
+the food map, then select an unlocked kitchen. Cooking starts after that selection.
+Kitchen, dish, scene, and auto-play URLs enter directly for development and demos.
+
 ## Who owns what
 
 | Owner | Area | Brief |

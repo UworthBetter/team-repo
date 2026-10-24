@@ -7,10 +7,10 @@ import type { Ctx } from '@core/api';
  * breaks the top-right, pancake stack the bottom-left). All art is hand-drawn SVG in the game's
  * toon language: paper bg, 4px ink outlines, tomato/teal/gold/ember flats, ZCOOL KuaiLe.
  *
- * Start continues into the player's last unlocked kitchen; the map is a separate action.
+ * Start opens the food map; selecting an unlocked pin enters its kitchen.
  * Kitchens do not run behind the title. Explicit kitchen/dish/scene/auto URLs skip it.
  */
-export function createTitle(ctx: Ctx, actions: { onStart(): void; onMap(): void }) {
+export function createTitle(ctx: Ctx, actions: { onStart(): void }) {
   if (ctx.flags.auto || ctx.flags.scene || ctx.flags.kitchen || ctx.flags.dish) return;
   const root = ctx.ui.layer('title');
   root.classList.add('title-layer');
@@ -74,7 +74,7 @@ export function createTitle(ctx: Ctx, actions: { onStart(): void; onMap(): void 
     <text x="800" y="876" text-anchor="middle" class="title-foot">三个厨房 · 一张美食地图 · 亲手做菜</text>
   </svg>`;
 
-  root.innerHTML = `<div class="title-stage interactive">${SCENE}<button class="title-start" type="button" aria-label="开始游戏">开 始 游 戏</button><button class="title-route" type="button">选择厨房 · 美食地图</button></div>`;
+  root.innerHTML = `<div class="title-stage interactive">${SCENE}<button class="title-start" type="button" aria-label="开始游戏">开 始 游 戏</button></div>`;
 
   const layerRoot = root.parentElement;
   const parkHud = (on: boolean) => {
@@ -103,6 +103,5 @@ export function createTitle(ctx: Ctx, actions: { onStart(): void; onMap(): void 
     if (event.code === 'Enter' && event.target instanceof Element && event.target.closest('button')) event.stopPropagation();
   });
   root.querySelector('.title-start')!.addEventListener('click', () => dismiss(actions.onStart));
-  root.querySelector('.title-route')!.addEventListener('click', () => dismiss(actions.onMap));
   offEnter = ctx.input.onKey('Enter', () => dismiss(actions.onStart));
 }
