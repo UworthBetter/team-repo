@@ -2,7 +2,8 @@ import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
-  // Relative paths: dist/ works from any folder, USB stick or static host.
+  // Relative asset paths so dist/ runs from any subfolder, a USB stick or a static host
+  // with no server config and no internet (content JSON is bundled in; see docs/WORKFLOW.md §6).
   base: './',
   resolve: {
     alias: {
@@ -12,6 +13,7 @@ export default defineConfig({
   },
   server: { host: true, port: 5173 },
   preview: { host: true, port: 4173 },
-  build: { chunkSizeWarningLimit: 1500 },
+  // Rapier (wasm) is a deliberately large, lazy-loaded chunk — don't warn on it.
+  build: { chunkSizeWarningLimit: 5000 },
   test: { environment: 'node', include: ['src/**/*.test.ts', 'tests/**/*.test.ts'] },
 });

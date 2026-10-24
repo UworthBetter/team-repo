@@ -66,11 +66,37 @@ When GitHub comes back, A runs `git fetch lan && git push origin lan/main:main` 
 
 **npm registry down:** dependencies are frozen after hour 1, so `node_modules` you already have keeps working. Don't delete it. A keeps `npm pack` tarballs of the deps on the USB stick.
 
-## 6. Demo build
+## 6. Demo build (owner A)
 
 ```bash
-npm run build          # dist/ (relative paths, works from any folder or static host)
-npm run preview        # serves dist/ offline on :4173
+npm run build          # dist/ with RELATIVE paths (base: './') — runs from any folder or subpath
+npm run preview        # serves dist/ offline on :4173 (what the demo runs on)
 ```
 
-Keep a copy of `dist/` on the demo laptop and a USB stick. Fonts and models are local; nothing loads from the internet.
+`dist/` is fully self-contained and offline: content JSON is bundled into the JS, fonts and
+models are local, Rapier is a lazily-loaded chunk. Nothing calls the internet, so it runs with
+Wi-Fi off. Relative paths mean it works unchanged whether it sits at a domain root, in a
+subfolder of a static host, or on a USB stick.
+
+**Deploy to a static host** (GitHub Pages, Netlify drop, nginx, `python3 -m http.server`, …):
+
+```bash
+npm run build
+# copy the CONTENTS of dist/ to the host's web root (or any subfolder — paths are relative)
+```
+
+**Demo laptop + USB stick (the offline path we actually use):**
+
+```bash
+npm run build
+cp -r dist ~/sizzle-demo        # keep a copy on the laptop
+cp -r dist /Volumes/USB/sizzle  # and on the stick as a backup
+# To run it: from the copy, `npx vite preview` or any static server, e.g.
+cd ~/sizzle-demo && python3 -m http.server 8080   # then open http://localhost:8080
+```
+
+Caveat: opening `index.html` directly via `file://` will not work — browsers refuse ES-module
+scripts and `fetch()` over `file://`. Always serve the folder with a tiny static server
+(`npm run preview`, `python3 -m http.server`, etc.); any of them work fully offline.
+
+Before the demo: `npm run build && npm run preview`, play the whole loop once on the projector.
