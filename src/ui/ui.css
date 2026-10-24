@@ -38,6 +38,7 @@
 @keyframes slam { from { transform: rotate(-10deg) scale(2.2); opacity: 0; } }
 .stars { font-size: 40px; letter-spacing: 6px; color: var(--line); }
 .star.on { color: var(--gold); -webkit-text-stroke: 2px var(--gold-rim); }
+.star.off { color: transparent; -webkit-text-stroke: 2px var(--line); opacity: 0.55; }
 .coin-lines { list-style: none; margin: 0; padding: 0; text-align: left; font-size: 17px; }
 .coin-lines li { display: flex; justify-content: space-between; padding: 2px 0; }
 .coin-lines b, .coin-total { color: var(--gold-ink); font-variant-numeric: tabular-nums; }
