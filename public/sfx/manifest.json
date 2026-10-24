@@ -1,3 +1,22 @@
 {
-  "files": []
+  "files": [
+    "mus_home",
+    "mus_huaiyang",
+    "mus_wok",
+    "sfx_bounce",
+    "sfx_coin",
+    "sfx_deny",
+    "sfx_egg_crack",
+    "sfx_flare",
+    "sfx_flip",
+    "sfx_grab",
+    "sfx_oops",
+    "sfx_slice",
+    "sfx_snap",
+    "sfx_snap_hover",
+    "sfx_stamp",
+    "sfx_step_done",
+    "sfx_sticker",
+    "sfx_wok_toss"
+  ]
 }
