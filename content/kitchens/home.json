@@ -19,7 +19,7 @@
     { "id": "bowl_rim", "station": "bowl", "pos": [-0.35, 1.04, 0.55], "radius": 0.2, "accepts": ["egg"] },
     { "id": "stove_left", "station": "stove", "pos": [0.5, 0.91, -0.7], "radius": 0.18, "accepts": ["pan"] },
     { "id": "stove_right", "station": "stove", "pos": [0.95, 0.91, -0.7], "radius": 0.18, "accepts": ["pan"] },
-    { "id": "board_spot", "station": "board", "pos": [-0.8, 0.93, -0.7], "radius": 0.14, "accepts": ["tomato"] },
+    { "id": "board_spot", "station": "board", "pos": [-0.9, 0.93, -0.7], "radius": 0.14, "accepts": ["tomato"] },
     { "id": "plate_center", "station": "plate", "pos": [1.5, 0.925, -0.65], "radius": 0.16, "accepts": ["*"] }
   ],
   "props": [
@@ -34,7 +34,7 @@
     { "id": "carton", "kind": "carton", "shape": "box", "size": [0.3, 0.06, 0.16], "color": "#D8BE96", "pos": [0.05, 0.9, 0.78], "grabbable": false },
     { "id": "egg_1", "kind": "egg", "model": "shared_food_egg", "shape": "sphere", "size": [0.09, 0.11, 0.09], "color": "#FFF7EA", "pos": [-0.02, 0.96, 0.78] },
     { "id": "egg_2", "kind": "egg", "model": "shared_food_egg", "shape": "sphere", "size": [0.09, 0.11, 0.09], "color": "#FFF7EA", "pos": [0.1, 0.96, 0.78] },
-    { "id": "whisk", "kind": "whisk", "model": "home_tool_whisk", "shape": "box", "size": [0.04, 0.04, 0.26], "color": "#9AA0A6", "pos": [-0.65, 0.9, 0.8] },
+    { "id": "whisk", "kind": "whisk", "model": "home_tool_whisk", "shape": "box", "size": [0.1, 0.26, 0.1], "color": "#9AA0A6", "pos": [-0.65, 0.9, 0.8] },
     { "id": "flour", "kind": "flour", "model": "home_prop_flour", "shape": "box", "size": [0.2, 0.28, 0.14], "color": "#FFFFFF", "pos": [0.55, 0.9, 0.45], "toy": true },
     { "id": "tomato_1", "kind": "tomato", "model": "shared_food_tomato", "shape": "sphere", "size": [0.12, 0.11, 0.12], "color": "#E2553F", "pos": [0.4, 0.9, 0.85], "toy": true },
     { "id": "tomato_2", "kind": "tomato", "model": "shared_food_tomato", "shape": "sphere", "size": [0.12, 0.11, 0.12], "color": "#E2553F", "pos": [-1.05, 0.93, -0.7] },
