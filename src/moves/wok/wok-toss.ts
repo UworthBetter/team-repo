@@ -66,15 +66,36 @@ export const wokToss = defineMove({
 
     /* ---------------- rice: one InstancedMesh ---------------- */
 
-    const INGREDIENT_COLORS: Record<string, string> = {
-      egg_liquid: '#F6CF4A',
-      chicken: '#E9C394',
-      peanut: '#C68A4E',
-      chili: '#D63A2E',
-      rice: '#F7F3E8',
+    // P0-1 (design_fix_zh.md §3.1): 形状+颜色双重编码。优先读 content 的 ingredientVisuals，
+    // 缺省退回内置默认表（与 design_fix_zh.md §6.3 色卡一致）——旧 JSON 零改动时行为不变。
+    type Shape = 'cube' | 'ellipsoid' | 'cone' | 'sphere' | 'grain' | 'flake' | 'strip';
+    const DEFAULT_VISUAL: Record<string, { shape: Shape; color: string; scale: number }> = {
+      egg_liquid: { shape: 'flake', color: '#F6CF4A', scale: 1.3 },
+      chicken: { shape: 'cube', color: '#E8C07A', scale: 1.4 },
+      peanut: { shape: 'ellipsoid', color: '#B5652E', scale: 1.3 },
+      chili: { shape: 'cone', color: '#C8281E', scale: 1.3 },
+      huajiao: { shape: 'sphere', color: '#6B2A1E', scale: 0.8 },
+      scallion: { shape: 'strip', color: '#5FB548', scale: 1.2 },
+      rice: { shape: 'grain', color: '#F7F3E8', scale: 1 },
     };
-    const grainColor = INGREDIENT_COLORS[String(step.params.ingredient)] ?? '#F7F3E8';
-    const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.02, 0.009, 0.032), new THREE.MeshToonMaterial({ color: grainColor }), GRAINS);
+    const geometryFor = (shape: Shape): THREE.BufferGeometry => {
+      switch (shape) {
+        case 'cube': return new THREE.BoxGeometry(0.024, 0.024, 0.024);
+        case 'ellipsoid': { const g = new THREE.SphereGeometry(0.013, 10, 8); g.scale(1, 0.72, 1); return g; }
+        case 'cone': return new THREE.ConeGeometry(0.006, 0.03, 6);
+        case 'sphere': return new THREE.SphereGeometry(0.006, 8, 6);
+        case 'flake': return new THREE.BoxGeometry(0.03, 0.006, 0.022);
+        case 'strip': return new THREE.BoxGeometry(0.006, 0.006, 0.03);
+        default: return new THREE.BoxGeometry(0.02, 0.009, 0.032);
+      }
+    };
+    const ingredientId = String(step.params.ingredient);
+    const visual =
+      ctx.content.dishes.get(step.dishId)?.ingredientVisuals?.[ingredientId] ??
+      DEFAULT_VISUAL[ingredientId] ??
+      DEFAULT_VISUAL.rice!;
+    const mesh = new THREE.InstancedMesh(geometryFor(visual.shape), new THREE.MeshToonMaterial({ color: visual.color }), GRAINS);
+    mesh.scale.setScalar(visual.scale);
     mesh.frustumCulled = false;
     ctx.world.root.add(mesh);
     const dummy = new THREE.Object3D();
