@@ -1,0 +1,11 @@
+node_modules
+dist/
+.vite/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+.claude/settings.local.json
+.env*
+*.blend1
+assets-src/

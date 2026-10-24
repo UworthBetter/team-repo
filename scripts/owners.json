@@ -1,0 +1,30 @@
+{
+  "_comment": "Path prefixes each owner merges without review. Longest prefix wins. Keep in sync with .github/CODEOWNERS and docs/briefs.",
+  "A": [
+    "src/contracts/",
+    "src/core/",
+    "src/main.ts",
+    "tests/",
+    "scripts/",
+    ".github/",
+    ".claude/",
+    ".cursor/",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/CONTRACTS.md",
+    "docs/WORKFLOW.md",
+    "docs/briefs/A-runtime.md",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "vite.config.ts",
+    "index.html",
+    "content/route.json"
+  ],
+  "B": ["src/moves/home/", "src/dishes/", "content/kitchens/home.json", "content/dishes/pancake_tower.json", "docs/briefs/B-home-moves.md"],
+  "C": ["src/moves/wok/", "content/kitchens/wok.json", "content/dishes/fried_rice.json", "docs/briefs/C-wok-moves.md"],
+  "D": ["src/meta/", "src/ui/", "content/equipment/", "docs/briefs/D-meta-ui.md"],
+  "E": ["src/fx/", "src/audio/", "src/style.css", "public/", "docs/briefs/E-art-audio.md", "CREDITS.md"],
+  "shared": ["docs/DECISIONS.md", ".gitignore", ".gitattributes"]
+}

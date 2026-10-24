@@ -1,0 +1,14 @@
+{
+  "id": "dome_ladle",
+  "name": "圆顶汤勺",
+  "kitchen": "wok",
+  "price": 250,
+  "model": "wok_eq_dome_ladle",
+  "blurb": "扣圆顶更圆",
+  "effects": {
+    "dome_scoop": {
+      "snapRadius": 1.5
+    }
+  },
+  "key": false
+}

@@ -1,0 +1,18 @@
+{
+  "id": "fried_rice",
+  "name": "蛋炒饭",
+  "kitchen": "wok",
+  "steps": [
+    { "id": "toss_egg", "move": "wok_toss", "station": "wok", "weight": 1, "params": { "beats": 4, "ingredient": "egg_liquid" } },
+    { "id": "toss_rice", "move": "wok_toss", "station": "wok", "weight": 2, "params": { "beats": 8, "ingredient": "rice" } },
+    { "id": "flare", "move": "flare", "station": "wok", "weight": 1, "params": {} },
+    { "id": "dome", "move": "dome_scoop", "station": "pass", "weight": 1.5, "params": {} }
+  ],
+  "rating": { "good": 0.4, "great": 0.7, "perfect": 0.9 },
+  "coins": { "oops": 5, "good": 25, "great": 60, "perfect": 100 },
+  "stars": [
+    { "id": "on_beat", "text": "全部踩在拍子上" },
+    { "id": "big_flare", "text": "爆火冲到顶" },
+    { "id": "centered_dome", "text": "圆顶正中" }
+  ]
+}

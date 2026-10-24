@@ -1,0 +1,26 @@
+{
+  "nodes": [
+    {
+      "kitchenId": "home",
+      "name": "家庭厨房",
+      "gate": null
+    },
+    {
+      "kitchenId": "wok",
+      "name": "炒锅灶台",
+      "gate": "wok_burner"
+    },
+    {
+      "kitchenId": "kitchen_3",
+      "name": "厨房 3",
+      "gate": "pro_knives",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "kitchen_4",
+      "name": "厨房 4",
+      "gate": null,
+      "placeholder": true
+    }
+  ]
+}

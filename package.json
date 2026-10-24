@@ -1,0 +1,30 @@
+{
+  "name": "sizzle-kitchen",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "check:owners": "node scripts/check-owners.mjs",
+    "assets:manifest": "node scripts/asset-manifest.mjs",
+    "check:assets": "node scripts/asset-manifest.mjs --check",
+    "check": "npm run typecheck && npm run check:boundaries && npm run check:assets && npm run test",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "lil-gui": "0.20.0",
+    "three": "0.169.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/three": "0.169.0",
+    "typescript": "5.6.3",
+    "vite": "5.4.10",
+    "vitest": "2.1.4"
+  }
+}

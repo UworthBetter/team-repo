@@ -1,0 +1,14 @@
+{
+  "id": "carbon_wok",
+  "name": "碳钢炒锅",
+  "kitchen": "wok",
+  "price": 400,
+  "model": "wok_eq_carbon_wok",
+  "blurb": "颠锅更跟手",
+  "effects": {
+    "wok_toss": {
+      "window": 1.3
+    }
+  },
+  "key": false
+}

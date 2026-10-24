@@ -1,0 +1,8 @@
+# Only SHARED files need a review — everything else is merged by its owner after CI.
+# Replace OWNER_A_HANDLE with owner A's GitHub username (keep the leading @).
+/src/contracts/        @OWNER_A_HANDLE
+/src/core/api.ts       @OWNER_A_HANDLE
+/package.json          @OWNER_A_HANDLE
+/package-lock.json     @OWNER_A_HANDLE
+/.github/              @OWNER_A_HANDLE
+/AGENTS.md             @OWNER_A_HANDLE

@@ -1,0 +1,15 @@
+/* Owner: E */
+.pop { position: absolute; transform: translate(-50%, -50%); font: 400 44px var(--font-display); white-space: nowrap; paint-order: stroke; -webkit-text-stroke: 6px var(--paper); animation: pop 0.95s ease-out forwards; pointer-events: none; }
+.pop-info { color: var(--ink); }
+.pop-good { color: var(--tomato); }
+.pop-perfect { color: var(--gold-ink); font-size: 52px; }
+.pop-oops { color: var(--pink-ink); }
+@keyframes pop {
+  0% { transform: translate(-50%, -30%) scale(0.4); opacity: 0; }
+  18% { transform: translate(-50%, -60%) scale(1.15); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(-50%, -140%) scale(1); opacity: 0; }
+}
+.shake { animation: shake 0.3s linear; }
+@keyframes shake { 20% { transform: translate(-6px, 2px); } 40% { transform: translate(5px, -3px); } 60% { transform: translate(-4px, 3px); } 80% { transform: translate(3px, -1px); } }
+@media (prefers-reduced-motion: reduce) { .shake { animation: none; } }

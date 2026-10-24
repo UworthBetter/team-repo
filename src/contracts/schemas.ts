@@ -1,0 +1,116 @@
+/**
+ * Shapes of everything in content/. FROZEN CONTRACT — owner A.
+ * New fields must be .optional() or have a .default(). Every content file is validated at boot and in tests.
+ * Convention: every `pos` is the BOTTOM CENTER of the thing, in meters (y = 0.9 sits on the counter).
+ */
+import { z } from 'zod';
+import { MOVE_IDS } from './ids';
+
+const vec3 = z.tuple([z.number(), z.number(), z.number()]);
+const color = z.string().regex(/^#[0-9a-fA-F]{6}$/, 'use #RRGGBB');
+const cam = z.object({ pos: vec3, target: vec3 });
+
+export const PropSchema = z.object({
+  id: z.string(),
+  /** Gameplay kind that snaps and moves check: 'egg', 'pan', 'plate', 'tomato' … */
+  kind: z.string(),
+  /** Final asset name, e.g. 'shared_food_egg'. Loaded from public/models/<model>.glb when listed in the manifest. */
+  model: z.string().optional(),
+  shape: z.enum(['box', 'sphere', 'cylinder']).default('box'),
+  size: vec3,
+  color,
+  pos: vec3,
+  grabbable: z.boolean().default(true),
+  /** Free-play toy: never scored. */
+  toy: z.boolean().default(false),
+});
+
+export const KitchenSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  mood: z.object({
+    background: color,
+    floor: color,
+    counter: color,
+    light: color,
+    lightIntensity: z.number().default(1.2),
+  }),
+  defaultDish: z.string(),
+  overview: cam,
+  counters: z.array(z.object({ pos: vec3, size: vec3 })).min(1),
+  stations: z
+    .array(z.object({ id: z.string(), label: z.string(), key: z.number().int().min(1).max(9), anchor: vec3, camera: cam }))
+    .min(1),
+  snaps: z.array(
+    z.object({ id: z.string(), station: z.string(), pos: vec3, radius: z.number().positive(), accepts: z.array(z.string()) }),
+  ),
+  props: z.array(PropSchema),
+  slots: z.array(z.object({ itemId: z.string(), pos: vec3, size: vec3 })).default([]),
+  eggs: z.array(z.object({ id: z.string(), propId: z.string(), coins: z.number().int().nonnegative() })).default([]),
+});
+
+export const StepSchema = z.object({
+  id: z.string(),
+  move: z.enum(MOVE_IDS),
+  station: z.string(),
+  weight: z.number().positive().default(1),
+  params: z.record(z.unknown()).default({}),
+});
+
+export const DishSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  kitchen: z.string(),
+  steps: z.array(StepSchema).min(1),
+  rating: z.object({ good: z.number(), great: z.number(), perfect: z.number() }),
+  coins: z.object({ oops: z.number().int(), good: z.number().int(), great: z.number().int(), perfect: z.number().int() }),
+  stars: z.array(z.object({ id: z.string(), text: z.string() })).default([]),
+});
+
+export const EquipmentSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  kitchen: z.string(),
+  price: z.number().int().nonnegative(),
+  /** Key gear opens the next kitchen on the route. */
+  key: z.boolean().default(false),
+  unlocks: z.string().optional(),
+  model: z.string().optional(),
+  blurb: z.string().default(''),
+  /** Free-form tuning that move owners read, e.g. { "pancake_flip": { "assist": 0.2 } }. */
+  effects: z.record(z.unknown()).default({}),
+});
+
+export const RouteSchema = z.object({
+  nodes: z
+    .array(
+      z.object({
+        kitchenId: z.string(),
+        name: z.string(),
+        /** Equipment id that opens this node; null for the starting kitchen. */
+        gate: z.string().nullable(),
+        /** Shown locked on the map; no kitchen file exists yet. */
+        placeholder: z.boolean().default(false),
+      }),
+    )
+    .min(1),
+});
+
+export const SaveSchema = z.object({
+  v: z.literal(1),
+  coins: z.number().int(),
+  owned: z.array(z.string()),
+  installed: z.array(z.string()),
+  unlocked: z.array(z.string()),
+  stars: z.record(z.array(z.string())),
+  stickers: z.array(z.string()),
+  firstDishDone: z.record(z.boolean()),
+});
+
+export type Prop = z.infer<typeof PropSchema>;
+export type Kitchen = z.infer<typeof KitchenSchema>;
+export type Step = z.infer<typeof StepSchema>;
+export type Dish = z.infer<typeof DishSchema>;
+export type Equipment = z.infer<typeof EquipmentSchema>;
+export type Route = z.infer<typeof RouteSchema>;
+export type Save = z.infer<typeof SaveSchema>;
