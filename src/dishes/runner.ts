@@ -57,6 +57,18 @@ export function createRunner(ctx: Ctx) {
     const total = d.steps.reduce((a, s) => a + s.weight, 0);
     const q = results.reduce((a, r) => a + r.quality * (d.steps.find((s) => s.id === r.stepId)?.weight ?? 1), 0) / total;
     dish = null;
+    // B6: 'all_perfect' (每一步都完美) is a cross-step star, so no single move can tag it. Emit
+    // it as a tag on the last step AFTER the runner stopped listening (dish === null above), so
+    // results never double-count — D5's tag-based star check reads it from the event log.
+    const last = d.steps[d.steps.length - 1];
+    if (
+      last &&
+      d.stars.some((s) => s.id === 'all_perfect') &&
+      results.length === d.steps.length &&
+      results.every((r) => r.quality >= 0.9)
+    ) {
+      ctx.bus.emit('step:complete', { dishId: d.id, stepId: last.id, quality: q, tags: ['all_perfect'] });
+    }
     ctx.bus.emit('dish:complete', { dishId: d.id, kitchenId: d.kitchen, quality: clamp01(q), steps: [...results] });
   }
 
