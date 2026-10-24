@@ -3,17 +3,106 @@
   "name": "宫保鸡丁",
   "kitchen": "wok",
   "steps": [
-    { "id": "toss_chicken", "move": "wok_toss", "station": "wok", "weight": 2, "params": { "beats": 6, "bpm": 110, "beatOffsetMs": 0, "ingredient": "chicken" } },
-    { "id": "spice", "move": "sprinkle", "station": "wok", "weight": 1, "params": { "item": "huajiao", "amount": 8 } },
-    { "id": "flare", "move": "flare", "station": "wok", "weight": 1.5, "params": {} },
-    { "id": "toss_peanut", "move": "wok_toss", "station": "wok", "weight": 2, "params": { "beats": 4, "bpm": 110, "beatOffsetMs": 0, "ingredient": "peanut" } },
-    { "id": "dome", "move": "dome_scoop", "station": "pass", "weight": 1.5, "params": {} }
+    {
+      "id": "toss_chicken",
+      "move": "wok_toss",
+      "station": "wok",
+      "weight": 2,
+      "params": {
+        "beats": 6,
+        "bpm": 110,
+        "beatOffsetMs": 0,
+        "ingredient": "chicken"
+      }
+    },
+    {
+      "id": "spice",
+      "move": "sprinkle",
+      "station": "wok",
+      "weight": 1,
+      "params": {
+        "item": "huajiao",
+        "amount": 8
+      }
+    },
+    {
+      "id": "flare",
+      "move": "flare",
+      "station": "wok",
+      "weight": 1.5,
+      "params": {}
+    },
+    {
+      "id": "toss_peanut",
+      "move": "wok_toss",
+      "station": "wok",
+      "weight": 2,
+      "params": {
+        "beats": 4,
+        "bpm": 110,
+        "beatOffsetMs": 0,
+        "ingredient": "peanut"
+      }
+    },
+    {
+      "id": "dome",
+      "move": "dome_scoop",
+      "station": "pass",
+      "weight": 1.5,
+      "params": {}
+    }
   ],
-  "rating": { "good": 0.4, "great": 0.7, "perfect": 0.9 },
-  "coins": { "oops": 5, "good": 30, "great": 70, "perfect": 120 },
+  "rating": {
+    "good": 0.4,
+    "great": 0.7,
+    "perfect": 0.9
+  },
+  "coins": {
+    "oops": 5,
+    "good": 30,
+    "great": 70,
+    "perfect": 120
+  },
   "stars": [
-    { "id": "on_beat", "text": "全部踩在拍子上" },
-    { "id": "perfect_spice", "text": "花椒恰到好处" },
-    { "id": "big_flare", "text": "爆火冲到顶" }
-  ]
+    {
+      "id": "on_beat",
+      "text": "全部踩在拍子上"
+    },
+    {
+      "id": "perfect_spice",
+      "text": "花椒恰到好处"
+    },
+    {
+      "id": "big_flare",
+      "text": "爆火冲到顶"
+    }
+  ],
+  "ingredientVisuals": {
+    "chicken": {
+      "shape": "cube",
+      "color": "#E8C07A",
+      "scale": 1.4
+    },
+    "peanut": {
+      "shape": "ellipsoid",
+      "color": "#B5652E",
+      "scale": 1.3
+    },
+    "chili": {
+      "shape": "cone",
+      "color": "#C8281E",
+      "scale": 1.3
+    },
+    "huajiao": {
+      "shape": "sphere",
+      "color": "#6B2A1E",
+      "scale": 0.8
+    },
+    "scallion": {
+      "shape": "strip",
+      "color": "#5FB548",
+      "scale": 1.2
+    }
+  },
+  "platedModel": "wok_food_kungpao_plated"
 }
