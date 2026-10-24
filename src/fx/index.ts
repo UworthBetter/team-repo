@@ -1,12 +1,16 @@
 import { defineModule, type Ctx } from '@core/api';
 import './fx.css';
+import { loadFonts } from './fonts';
+import { setupOutline } from './outline';
 
 /**
- * Owner: E. Onomatopoeia pops (咔! 啪! 滋啦!), screen shake on funny fails.
- * TODO(E): toon outline pass, steam/bubbles/flame particles, sparkles — add them as files here.
- * See docs/briefs/E-art-audio.md
+ * Owner: E. Onomatopoeia pops (咔! 啪! 滋啦!), screen shake on funny fails, toon outline pass,
+ * self-hosted fonts. See docs/briefs/E-art-audio.md
  */
 function setupFx(ctx: Ctx) {
+  loadFonts();
+  setupOutline(ctx);
+
   const layer = ctx.ui.layer('fx');
   const canvas = ctx.three.renderer.domElement;
 
