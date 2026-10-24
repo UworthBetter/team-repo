@@ -4,6 +4,7 @@ import type { Vec3 } from '@contracts/types';
 import type { PropHandle, World } from './api';
 import { fitModel, type Assets } from './assets';
 import type { Bus } from './bus';
+import type { Content } from './content';
 
 export const COUNTER_TOP = 0.9;
 const TEAL = 0x2a8c9a;
@@ -26,6 +27,7 @@ export function createWorld(
   renderer: THREE.WebGLRenderer,
   bus: Bus,
   assets: Assets,
+  content: Content,
 ): WorldInternal {
   const base = new THREE.Group();
   base.name = 'core-kitchen';
@@ -100,11 +102,24 @@ export function createWorld(
 
   function buildSlots() {
     disposeTree(slotGroup);
-    for (const s of kitchen?.slots ?? []) {
+    const k = kitchen;
+    for (const s of k?.slots ?? []) {
       const geo = new THREE.BoxGeometry(s.size[0], s.size[1], s.size[2]);
       let obj: THREE.Object3D;
       if (installed.has(s.itemId)) {
+        // Brass greybox placeholder; swapped for the real model below when one exists.
         obj = new THREE.Mesh(geo, toon('#D9A441'));
+        const model = content.equipment.get(s.itemId)?.model;
+        if (model && assets.hasModel(model)) {
+          const box = obj;
+          void assets.loadModel(model).then((loaded) => {
+            if (!loaded || kitchen !== k || !installed.has(s.itemId)) return;
+            fitModel(loaded, s.size);
+            loaded.position.set(s.pos[0], s.pos[1], s.pos[2]);
+            box.visible = false;
+            slotGroup.add(loaded);
+          });
+        }
       } else {
         const line = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineDashedMaterial({ color: RED, dashSize: 0.06, gapSize: 0.04 }));
         line.computeLineDistances();

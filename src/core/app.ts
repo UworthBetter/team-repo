@@ -37,7 +37,7 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
   if (flags.logEvents) bus.onAny((e) => console.debug(`[bus] ${e.name}`, e.payload));
 
   const assets = await loadAssets();
-  const world = createWorld(scene, camera, renderer, bus, assets);
+  const world = createWorld(scene, camera, renderer, bus, assets, content);
   const input = createInput(canvas, camera, COUNTER_TOP);
   const hand = document.createElement('div');
   hand.className = 'hand';
@@ -80,14 +80,27 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
     },
   };
 
+  // 0.4 s whoosh: a full-screen overlay fades in, the kitchen is swapped at the opaque midpoint,
+  // then it fades back out, hiding the rebuild (A8). The first boot fades in from black too.
+  const whoosh = document.createElement('div');
+  whoosh.className = 'kitchen-whoosh';
+  const halfMs = 200 / flags.fast;
+  whoosh.style.cssText =
+    `position:fixed;inset:0;z-index:40;background:#17110f;opacity:0;pointer-events:none;transition:opacity ${halfMs}ms ease;`;
+  document.body.append(whoosh);
+
   bus.on('kitchen:enter', ({ kitchenId }) => {
     const k = content.kitchens.get(kitchenId);
     if (!k) {
       ui.toast(`厨房 "${kitchenId}" 还没做好 (no content/kitchens/${kitchenId}.json)`, 'error');
       return;
     }
-    world.build(k);
-    bus.emit('kitchen:ready', { kitchenId });
+    whoosh.style.opacity = '1';
+    ctx.after(200, () => {
+      world.build(k);
+      bus.emit('kitchen:ready', { kitchenId });
+      whoosh.style.opacity = '0';
+    });
   });
   bus.on('dish:start', () => world.resetAll());
 
