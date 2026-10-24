@@ -3,6 +3,7 @@ import { createHud } from './hud';
 import { createMenu } from './menu';
 import { createPanels } from './panels';
 import { createResult } from './result';
+import { createTitle } from './title';
 import './ui.css';
 
 /** Owner: D. All screens are DOM over the canvas. See docs/briefs/D-meta-ui.md */
@@ -14,6 +15,9 @@ export default defineModule({
     createHud(ctx, panels.open);
     createResult(ctx);
     const { scene, auto, kitchen, dish } = ctx.flags;
-    if (!scene && !auto && !kitchen && !dish) createMenu(ctx);
+    if (!scene && !auto && !kitchen && !dish) {
+      const menu = createMenu(ctx, { initiallyHidden: true });
+      createTitle(ctx, { onStart: menu.continue, onMap: menu.show });
+    }
   },
 });

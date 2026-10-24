@@ -10,7 +10,7 @@ import { createRouteMap } from './route-map';
 
 const EMPTY: MetaState = { coins: 0, owned: [], installed: [], unlocked: ['home'], stars: {}, stickers: [] };
 
-export function createMenu(ctx: Ctx) {
+export function createMenu(ctx: Ctx, options: { initiallyHidden?: boolean } = {}) {
   const { bus, content } = ctx;
   const root = ctx.ui.layer('menu');
   root.classList.add('menu-layer', 'interactive');
@@ -18,6 +18,8 @@ export function createMenu(ctx: Ctx) {
 
   let state = readState();
   let gone = false;
+  let open = !options.initiallyHidden;
+  root.hidden = !open;
   const offs: (() => void)[] = [];
 
   const playable = (s: MetaState) =>
@@ -50,6 +52,7 @@ export function createMenu(ctx: Ctx) {
   function close() {
     if (gone) return;
     gone = true;
+    open = false;
     for (const off of offs) off();
     offs.length = 0;
     parkHud(false);
@@ -64,7 +67,7 @@ export function createMenu(ctx: Ctx) {
   }
 
   function render() {
-    if (gone) return;
+    if (gone || !open) return;
     const next = furthestMain(state);
     const openCount = playable(state).length;
     const map = routeMap.card(state, '', { onEnter: enter });
@@ -92,7 +95,7 @@ export function createMenu(ctx: Ctx) {
   offs.push(bus.on('kitchen:enter', () => close()));
   offs.push(
     ctx.input.onKey('Enter', (e) => {
-      if (gone) return;
+      if (gone || !open) return;
       const t = e.target;
       if (t instanceof Element && t.closest('.pin')) return;
       const id = furthestMain(state);
@@ -100,6 +103,21 @@ export function createMenu(ctx: Ctx) {
     }),
   );
 
-  parkHud(true);
-  render();
+  if (open) {
+    parkHud(true);
+    render();
+  }
+  return {
+    show() {
+      if (gone) return;
+      open = true;
+      parkHud(true);
+      render();
+    },
+    continue() {
+      if (gone) return;
+      const id = furthestMain(state);
+      if (id) enter(id);
+    },
+  };
 }

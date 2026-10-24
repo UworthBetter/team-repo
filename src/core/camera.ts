@@ -94,9 +94,10 @@ export function createCameraRig(
     face(new THREE.Vector3(...spawn.target));
     const first = !entered;
     entered = true;
+    step(0);
+    camera.updateMatrixWorld();
     if (first) {
       input.setLookEnabled(true);
-      step(0);
       o.onEnter?.();
     }
   }

@@ -173,3 +173,44 @@ body:has(.menu-layer:not([hidden])) #ui .toasts { z-index: 60; }
 .map-lock.crack.go { animation: lockcrack 0.7s ease forwards; }
 @keyframes lockcrack { 40% { transform: rotate(22deg) translateY(4px); opacity: 1; } 100% { transform: rotate(-38deg) translateY(16px); opacity: 0; } }
 .muted { color: var(--muted); }
+
+/* ---------- HUD round buttons: display font, crisp at projector size ----------
+   14px CJK webfont at weight 800 rendered soft; the game's label language is ZCOOL KuaiLe. */
+.round { font: 400 17px var(--font-display); letter-spacing: 1px; }
+.retry { font-family: var(--font-ui); font-weight: 800; } /* the ↺ glyph is not in ZCOOL KuaiLe */
+
+/* ---------- title screen (方案 C) ---------- */
+.title-layer { z-index: 50; display: grid; place-items: center; background: #fff3e2; transition: opacity 0.45s ease; }
+body:has(.title-layer) .hand { visibility: hidden; }
+.title-layer.bye { opacity: 0; pointer-events: none !important; }
+.title-stage { position: relative; width: min(100vw, calc(100vh * 16 / 9)); aspect-ratio: 16 / 9; }
+.title-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.tk { stroke: var(--ink); stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+.title-t { font: 400 112px var(--font-display); fill: var(--ink); stroke: var(--paper); stroke-width: 10; paint-order: stroke; text-anchor: middle; }
+.title-en { font: 800 30px var(--font-ui); fill: var(--muted); letter-spacing: 8px; text-anchor: middle; }
+.title-foot { font: 900 21px var(--font-ui); fill: var(--muted); text-anchor: middle; }
+.pop-t { font: 400 36px var(--font-display); text-anchor: middle; }
+.title-start {
+  position: absolute; left: 50%; top: 76.5%; transform: translateX(-50%);
+  width: 29%; min-width: 260px; aspect-ratio: 4.4 / 1; border-radius: 999px;
+  border: 4px solid var(--ink); background: var(--tomato); color: var(--paper);
+  font: 400 clamp(22px, 3.4vw, 44px) var(--font-display); letter-spacing: 6px;
+  cursor: pointer; box-shadow: 0 6px 0 rgba(59, 42, 32, 0.35);
+}
+.title-start::after { content: ''; position: absolute; inset: -14px; border-radius: 999px; border: 3px dashed rgba(42, 140, 154, 0.55); animation: startpulse 1.6s ease-in-out infinite; }
+@keyframes startpulse { 50% { transform: scale(1.045); opacity: 0.35; } }
+.title-start:hover { transform: translateX(-50%) translateY(-3px); box-shadow: 0 9px 0 rgba(59, 42, 32, 0.35); }
+.title-start:active { transform: translateX(-50%) translateY(2px); box-shadow: 0 2px 0 rgba(59, 42, 32, 0.35); }
+.title-start:focus-visible { outline: 4px solid var(--teal); outline-offset: 6px; }
+.title-route { position: absolute; left: 50%; top: 88.5%; transform: translateX(-50%); padding: 8px 14px; border: 0; border-radius: 12px; background: transparent; color: var(--teal); text-decoration: underline; font: 400 clamp(17px, 2vw, 22px) var(--font-display); cursor: pointer; white-space: nowrap; }
+.title-route:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.bolt { animation: boltglow 1.1s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes boltglow { 50% { filter: drop-shadow(0 0 14px rgba(242, 179, 61, 0.95)); } }
+.spark circle { animation: sparkbob 0.9s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.spark circle:nth-child(2) { animation-delay: 0.2s; }
+.spark circle:nth-child(3) { animation-delay: 0.45s; }
+@keyframes sparkbob { 50% { transform: translateY(-9px); } }
+.steam path { animation: steamrise 2.6s ease-in-out infinite; transform-box: fill-box; }
+.steam path:nth-child(2) { animation-delay: 1.2s; }
+@keyframes steamrise { 0%, 100% { opacity: 0.35; transform: translateY(0); } 50% { opacity: 0.6; transform: translateY(-10px); } }
+@media (prefers-reduced-motion: reduce) { .title-layer ::after, .bolt, .spark circle, .steam path { animation: none !important; } }
