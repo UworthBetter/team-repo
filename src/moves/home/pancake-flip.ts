@@ -88,6 +88,13 @@ export const pancakeFlip = defineMove({
       mesh.position.copy(panTop(landed));
       spawnDishItem(ctx, step.dishId, 'pancake', mesh);
       current = { mesh, mat, bubbles, t: 0, state: 'cooking', q: 0 };
+      const pancake = current;
+      if (ctx.flags.auto) {
+        // Schedule from this pancake's spawn, not from the start of the whole step.
+        offs.push(ctx.after(600, () => {
+          if (!done && current === pancake && pancake.state === 'cooking') launch(pancake, 0.95);
+        }));
+      }
       setDoneness(current, 0);
       hint();
     };
@@ -114,7 +121,7 @@ export const pancakeFlip = defineMove({
       ctx.bus.emit('fx:pop', { text: '啪!', style: 'good', at: [p.mesh.position.x, p.mesh.position.y + 0.08, p.mesh.position.z] });
       ctx.bus.emit('sfx:play', { id: 'flip' });
       if (landed >= count) finish();
-      else ctx.after(350, () => !done && spawn());
+      else offs.push(ctx.after(350, () => !done && spawn()));
     };
 
     const launch = (p: Pancake, q: number) => {
@@ -203,13 +210,6 @@ export const pancakeFlip = defineMove({
       }),
     );
     offs.push(ctx.input.onKey('Space', () => current && current.state === 'cooking' && launch(current, 0.85)));
-    if (ctx.flags.auto) {
-      for (let i = 0; i < count; i++) {
-        ctx.after(600 + i * (READY * 1000 + 900), () => {
-          if (!done && current && current.state === 'cooking') launch(current, 0.95);
-        });
-      }
-    }
     spawn();
 
     return {
@@ -223,6 +223,7 @@ export const pancakeFlip = defineMove({
           current.mesh.geometry.dispose();
         }
         offs.forEach((f) => f());
+        tweens.dispose();
       },
     };
   },

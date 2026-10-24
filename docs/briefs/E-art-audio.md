@@ -53,3 +53,12 @@ Names: `{home|wok|shared}_{room|prop|food|tool|eq}_<name>.glb`, `sfx_<id>.ogg`, 
 - 西安·肉夹馍：loaf-round.glb（白吉馍）· bread.glb · meat-cooked.glb（腊汁肉）· rollingPin.glb（擀面杖）
 - 东北·铁锅炖：pot.glb（需做黑色铁锅变体）· cabbage / leek（酸菜料）
 - 家庭拓展：kitchenSink.glb（小黄鸭水槽彩蛋场景）· toaster / kitchenMicrowave / kitchenCoffeeMachine · pottedPlant1-3 · pancakes.glb（煎饼展示）
+
+## 画风演进：暖金实感（2026-10-24）
+
+参考对标图（暖金胶片感、软材质、接地阴影、无描边）后，E 的默认渲染管线改为：
+- ACES filmic tone mapping（曝光 1.1，lil-gui「Style (E)」可实时调）
+- RoomEnvironment 环境光（intensity 0.5，刻意低于太阳权重，保住接地软阴影）
+- 太阳 PCFSoft 阴影（1024 map，投影目标 50fps 实测 63fps；2048 会掉到 38fps，勿改回）
+- 材质柔化：toon 灰盒转 standard，GLB roughness ≤0.72
+- **描边默认关闭**，`?outline=1` 恢复草图书 toon 风（卡 E1 的能力保留，验收时加该参数）。
