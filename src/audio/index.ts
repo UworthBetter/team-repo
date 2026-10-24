@@ -3,7 +3,10 @@ import { defineModule, type Ctx } from '@core/api';
 /**
  * Owner: E. Every sfx:play id plays public/sfx/sfx_<id>.ogg when that name is listed in
  * public/sfx/manifest.json (npm run assets:manifest). Otherwise a synthesized placeholder blip,
- * so feedback is never silent. Ids in use: grab snap snap_hover bounce egg_crack step_done oops coin stamp deny sticker.
+ * so feedback is never silent. Ids in use: grab snap snap_hover bounce egg_crack step_done oops
+ * coin stamp deny sticker flip slice wok_toss flare. Music (card E5): on kitchen:ready,
+ * crossfade to mus_<kitchen>.ogg over 0.8 s when it's in the sfx manifest; per-track BPM for
+ * owner C lives in public/sfx/music.json. No new events; blip fallback kept.
  */
 type Blip = { f: number; to?: number; d: number; type?: OscillatorType; noise?: boolean };
 const BLIPS: Record<string, Blip> = {
@@ -29,13 +32,16 @@ function setupAudio(ctx: Ctx) {
 
   void fetch(`${base}sfx/manifest.json`)
     .then((r) => (r.ok ? r.json() : { files: [] }))
-    .then((j: { files?: string[] }) => (j.files ?? []).forEach((f) => files.add(f)))
+    .then((j: { files?: string[] }) => {
+      (j.files ?? []).forEach((f) => files.add(f));
+      applyMusic(); // manifest may arrive after the first kitchen:ready
+    })
     .catch(() => {});
 
   // Browsers only allow audio after a user gesture.
   const unlock = () => {
     ac ??= new AudioContext();
-    void ac.resume();
+    void ac.resume().then(() => applyMusic());
   };
   window.addEventListener('pointerdown', unlock, { once: false });
   window.addEventListener('keydown', unlock, { once: false });
@@ -96,6 +102,56 @@ function setupAudio(ctx: Ctx) {
   ctx.bus.on('sfx:play', ({ id }) => play(id));
   ctx.bus.on('coins:change', ({ delta }) => delta > 0 && play('coin'));
   ctx.bus.on('result:shown', () => play('stamp'));
+
+  // --- music (E5): one looping track per kitchen, 0.8 s crossfade on switch ---
+  let musicGain: GainNode | null = null;
+  let current: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
+  let currentTrack: string | null = null;
+  let currentKitchen: string | null = null;
+
+  function startMusic(name: string) {
+    if (!ac) return;
+    const a = ac;
+    musicGain ??= a.createGain();
+    musicGain.gain.value = 0.22;
+    musicGain.connect(a.destination);
+    void load(name).then((buf) => {
+      if (!buf || !a || !musicGain) return;
+      const t = a.currentTime;
+      const gain = a.createGain();
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(1, t + 0.8);
+      gain.connect(musicGain);
+      const src = a.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      src.connect(gain);
+      src.start(t);
+      current = { src, gain };
+      currentTrack = name;
+    });
+  }
+
+  function applyMusic() {
+    if (!ac || ac.state !== 'running' || !currentKitchen) return;
+    const name = `mus_${currentKitchen}`;
+    if (name === currentTrack || !files.has(name)) return;
+    if (current) {
+      const t = ac.currentTime;
+      const { src, gain } = current;
+      gain.gain.setValueAtTime(gain.gain.value, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+      src.stop(t + 0.85);
+      current = null;
+      currentTrack = null;
+    }
+    startMusic(name);
+  }
+
+  ctx.bus.on('kitchen:ready', ({ kitchenId }) => {
+    currentKitchen = kitchenId;
+    applyMusic();
+  });
 }
 
 export default defineModule({ id: 'audio', owner: 'E', setup: setupAudio });
