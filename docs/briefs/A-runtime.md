@@ -54,3 +54,8 @@ discarded. Kitchen scaffolding checks all destinations before writing any files.
 Projector FPS, B's grab-feel sign-off, audio calibration, and a physical USB/offline
 rehearsal still require human acceptance. Do not mark those milestones complete from
 automated checks alone.
+
+The integration branch includes B/C/D/E merges plus explicitly authorized fixes in
+their paths. Run owner checks for A's own commits before merging feature branches;
+the complete integration diff intentionally spans all owners. The current shared
+file reviewer in CODEOWNERS is the repository maintainer, @UworthBetter.

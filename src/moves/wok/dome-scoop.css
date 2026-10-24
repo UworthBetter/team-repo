@@ -1,0 +1,23 @@
+/* Owner: C — pack ring for 扣圆顶. teal fills as the rice packs down. */
+.ds-ring {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  transform: rotate(-90deg);
+}
+
+.ds-ring-bg {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 5;
+  opacity: 0.6;
+}
+
+.ds-ring-fg {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}

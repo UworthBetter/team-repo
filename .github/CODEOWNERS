@@ -1,8 +1,8 @@
 # Only SHARED files need a review — everything else is merged by its owner after CI.
-# Owner A is @beelingz (replace if A's GitHub handle differs).
-/src/contracts/        @beelingz
-/src/core/api.ts       @beelingz
-/package.json          @beelingz
-/package-lock.json     @beelingz
-/.github/              @beelingz
-/AGENTS.md             @beelingz
+# Owner A is the repository maintainer.
+/src/contracts/        @UworthBetter
+/src/core/api.ts       @UworthBetter
+/package.json          @UworthBetter
+/package-lock.json     @UworthBetter
+/.github/              @UworthBetter
+/AGENTS.md             @UworthBetter

@@ -1,0 +1,8 @@
+{
+  "id": "clay_pot",
+  "name": "砂锅",
+  "kitchen": "huaiyang",
+  "price": 250,
+  "blurb": "搅散豆腐丝更轻松",
+  "effects": { "whisk": { "tolerance": 1.25 } }
+}

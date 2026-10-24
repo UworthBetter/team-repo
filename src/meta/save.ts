@@ -30,6 +30,11 @@ export function loadSave(flags: Flags, content: Content): Save {
     }
   }
   if (flags.coins !== null) s.coins = Math.round(flags.coins);
+  // Existing saves may own the professional knives from before kitchen_3 became huaiyang.
+  for (const id of s.installed) {
+    const target = content.equipment.get(id)?.unlocks;
+    if (target && !s.unlocked.includes(target)) s.unlocked.push(target);
+  }
   if (flags.unlockAll) s.unlocked = content.route.nodes.filter((n) => !n.placeholder).map((n) => n.kitchenId);
   return s;
 }

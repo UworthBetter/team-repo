@@ -33,3 +33,23 @@ Names: `{home|wok|shared}_{room|prop|food|tool|eq}_<name>.glb`, `sfx_<id>.ogg`, 
 
 ## Starter prompt for your AI
 > I am owner E. Read AGENTS.md and docs/briefs/E-art-audio.md. Task: add an inverted-hull toon outline to every mesh built on kitchen:ready, in src/fx/outline.ts, registered from src/fx/index.ts. Only edit my paths. Finish with npm run check and npm run check:owners -- --as E.
+
+## Kenney CC0 素材对照表（E 维护，2026-10-24）
+
+来源：kenney.nl Food Kit + Furniture Kit（CC0），镜像 github.com/shorepine/kenney（3d/food、3d/furniture，直接 .glb）。
+注意：食物 GLB 引用外部 `Textures/colormap.png`，直接用会丢贴图——用 `tools/kenney-pack-glb.py` 在 Blender 里重导出为自包含再入库。
+
+**已采用（13）**：egg→shared_food_egg · tomato→shared_food_tomato · frying-pan→home_tool_pan · bowl→home_tool_bowl · cutting-board→home_tool_board · bag→home_prop_flour · kitchenFridge→home_room_fridge · bottle-oil→wok_food_oil · pot-stew→wok_prop_stock_pot · cooking-knife-chopping→huaiyang_tool_knife · knife-block→wok_eq_pro_knives · cardboardBoxClosed→shared_prop_crate · honey→home_eq_syrup_pot。
+
+**确认不采用**：plate-dinner（带食物）、soy（是蘸碟非瓶）、whisk（扁线看不清）、kitchenBlender（无品牌色）、kitchenStoveElectric（无 ember 语义）、cutting-board-japanese（不如自建案）、pot（灰钢色）、mortar-pestle（形不对）、tajine、wallWindow（月洞窗是设计符号）、plate（保青瓷沿色码）。
+
+**未来厨房采购单**（做新厨房时先来这里找）：
+- 粤·茶楼：**steamer.glb**（竹蒸笼，已验证渲染）· cup-tea / cup-saucer / cup.glb（茶杯）· dim-sum.glb（点心）· chopstick.glb
+- 闽·佛跳墙：无坛；pot-stew 可复用，坛子需自制
+- 浙·西湖：cup-tea（龙井）· fish.glb（龙井虾仁/鱼）· pan-stew.glb（炖锅）
+- 徽·臭鳜鱼：fish.glb · fish-bones.glb（鱼骨彩蛋）
+- 湘：shaker-pepper / pepper-mill（剁椒坛需自制）
+- 鲁·糖醋鲤鱼：fish.glb · honey（熬糖色）
+- 西安·肉夹馍：loaf-round.glb（白吉馍）· bread.glb · meat-cooked.glb（腊汁肉）· rollingPin.glb（擀面杖）
+- 东北·铁锅炖：pot.glb（需做黑色铁锅变体）· cabbage / leek（酸菜料）
+- 家庭拓展：kitchenSink.glb（小黄鸭水槽彩蛋场景）· toaster / kitchenMicrowave / kitchenCoffeeMachine · pottedPlant1-3 · pancakes.glb（煎饼展示）

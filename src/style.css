@@ -17,7 +17,8 @@
   --ember: #f2782f;       /* heat */
   --sage: #8dbf9f;
   --sage-ink: #5e9e78;
-  /* Self-host fonts in public/fonts before the demo: venue Wi-Fi is not reliable. */
+  /* Self-hosted fonts (E1): @font-face rules live in public/fonts/fonts.css, loaded by
+   * src/fx/fonts.ts. Stacks below carry the system fallbacks for first paint and ?stub=fx. */
   --font-display: 'ZCOOL KuaiLe', 'Baloo 2', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
   --font-ui: 'Nunito', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
 }

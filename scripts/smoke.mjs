@@ -36,18 +36,20 @@ async function open(path, label) {
 {
   const { page, errors } = await open('?auto&fast=4&fresh&coins=600&debug=0&mute', 'full loop');
   try {
+    await page.waitForFunction(() => window.__sizzle?.ctx);
+    const destination = await page.evaluate(() => window.__sizzle.ctx.content.kitchens.has('huaiyang') ? 'huaiyang' : 'wok');
     await page.waitForFunction(
-      () => window.__sizzle?.log.some((e) => e.name === 'result:shown' && e.payload.kitchenId === 'wok'),
-      null,
-      { timeout: 45000 },
+      (kitchen) => window.__sizzle?.log.some((e) => e.name === 'result:shown' && e.payload.kitchenId === kitchen),
+      destination,
+      { timeout: 90000 },
     );
     const names = await page.evaluate(() => [...new Set(window.__sizzle.log.map((e) => e.name))]);
     for (const must of ['dish:complete', 'equipment:installed', 'kitchen:unlocked', 'kitchen:ready'])
       if (!names.includes(must)) failures.push(`full loop: never saw "${must}"`);
-    console.log('✓ full loop reached the Wok Station result');
+    console.log(`✓ full purchase/unlock loop reached the ${destination} result`);
   } catch {
     const tail = await page.evaluate(() => window.__sizzle?.log.slice(-12).map((e) => e.name).join(' → ') ?? 'no __sizzle');
-    failures.push(`full loop did not reach the wok result in 45 s. Last events: ${tail}`);
+    failures.push(`full loop did not reach the final kitchen result in 90 s. Last events: ${tail}`);
   }
   failures.push(...errors.map((e) => `full loop: ${e}`));
   await page.close();
@@ -65,7 +67,8 @@ async function open(path, label) {
     await page.waitForFunction(() => document.pointerLockElement?.tagName === 'CANVAS', null, { timeout: 5000 });
     const before = await page.evaluate(() => window.__sizzle.ctx.three.camera.quaternion.toArray());
     stage = 'look without holding a button';
-    await page.mouse.move(740, 370);
+    // Explicit relative motion is stable on both desktop and headless pointer-lock drivers.
+    await page.locator('canvas').dispatchEvent('pointermove', { pointerId: 1, movementX: 40, movementY: 20 });
     await page.waitForFunction((previous) => window.__sizzle.ctx.three.camera.quaternion.toArray().some((n, i) => Math.abs(n - previous[i]) > 0.01), before);
 
     // Aim by relative mouse motion; the camera is never assigned by the test.
@@ -154,6 +157,16 @@ async function open(path, label) {
       await p.waitForFunction((id) => window.__sizzle?.log.some((e) => e.name === 'result:shown' && e.payload.dishId === id), dish.id, { timeout: 45000 });
       const crashed = await p.evaluate(() => window.__sizzle.log.some((e) => e.name === 'step:complete' && e.payload.tags.includes('crashed')));
       if (crashed) failures.push(`dish ${dish.id}: runner skipped a crashed move`);
+      const problem = await p.evaluate((id) => {
+        const ctx = window.__sizzle.ctx;
+        const recipe = ctx.content.dishes.get(id);
+        const result = window.__sizzle.log.find((e) => e.name === 'dish:complete' && e.payload.dishId === id)?.payload;
+        if (!result || result.steps.length !== recipe.steps.length) return 'wrong number of completed steps';
+        if (result.steps.some((s, i) => s.stepId !== recipe.steps[i].id || s.quality < 0.3)) return 'skipped or empty step';
+        if (window.__sizzle.log.some((e) => e.name === 'step:complete' && e.payload.dishId === id && e.payload.tags.includes('stub'))) return 'unregistered move fell back to a stub';
+        return null;
+      }, dish.id);
+      if (problem) failures.push(`dish ${dish.id}: ${problem}`);
       console.log(`✓ recipe ${dish.id} reached its result`);
     } catch {
       const tail = await p.evaluate(() => window.__sizzle?.log.slice(-8) ?? []);

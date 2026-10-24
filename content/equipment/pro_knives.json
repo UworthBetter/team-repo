@@ -2,10 +2,10 @@
   "id": "pro_knives",
   "name": "专业刀具",
   "kitchen": "wok",
-  "price": 800,
+  "price": 290,
   "key": true,
-  "unlocks": "kitchen_3",
+  "unlocks": "huaiyang",
   "model": "wok_eq_pro_knives",
-  "blurb": "关键 · 解锁下一厨房",
+  "blurb": "解锁 → 淮扬 · 扬州园林厨房",
   "effects": {}
 }

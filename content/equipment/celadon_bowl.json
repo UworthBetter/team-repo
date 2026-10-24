@@ -1,0 +1,8 @@
+{
+  "id": "celadon_bowl",
+  "name": "青瓷碗",
+  "kitchen": "huaiyang",
+  "price": 150,
+  "blurb": "装盘吸附范围更宽容",
+  "effects": { "stack": { "snapRadius": 1.2 } }
+}

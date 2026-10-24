@@ -1,13 +1,18 @@
 # 滋啦厨房 · Sizzle Kitchen
 
-Browser 3D cooking toy box (hackathon build). Two kitchens — 家庭厨房 and 炒锅灶台 — signature hand moves, coins, gear that unlocks the next kitchen.
+Browser 3D cooking toy box (hackathon build). Three kitchens — 家庭厨房、川菜炒锅和
+淮扬园林 — guided hand moves, coins, and gear that unlocks the next kitchen.
 
 ```bash
 npm install
 npm run dev            # http://localhost:5173  (debug panel on the right)
 ```
 
-The starter already plays the whole demo path in greybox: pancake tower → result → shop → 猛火灶 → Wok Station → fried rice. Every move except 打蛋 is a stub (Space = done, O = funny fail). Try `http://localhost:5173/?auto&fast=4&fresh&coins=600` to watch it play itself.
+The integrated demo follows 煎饼塔 → shop → 猛火灶 → 宫保鸡丁 / 蛋炒饭 →
+专业刀具 → 文思豆腐. Models, fonts, music, particles, crate unboxing, and the
+11-node food map are local assets. Try
+`http://localhost:5173/?auto&fast=4&fresh&coins=600` to watch the route play itself.
+Use `?stub=moves-home,moves-wok,moves-knife` for placeholder moves during debugging.
 
 ## Who owns what
 
