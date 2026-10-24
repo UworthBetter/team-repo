@@ -38,6 +38,18 @@ body[data-kitchen='wok'] { background: #2b2422; }
 
 .toasts { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); display: grid; gap: 8px; z-index: 30; }
 .toast { background: var(--ink); color: var(--paper); padding: 8px 16px; border-radius: 12px; font-weight: 800; }
+
+/* 风格 A · 纸感平涂：全屏细腻纸纹颗粒（静态 SVG 噪点，multiply 混合，零逐帧 GPU 成本）。
+ * z-index 50 盖过画布与全部 UI 层，让 3D 场景和 DOM 卡片共享同一张"纸"。 */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.28 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23p)'/%3E%3C/svg%3E");
+}
 .toast-error { background: var(--red); }
 
 .fatal { position: fixed; inset: 24px; background: #fff; border: 6px solid var(--red); border-radius: 18px; padding: 24px; z-index: 100; overflow: auto; color: var(--ink); }

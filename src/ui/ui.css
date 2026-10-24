@@ -23,7 +23,13 @@
 .coin-pill.bump { animation: bump 0.4s ease; }
 @keyframes bump { 40% { transform: scale(1.15); } }
 
-.hint-pill { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--teal); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 12px 26px; font: 900 21px var(--font-ui); white-space: nowrap; }
+/* 风格 A · 提示词四态规范（正文=纸底墨字，强调=图标青，警告=红，弱化=灰）。
+ * 旧的高饱和青底白字在亮厨房里刺眼——正文态改纸底 + 墨字 + 描边。 */
+.hint-pill { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--paper); color: var(--ink); border: 3.5px solid var(--ink); border-radius: 999px; padding: 12px 26px; font: 900 21px var(--font-ui); white-space: nowrap; box-shadow: 0 4px 0 rgba(43, 36, 34, 0.22); }
+.hint-pill svg { width: 24px; height: 24px; padding: 5px; box-sizing: content-box; background: var(--teal); border-radius: 50%; stroke: #fff; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.hint-pill.warn { background: var(--red); color: #fff; }
+.hint-pill.warn svg { background: rgba(255, 255, 255, 0.22); }
+.hint-pill.dim { opacity: 0.72; filter: saturate(0.55); }
 .dock { position: absolute; bottom: 24px; left: 24px; padding: 6px 10px; }
 .dock-key { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--ink); background: #fff; color: var(--ink); font: 900 16px var(--font-ui); cursor: pointer; }
 .dock-key.on { background: var(--ink); color: var(--paper); }
@@ -104,8 +110,8 @@
 .hint-pill { display: flex; align-items: center; gap: 10px; }
 .hint-pill.pop { animation: hintpop 0.28s cubic-bezier(.2,1.6,.4,1); }
 @keyframes hintpop { from { transform: translateX(-50%) scale(0.85); } 60% { transform: translateX(-50%) scale(1.06); } to { transform: translateX(-50%) scale(1); } }
-.hint-pill svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
-.hint-count { background: rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 2px 12px; font-variant-numeric: tabular-nums; }
+.hint-count { background: var(--teal-tint); color: var(--teal-ink); border-radius: 999px; padding: 2px 12px; font-variant-numeric: tabular-nums; }
+.hint-pill.warn .hint-count { background: rgba(255, 255, 255, 0.22); color: #fff; }
 .dock { gap: 8px; flex-wrap: wrap; max-width: 46vw; }
 .dock-key { display: inline-flex; align-items: center; gap: 7px; width: auto; height: 34px; border-radius: 999px; padding: 0 12px 0 6px; font: 900 15px var(--font-ui); }
 .dock-key b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 14px; }
@@ -113,8 +119,17 @@
 @keyframes floatup { from { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } to { opacity: 0; transform: translateY(-34px); } }
 
 /* ---------- juice: press feedback on every control ---------- */
-.btn:hover, .round:hover, .dock-key:hover { transform: translateY(-2px); box-shadow: 0 3px 0 rgba(43, 36, 34, 0.35); }
-.btn:active, .round:active, .dock-key:active { transform: translateY(1px); box-shadow: none; }
+/* 风格 A：硬偏移阴影（双色平涂的"影子层"），主按钮用更深的同色相暗档。 */
+.btn, .round, .dock-key { box-shadow: 0 4px 0 rgba(43, 36, 34, 0.26); }
+.btn.primary { box-shadow: 0 4px 0 #b74534; }
+.btn:hover, .round:hover, .dock-key:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(43, 36, 34, 0.26); }
+.btn.primary:hover { box-shadow: 0 6px 0 #b74534; }
+.btn:active, .round:active, .dock-key:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(43, 36, 34, 0.26); }
+.btn.primary:active { box-shadow: 0 1px 0 #b74534; }
+/* 虚线装饰框：主操作按钮与面板卡（引导视线，不与 focus 轮廓打架——focus 时浏览器焦点环优先）。 */
+.btn.primary { outline: 2.5px dashed rgba(42, 140, 154, 0.5); outline-offset: 5px; }
+.btn.primary:focus-visible { outline: 4px solid var(--teal); outline-offset: 2px; }
+.panel { outline: 2.5px dashed rgba(42, 140, 154, 0.3); outline-offset: 9px; }
 .shop-item { transition: transform 0.12s ease, box-shadow 0.12s ease; }
 .shop-item:hover { transform: translateY(-3px) rotate(0deg) !important; box-shadow: 0 5px 0 rgba(43, 36, 34, 0.22); }
 

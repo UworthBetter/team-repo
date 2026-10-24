@@ -89,12 +89,19 @@ export function createHud(ctx: Ctx, open: (panel: 'shop' | 'route' | 'stickers')
     hint.replaceChildren(icon ?? '', hintText, hintCount);
     hintText.textContent = text;
     hint.hidden = false;
+    hint.classList.remove('warn'); // a new instruction always returns to the calm paper state
     // Re-trigger the pop so every NEW instruction physically announces itself.
     hint.classList.remove('pop');
     void hint.offsetWidth;
     hint.classList.add('pop');
   });
   bus.on('hint:clear', () => (hint.hidden = true));
+  // 风格 A 四态之一：失误后的 2.5 秒里提示转警告红，让"哎呀"有颜色回应。
+  bus.on('step:oops', () => {
+    if (hint.hidden) return;
+    hint.classList.add('warn');
+    ctx.after(2500, () => hint.classList.remove('warn'));
+  });
 
   const setCoins = (s: Pick<MetaState, 'coins'>) => (coinNum.textContent = String(s.coins));
   bus.on('meta:state', setCoins);
