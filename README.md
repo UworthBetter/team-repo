@@ -36,7 +36,7 @@ Smoke test setup, once: `npm i --no-save playwright@1.48.2 && npx playwright ins
 
 ## URL flags
 
-`?scene=egg_crack` one isolated dev scene · `?kitchen=wok` · `?dish=fried_rice` · `?coins=999` · `?unlock=all` · `?fresh` ignore save · `?stub=meta,ui` / `?stub=all` · `?only=dishes,moves-home` · `?auto&fast=4` auto-play · `?log` · `?debug=0` · `?mute` · `?skipResult`
+`?scene=egg_crack` one isolated dev scene · `?kitchen=wok` · `?dish=fried_rice` · `?coins=999` · `?unlock=all` · `?fresh` ignore save · `?stub=meta,ui` / `?stub=all` · `?only=dishes,moves-home` · `?auto&fast=4` auto-play · `?log` · `?debug=0` · `?mute` · `?skipResult` · `?fps` FPS/draw-call counter
 
 Keys: `1–9` stations, `0` overview, `Space` / `O` on stub steps, `R` restart dish, `Esc` close panel, `Backspace` restart a dev scene.
 Console: `__sizzle.log`, `__sizzle.bus.emit('fx:pop', { text: '咔!' })`, `__sizzle.ctx`.

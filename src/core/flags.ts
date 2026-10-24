@@ -17,6 +17,7 @@ export interface Flags {
   logEvents: boolean;
   mute: boolean;
   skipResult: boolean;
+  fps: boolean;
 }
 
 export const FLAG_HELP: [string, string][] = [
@@ -34,6 +35,7 @@ export const FLAG_HELP: [string, string][] = [
   ['log', 'print every bus event to the console'],
   ['mute', 'no sound'],
   ['skipResult', 'close the result screen immediately'],
+  ['fps', 'show an FPS / draw-call / triangle counter in the corner (works with ?debug=0)'],
 ];
 
 export function readFlags(search: string): Flags {
@@ -67,5 +69,6 @@ export function readFlags(search: string): Flags {
     logEvents: bool('log'),
     mute: bool('mute'),
     skipResult: bool('skipResult'),
+    fps: bool('fps'),
   };
 }

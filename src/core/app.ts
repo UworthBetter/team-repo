@@ -4,7 +4,7 @@ import { loadAssets } from './assets';
 import { Bus } from './bus';
 import { createCameraRig } from './camera';
 import type { Content } from './content';
-import { createDebug } from './debug';
+import { createDebug, createFpsMeter } from './debug';
 import { createDev } from './dev';
 import type { Flags } from './flags';
 import { createGrab } from './grab';
@@ -47,6 +47,7 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
   const ui = createUi(uiRoot);
   const dev = createDev();
   const debug = createDebug(flags, bus, content);
+  const fpsMeter = flags.fps ? createFpsMeter(renderer) : null;
 
   const frameFns = new Set<(dt: number) => void>();
   const frameErrors = new Map<(dt: number) => void, number>();
@@ -110,6 +111,7 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
       }
     }
     renderer.render(scene, camera);
+    fpsMeter?.update();
     requestAnimationFrame(frame);
   };
 
