@@ -41,9 +41,9 @@ function scan(obj: THREE.Object3D): void {
 }
 
 export function setupOutline(ctx: Ctx): void {
-  // 2026-10-24 画风转向暖金实感（src/fx/style.ts），描边默认关闭；
-  // ?outline=1 启用草图书描边（卡 E1 的能力保留）。
-  if (!new URLSearchParams(location.search).has('outline')) return;
+  // 风格 A（2026-10-24 用户确认 · 纸感平涂）：描边回归默认开启；
+  // ?outline=0 关闭（保留给需要对比无描边效果的场景）。
+  if (new URLSearchParams(location.search).get('outline') === '0') return;
   ctx.bus.on('kitchen:ready', () => {
     material?.dispose();
     // One shared material per kitchen; a fresh one each build because disposeTree
