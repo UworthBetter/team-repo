@@ -3,17 +3,115 @@
   "name": "文思豆腐",
   "kitchen": "huaiyang",
   "steps": [
-    { "id": "slice", "move": "slice_lines", "station": "board", "weight": 2, "params": { "strokes": 8, "axis": "x", "target": "tofu_block", "sheetKind": "tofu_sheet", "sheetHeight": 0.012 } },
-    { "id": "fan", "move": "stack", "station": "board", "weight": 1, "params": { "layers": 8, "itemKind": "tofu_sheet", "snapId": "board_center", "layout": "fan", "spread": 0.035, "ghostSize": 0.2, "label": "豆腐片" } },
-    { "id": "julienne", "move": "slice_lines", "station": "board", "weight": 2, "params": { "strokes": 12, "axis": "z", "targetKind": "tofu_sheet", "sheetKind": "tofu_thread", "sheetHeight": 0.008 } },
-    { "id": "stir", "move": "whisk", "station": "pot", "weight": 1, "params": { "circles": 3, "snapId": "pot_center", "bowlProp": "soup_pot", "color": "#F7F4EA", "successTags": ["calm_hands"] } },
-    { "id": "ladle", "move": "stack", "station": "bowl", "weight": 1, "params": { "layers": 1, "itemKind": "tofu_thread", "bundle": true, "snapId": "bowl_center", "ghostSize": 0.18, "label": "豆腐丝", "successTags": ["no_breaks"] } }
+    {
+      "id": "slice",
+      "move": "slice_lines",
+      "station": "board",
+      "weight": 2,
+      "params": {
+        "strokes": 8,
+        "axis": "x",
+        "target": "tofu_block",
+        "sheetKind": "tofu_sheet",
+        "sheetHeight": 0.012
+      }
+    },
+    {
+      "id": "fan",
+      "move": "stack",
+      "station": "board",
+      "weight": 1,
+      "params": {
+        "layers": 8,
+        "itemKind": "tofu_sheet",
+        "snapId": "board_center",
+        "layout": "fan",
+        "spread": 0.035,
+        "ghostSize": 0.2,
+        "label": "豆腐片"
+      }
+    },
+    {
+      "id": "julienne",
+      "move": "slice_lines",
+      "station": "board",
+      "weight": 2,
+      "params": {
+        "strokes": 12,
+        "axis": "z",
+        "targetKind": "tofu_sheet",
+        "sheetKind": "tofu_thread",
+        "sheetHeight": 0.008
+      }
+    },
+    {
+      "id": "stir",
+      "move": "whisk",
+      "station": "pot",
+      "weight": 1,
+      "params": {
+        "circles": 3,
+        "snapId": "pot_center",
+        "bowlProp": "soup_pot",
+        "color": "#F7F4EA",
+        "successTags": [
+          "calm_hands"
+        ]
+      }
+    },
+    {
+      "id": "ladle",
+      "move": "stack",
+      "station": "bowl",
+      "weight": 1,
+      "params": {
+        "layers": 1,
+        "itemKind": "tofu_thread",
+        "bundle": true,
+        "snapId": "bowl_center",
+        "ghostSize": 0.18,
+        "label": "豆腐丝",
+        "successTags": [
+          "no_breaks"
+        ]
+      }
+    }
   ],
-  "rating": { "good": 0.4, "great": 0.7, "perfect": 0.9 },
-  "coins": { "oops": 5, "good": 25, "great": 60, "perfect": 100 },
+  "rating": {
+    "good": 0.4,
+    "great": 0.7,
+    "perfect": 0.9
+  },
+  "coins": {
+    "oops": 5,
+    "good": 25,
+    "great": 60,
+    "perfect": 100
+  },
   "stars": [
-    { "id": "even_threads", "text": "细丝均匀" },
-    { "id": "no_breaks", "text": "完整装碗" },
-    { "id": "calm_hands", "text": "稳手慢搅" }
-  ]
+    {
+      "id": "even_threads",
+      "text": "细丝均匀"
+    },
+    {
+      "id": "no_breaks",
+      "text": "完整装碗"
+    },
+    {
+      "id": "calm_hands",
+      "text": "稳手慢搅"
+    }
+  ],
+  "ingredientVisuals": {
+    "tofu": {
+      "shape": "cube",
+      "color": "#F3EEDC",
+      "scale": 1.2
+    },
+    "ham": {
+      "shape": "strip",
+      "color": "#D9767A",
+      "scale": 1.1
+    }
+  }
 }

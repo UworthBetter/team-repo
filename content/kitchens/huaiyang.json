@@ -375,5 +375,40 @@
       ]
     }
   ],
-  "eggs": []
+  "eggs": [],
+  "environment": {
+    "shell": {
+      "halfWidth": 3,
+      "halfDepth": 2.8,
+      "wallHeight": 2.6,
+      "wallColor": "#F3EFE6",
+      "ceiling": true,
+      "windows": [
+        {
+          "wall": "north",
+          "center": [
+            0,
+            1.5
+          ],
+          "size": [
+            1.5,
+            1.5
+          ],
+          "kind": "moon"
+        }
+      ]
+    },
+    "backdrop": [
+      {
+        "texture": "huaiyang_canal.png",
+        "depth": 4,
+        "parallax": 0.25
+      }
+    ],
+    "cameraLimits": {
+      "pitchMin": -0.95,
+      "pitchMax": 0.4,
+      "roomLimit": 2.8
+    }
+  }
 }

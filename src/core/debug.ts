@@ -45,6 +45,7 @@ export function createFpsMeter(renderer: THREE.WebGLRenderer): { update(): void;
 export function createDebug(flags: Flags, bus: Bus, content: Content): { gui: GUI | null; addScenes(ids: string[]): void } {
   if (!flags.debug) return { gui: null, addScenes() {} };
   const gui = new GUI({ title: '滋啦 debug  (?debug=0 hides)' });
+  gui.close(); // P0-5 (design_fix_zh.md §3.5): 默认折叠，不再遮挡 HUD 右上角的按钮
   gui.domElement.style.zIndex = '50';
 
   const k = gui.addFolder('Kitchens (A)');

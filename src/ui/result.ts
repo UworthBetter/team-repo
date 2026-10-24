@@ -67,7 +67,8 @@ export function createResult(ctx: Ctx) {
     const counter = h('b', {}, '+0');
     const coinTotal = h('div', { class: 'coin-total' }, '合计 ', counter);
     const starEls = (dish?.stars ?? []).map((s) => {
-      const el = h('span', { class: 'star', title: s.text }, '★');
+      // P1-1 (design_fix_zh.md §9.1): 只有本局获得的星星会点亮，其余保持灰描边。
+      const el = h('span', { class: `star${r.stars.includes(s.id) ? '' : ' off'}`, title: s.text }, '★');
       // First-time stars wear a 新! badge — the classic "new unlock" dopamine marker.
       if (r.stars.includes(s.id) && !had.has(s.id)) el.append(h('i', { class: 'star-new' }, '新!'));
       return el;
@@ -103,7 +104,9 @@ export function createResult(ctx: Ctx) {
       stampEl.classList.add('slam');
       shown = total;
       counter.textContent = `+${total}`;
-      starEls.forEach((s) => s.classList.add('on'));
+      starEls.forEach((s) => {
+        if (!s.classList.contains('off')) s.classList.add('on');
+      });
       buttons.classList.add('show');
     };
     catcher.addEventListener('click', skipToEnd);
@@ -157,6 +160,7 @@ export function createResult(ctx: Ctx) {
     at(T.stars, () => {
       starEls.forEach((s, i) =>
         at(i * 180, () => {
+          if (s.classList.contains('off')) return; // 未获得的星不点亮、不响
           s.classList.add('on');
           bus.emit('sfx:play', { id: 'star' });
         }),

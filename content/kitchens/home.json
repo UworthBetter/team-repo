@@ -578,5 +578,45 @@
       "propId": "cat_timer",
       "coins": 10
     }
-  ]
+  ],
+  "environment": {
+    "shell": {
+      "halfWidth": 3.2,
+      "halfDepth": 3,
+      "wallHeight": 2.5,
+      "wallColor": "#F6E9D2",
+      "ceiling": true,
+      "windows": [
+        {
+          "wall": "north",
+          "center": [
+            0.5,
+            1.5
+          ],
+          "size": [
+            1.6,
+            1.2
+          ],
+          "kind": "rect"
+        }
+      ]
+    },
+    "backdrop": [
+      {
+        "texture": "home_sky.png",
+        "depth": 6,
+        "parallax": 0.15
+      },
+      {
+        "texture": "home_skyline.png",
+        "depth": 4.5,
+        "parallax": 0.3
+      }
+    ],
+    "cameraLimits": {
+      "pitchMin": -1.1,
+      "pitchMax": 0.55,
+      "roomLimit": 3
+    }
+  }
 }

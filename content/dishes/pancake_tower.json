@@ -3,17 +3,80 @@
   "name": "煎饼塔",
   "kitchen": "home",
   "steps": [
-    { "id": "crack", "move": "egg_crack", "station": "bowl", "weight": 1, "params": { "eggs": 2 } },
-    { "id": "whisk", "move": "whisk", "station": "bowl", "weight": 1, "params": { "circles": 6 } },
-    { "id": "flip", "move": "pancake_flip", "station": "stove", "weight": 2, "params": { "count": 5 } },
-    { "id": "stack", "move": "stack", "station": "plate", "weight": 1.5, "params": { "layers": 5 } },
-    { "id": "drizzle", "move": "syrup_drizzle", "station": "plate", "weight": 0.5, "params": {} }
+    {
+      "id": "crack",
+      "move": "egg_crack",
+      "station": "bowl",
+      "weight": 1,
+      "params": {
+        "eggs": 2
+      }
+    },
+    {
+      "id": "whisk",
+      "move": "whisk",
+      "station": "bowl",
+      "weight": 1,
+      "params": {
+        "circles": 6
+      }
+    },
+    {
+      "id": "flip",
+      "move": "pancake_flip",
+      "station": "stove",
+      "weight": 2,
+      "params": {
+        "count": 5
+      }
+    },
+    {
+      "id": "stack",
+      "move": "stack",
+      "station": "plate",
+      "weight": 1.5,
+      "params": {
+        "layers": 5
+      }
+    },
+    {
+      "id": "drizzle",
+      "move": "syrup_drizzle",
+      "station": "plate",
+      "weight": 0.5,
+      "params": {}
+    }
   ],
-  "rating": { "good": 0.4, "great": 0.7, "perfect": 0.9 },
-  "coins": { "oops": 5, "good": 20, "great": 50, "perfect": 80 },
+  "rating": {
+    "good": 0.4,
+    "great": 0.7,
+    "perfect": 0.9
+  },
+  "coins": {
+    "oops": 5,
+    "good": 20,
+    "great": 50,
+    "perfect": 80
+  },
   "stars": [
-    { "id": "stack5", "text": "叠满 5 层" },
-    { "id": "no_shell", "text": "没有蛋壳" },
-    { "id": "all_perfect", "text": "每一步都完美" }
-  ]
+    {
+      "id": "stack5",
+      "text": "叠满 5 层"
+    },
+    {
+      "id": "no_shell",
+      "text": "没有蛋壳"
+    },
+    {
+      "id": "all_perfect",
+      "text": "每一步都完美"
+    }
+  ],
+  "ingredientVisuals": {
+    "pancake": {
+      "shape": "flake",
+      "color": "#D9A35B",
+      "scale": 1.35
+    }
+  }
 }

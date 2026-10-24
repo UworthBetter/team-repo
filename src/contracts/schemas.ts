@@ -43,6 +43,44 @@ export const AmbienceSchema = z.object({
   particles: z.array(z.string()).optional(),
 });
 
+/** 食材在小游戏（颠勺/撒料/摆盘）里的外观——形状 + 颜色，按食材 id 做 key（P0-1，design_fix_zh.md §2.1）。 */
+export const IngredientVisualSchema = z.object({
+  shape: z.enum(['cube', 'ellipsoid', 'cone', 'sphere', 'grain', 'flake', 'strip']).default('grain'),
+  color: color,
+  /** 相对默认米粒大小的缩放；1.3–1.5 为玩具化夸张区间（design_fix_zh.md §6.2 规则 1）。 */
+  scale: z.number().positive().default(1),
+});
+
+/** 成品摆盘模型（manifest 里的模型 id）。缺省时按 ingredientVisuals 程序化拼出摆盘（P0-2）。 */
+export const PlatedModelSchema = z.string();
+
+/** 环境壳体 + 背景 + 相机限幅（P0-4，design_fix_zh.md §2.2）。整体可选；无 shell 则不画任何壳体。 */
+export const EnvironmentSchema = z.object({
+  shell: z.object({
+    halfWidth: z.number().positive().default(4),
+    halfDepth: z.number().positive().default(4),
+    wallHeight: z.number().positive().default(2.6),
+    wallColor: color.optional(),
+    ceiling: z.boolean().default(true),
+    windows: z.array(z.object({
+      wall: z.enum(['north', 'south', 'east', 'west']),
+      center: z.tuple([z.number(), z.number()]),
+      size: z.tuple([z.number(), z.number()]),
+      kind: z.enum(['rect', 'arch', 'moon']).default('rect'),
+    })).default([]),
+  }).optional(),
+  backdrop: z.array(z.object({
+    texture: z.string(),
+    depth: z.number().positive(),
+    parallax: z.number().min(0).max(1).default(0.3),
+  })).default([]),
+  cameraLimits: z.object({
+    pitchMin: z.number().default(-1.35),
+    pitchMax: z.number().default(0.9),
+    roomLimit: z.number().positive().default(7.4),
+  }).optional(),
+});
+
 export const KitchenSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -50,6 +88,7 @@ export const KitchenSchema = z.object({
   region: z.string().optional(),
   pacing: PacingSchema.optional(),
   ambience: AmbienceSchema.optional(),
+  environment: EnvironmentSchema.optional(),
   mood: z.object({
     background: color,
     floor: color,
@@ -87,6 +126,10 @@ export const DishSchema = z.object({
   rating: z.object({ good: z.number(), great: z.number(), perfect: z.number() }),
   coins: z.object({ oops: z.number().int(), good: z.number().int(), great: z.number().int(), perfect: z.number().int() }),
   stars: z.array(z.object({ id: z.string(), text: z.string() })).default([]),
+  /** key = 食材 id（与 step.params.ingredient/item 或 prop.kind 一致）；缺省时代码内置默认表兜底。 */
+  ingredientVisuals: z.record(IngredientVisualSchema).default({}),
+  /** 成品摆盘模型 id（manifest 内）；缺省走程序化撒料兜底。 */
+  platedModel: PlatedModelSchema.optional(),
 });
 
 export const EquipmentSchema = z.object({
