@@ -25,16 +25,6 @@ function context(masked: string, unmasked?: string) {
 }
 
 describe('style renderer selection', () => {
-  it('uses E\'s lightweight software path without scheduling lighting scans', () => {
-    const renderer = {
-      getContext: () => context('WebKit WebGL', 'SwiftShader Device'),
-      toneMapping: THREE.ACESFilmicToneMapping as THREE.ToneMapping,
-    };
-    const onFrame = vi.fn();
-    setupStyle({ three: { renderer }, onFrame } as unknown as Ctx);
-    expect(renderer.toneMapping).toBe(THREE.NoToneMapping);
-    expect(onFrame).not.toHaveBeenCalled();
-  });
   it('recognizes SwiftShader even when the standard renderer name is masked', () => {
     expect(usesSoftwareRenderer(context('WebKit WebGL', 'ANGLE (Google, Vulkan SwiftShader Device)'))).toBe(true);
   });
@@ -48,18 +38,15 @@ describe('style renderer selection', () => {
     expect(usesSoftwareRenderer(context('WebKit WebGL'))).toBe(false);
   });
 
-  it('styles late-loaded models without replacing cooking materials or losing kitchen lighting', () => {
+  it('styles late-loaded models flat without replacing cooking materials or boosting kitchen lighting', () => {
     const scene = new THREE.Scene();
     const base = new THREE.Group();
     base.name = 'core-kitchen';
     const root = new THREE.Group();
     const sun = new THREE.DirectionalLight();
     scene.add(base, root, sun, new THREE.HemisphereLight());
-    const sharedSource = new THREE.MeshToonMaterial();
-    const staticMesh = new THREE.Mesh(new THREE.BoxGeometry(), sharedSource);
-    const sharedMesh = new THREE.Mesh(new THREE.BoxGeometry(), sharedSource);
-    const separateMesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshToonMaterial());
-    base.add(staticMesh, sharedMesh, separateMesh);
+    const staticMesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshToonMaterial());
+    base.add(staticMesh);
     const cookingMaterial = new THREE.MeshToonMaterial();
     root.add(new THREE.Mesh(new THREE.BoxGeometry(), cookingMaterial));
     const bus = new Bus();
@@ -76,18 +63,19 @@ describe('style renderer selection', () => {
     setupStyle(ctx);
     bus.emit('kitchen:ready', { kitchenId: 'home' });
     expect(renderer.shadowMap.enabled).toBe(true);
-    expect(scene.environment).not.toBeNull();
-    expect(staticMesh.material).toBeInstanceOf(THREE.MeshStandardMaterial);
-    expect(sharedMesh.material).toBe(staticMesh.material);
-    expect(separateMesh.material).not.toBe(staticMesh.material);
+    // 风格 A：不再上环境反射；toon 保持 toon 并统一两档平涂渐变。
+    expect(staticMesh.material).toBeInstanceOf(THREE.MeshToonMaterial);
+    expect((staticMesh.material as THREE.MeshToonMaterial).gradientMap).toBeInstanceOf(THREE.DataTexture);
     expect((root.children[0] as THREE.Mesh).material).toBe(cookingMaterial);
-    const lateModel = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial({ roughness: 1 }));
+    const lateModel = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial({ roughness: 0.2, metalness: 0.8 }));
     base.add(lateModel);
     frames.forEach((frame) => frame(0.3));
     expect(lateModel.castShadow).toBe(true);
-    expect(lateModel.material.roughness).toBe(0.72);
+    expect(lateModel.material.roughness).toBe(0.95);
+    expect(lateModel.material.metalness).toBe(0);
+    // 厨房灯光强度保持 JSON 配置原值（不再做暖金 1.1 加权）。
     sun.intensity = content.kitchens.get('home')!.mood.lightIntensity;
     bus.emit('kitchen:ready', { kitchenId: 'home' });
-    expect(sun.intensity).toBeCloseTo(content.kitchens.get('home')!.mood.lightIntensity * 1.1);
+    expect(sun.intensity).toBeCloseTo(content.kitchens.get('home')!.mood.lightIntensity);
   });
 });

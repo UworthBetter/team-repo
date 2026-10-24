@@ -49,7 +49,13 @@ export function createWorld(
   const slotGroup = new THREE.Group();
   let slotGeneration = 0;
 
-  const toon = (color: string | number) => new THREE.MeshToonMaterial({ color });
+  // 风格 A · 双色平涂：toon 渐变只保留两档（亮面原色 / 暗面统一降档），
+  // 与 UI 的双色平涂+偏移阴影规则同源。NearestFilter 保证色阶是硬边平涂而不是渐变。
+  const twoTone = new THREE.DataTexture(new Uint8Array([150, 255]), 2, 1, THREE.RedFormat);
+  twoTone.minFilter = THREE.NearestFilter;
+  twoTone.magFilter = THREE.NearestFilter;
+  twoTone.needsUpdate = true;
+  const toon = (color: string | number) => new THREE.MeshToonMaterial({ color, gradientMap: twoTone });
 
   function disposeTree(group: THREE.Object3D) {
     const geometries = new Set<THREE.BufferGeometry>();
