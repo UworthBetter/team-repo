@@ -3,23 +3,109 @@
     {
       "kitchenId": "home",
       "name": "家庭厨房",
-      "gate": null
+      "gate": null,
+      "region": "home",
+      "mapPos": [170, 520],
+      "branch": "main",
+      "blurb": "教学关：自由玩道具，不计时，没有节拍"
     },
     {
       "kitchenId": "wok",
-      "name": "炒锅灶台",
-      "gate": "wok_burner"
+      "name": "川 · 成都苍蝇馆子",
+      "gate": "wok_burner",
+      "region": "sichuan",
+      "mapPos": [240, 330],
+      "branch": "main",
+      "blurb": "猛火、节拍和花椒，镜头近而晃"
     },
     {
-      "kitchenId": "kitchen_3",
-      "name": "厨房 3",
+      "kitchenId": "huaiyang",
+      "name": "淮扬 · 扬州园林厨房",
       "gate": "pro_knives",
+      "region": "jiangsu",
+      "mapPos": [585, 300],
+      "branch": "main",
+      "blurb": "白墙黑瓦，月洞窗外运河慢船，比精度不比速度",
       "placeholder": true
     },
     {
-      "kitchenId": "kitchen_4",
-      "name": "厨房 4",
+      "kitchenId": "cantonese",
+      "name": "粤 · 广式茶楼",
+      "gate": "bamboo_steamer",
+      "region": "guangdong",
+      "mapPos": [520, 545],
+      "branch": "south",
+      "blurb": "早茶点心厨房，蒸笼摞到天花板",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "fujian",
+      "name": "闽 · 闽南红砖古厝",
       "gate": null,
+      "region": "fujian",
+      "mapPos": [660, 505],
+      "branch": "south",
+      "blurb": "港口红砖厝，海风里煨一坛佛跳墙",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "zhejiang",
+      "name": "浙 · 西湖茶园厨房",
+      "gate": "purple_clay_pot",
+      "region": "zhejiang",
+      "mapPos": [660, 385],
+      "branch": "east",
+      "blurb": "雨打荷叶，拨动时间转盘慢炖东坡肉",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "anhui",
+      "name": "徽 · 徽州山村老宅",
+      "gate": null,
+      "region": "anhui",
+      "mapPos": [585, 415],
+      "branch": "east",
+      "blurb": "马头墙下臭鳜鱼，气味就是提示",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "hunan",
+      "name": "湘 · 湘西木楼灶屋",
+      "gate": null,
+      "region": "hunan",
+      "mapPos": [470, 450],
+      "branch": "east",
+      "blurb": "柴火腊肉，双刀剁出鼓点",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "shandong",
+      "name": "鲁 · 济南老字号",
+      "gate": "copper_syrup_pot",
+      "region": "shandong",
+      "mapPos": [640, 235],
+      "branch": "north",
+      "blurb": "红漆老灶，一根糖丝见功夫",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "xian",
+      "name": "西安 · 回民街夜市",
+      "gate": null,
+      "region": "shaanxi",
+      "mapPos": [445, 210],
+      "branch": "north",
+      "blurb": "城墙根夜市，扯面摔出 biang",
+      "placeholder": true
+    },
+    {
+      "kitchenId": "northeast",
+      "name": "东北 · 农家大院",
+      "gate": null,
+      "region": "dongbei",
+      "mapPos": [790, 120],
+      "branch": "north",
+      "blurb": "雪中农家院，铁锅炖贴饼子",
       "placeholder": true
     }
   ]

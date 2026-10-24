@@ -1,5 +1,6 @@
 import type { MetaState } from '@contracts/types';
 import { defineModule, type Ctx } from '@core/api';
+import { runCrate } from './crate';
 import { loadSave, SAVE_KEY, writeSave } from './save';
 import { payout, rate, starsEarned } from './score';
 
@@ -11,6 +12,9 @@ function setupMeta(ctx: Ctx) {
   const { bus, content } = ctx;
   const save = loadSave(ctx.flags, content);
   let kitchenId = '';
+  let disposeCrate: (() => void) | null = null;
+  /** Tags collected from step:complete during the current dish run (card D5 star checks). */
+  let runTags: string[] = [];
 
   const snapshot = (): MetaState => ({
     coins: save.coins,
@@ -38,11 +42,16 @@ function setupMeta(ctx: Ctx) {
     publish();
   });
 
+  bus.on('dish:start', () => (runTags = []));
+  bus.on('step:complete', ({ tags }) => {
+    for (const t of tags) if (!runTags.includes(t)) runTags.push(t);
+  });
+
   bus.on('dish:complete', (e) => {
     const dish = content.dishes.get(e.dishId);
     if (!dish) return;
     const rating = rate(dish, e.quality);
-    const stars = starsEarned(dish, rating);
+    const stars = starsEarned(dish, rating, runTags);
     const had = new Set(save.stars[dish.id] ?? []);
     const newStars = stars.filter((s) => !had.has(s)).length;
     save.stars[dish.id] = [...new Set([...had, ...stars])];
@@ -70,6 +79,10 @@ function setupMeta(ctx: Ctx) {
   bus.on('shop:purchase', ({ itemId }) => {
     const eq = content.equipment.get(itemId);
     if (!eq) return;
+    if (eq.comingSoon) {
+      bus.emit('sfx:play', { id: 'deny' });
+      return ctx.ui.toast(`${eq.name} 敬请期待 · 黑客松之后开放`);
+    }
     if (save.owned.includes(itemId)) return ctx.ui.toast(`${eq.name} 已经有了`);
     if (save.coins < eq.price) {
       bus.emit('sfx:play', { id: 'deny' });
@@ -79,16 +92,22 @@ function setupMeta(ctx: Ctx) {
     addCoins(-eq.price, `buy:${itemId}`);
     bus.emit('equipment:purchased', { itemId });
     publish();
-    // TODO(D): crate drops into the kitchen → drag along the tape → burst → snap into slot (sketch board 6).
-    ctx.after(700, () => {
-      save.installed.push(itemId);
-      bus.emit('equipment:installed', { itemId, kitchenId: eq.kitchen });
-      bus.emit('fx:pop', { text: `${eq.name} 已安装!`, style: 'perfect' });
-      if (eq.unlocks && !save.unlocked.includes(eq.unlocks)) {
-        save.unlocked.push(eq.unlocks);
-        bus.emit('kitchen:unlocked', { kitchenId: eq.unlocks });
-      }
-      publish();
+    // Card D2: the crate ceremony carries purchase → install; onInstalled fires when the gear lands.
+    disposeCrate?.();
+    disposeCrate = runCrate(ctx, {
+      itemId,
+      eq,
+      onInstalled: () => {
+        if (save.installed.includes(itemId)) return;
+        save.installed.push(itemId);
+        bus.emit('equipment:installed', { itemId, kitchenId: eq.kitchen });
+        bus.emit('fx:pop', { text: `${eq.name} 已安装!`, style: 'perfect' });
+        if (eq.unlocks && !save.unlocked.includes(eq.unlocks)) {
+          save.unlocked.push(eq.unlocks);
+          bus.emit('kitchen:unlocked', { kitchenId: eq.unlocks });
+        }
+        publish();
+      },
     });
   });
 
@@ -112,6 +131,7 @@ function setupMeta(ctx: Ctx) {
     const f = ctx.dev.gui.addFolder('Meta (D)');
     f.add({ c: () => (addCoins(500, 'debug'), publish()) }, 'c').name('coins +500');
     f.add({ u: () => bus.emit('shop:purchase', { itemId: 'wok_burner' }) }, 'u').name('buy 猛火灶');
+    f.add({ s: () => bus.emit('easter:found', { eggId: 'home_duck' }) }, 's').name('find 彩蛋 (duck)');
     f.add({ r: () => (localStorage.removeItem(SAVE_KEY), location.reload()) }, 'r').name('reset save');
     f.close();
   }
