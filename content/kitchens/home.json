@@ -1,53 +1,622 @@
 {
   "id": "home",
   "name": "家庭厨房",
-  "mood": { "background": "#FFF3E2", "floor": "#F3E3C6", "counter": "#EBD5B1", "light": "#FFF4DC", "lightIntensity": 1.3 },
+  "mood": {
+    "background": "#FFF3E2",
+    "floor": "#F3E3C6",
+    "counter": "#EBD5B1",
+    "light": "#FFF4DC",
+    "lightIntensity": 1.3
+  },
   "defaultDish": "pancake_tower",
-  "overview": { "pos": [0.2, 2.6, 3.2], "target": [0.2, 0.9, -0.1] },
+  "overview": {
+    "pos": [
+      0.2,
+      2.6,
+      3.2
+    ],
+    "target": [
+      0.2,
+      0.9,
+      -0.1
+    ]
+  },
   "counters": [
-    { "pos": [0.4, 0, -0.7], "size": [3.6, 0.9, 0.7] },
-    { "pos": [0, 0, 0.6], "size": [1.8, 0.9, 0.9] }
+    {
+      "pos": [
+        0.4,
+        0,
+        -0.7
+      ],
+      "size": [
+        3.6,
+        0.9,
+        0.7
+      ]
+    },
+    {
+      "pos": [
+        0,
+        0,
+        0.6
+      ],
+      "size": [
+        1.8,
+        0.9,
+        0.9
+      ]
+    }
   ],
   "stations": [
-    { "id": "fridge", "label": "冰箱", "key": 1, "anchor": [-1.85, 0.9, -0.3], "camera": { "pos": [-1.5, 1.75, 0.9], "target": [-1.85, 1.0, -0.7] } },
-    { "id": "board", "label": "砧板", "key": 2, "anchor": [-0.9, 0.9, -0.7], "camera": { "pos": [-0.9, 1.65, 0.45], "target": [-0.9, 0.9, -0.7] } },
-    { "id": "stove", "label": "灶台", "key": 3, "anchor": [0.72, 0.9, -0.7], "camera": { "pos": [0.72, 1.65, 0.45], "target": [0.72, 0.9, -0.7] } },
-    { "id": "plate", "label": "盘子", "key": 4, "anchor": [1.7, 0.9, -0.7], "camera": { "pos": [1.7, 1.65, 0.45], "target": [1.7, 0.9, -0.7] } },
-    { "id": "bowl", "label": "搅拌碗", "key": 5, "anchor": [-0.35, 0.9, 0.55], "camera": { "pos": [-0.2, 1.6, 1.7], "target": [-0.2, 0.9, 0.6] } }
+    {
+      "id": "fridge",
+      "label": "冰箱",
+      "key": 1,
+      "anchor": [
+        -1.85,
+        0.9,
+        -0.3
+      ],
+      "camera": {
+        "pos": [
+          -1.5,
+          1.75,
+          0.9
+        ],
+        "target": [
+          -1.85,
+          1,
+          -0.7
+        ]
+      }
+    },
+    {
+      "id": "board",
+      "label": "砧板",
+      "key": 2,
+      "anchor": [
+        -0.9,
+        0.9,
+        -0.7
+      ],
+      "camera": {
+        "pos": [
+          -0.9,
+          1.65,
+          0.45
+        ],
+        "target": [
+          -0.9,
+          0.9,
+          -0.7
+        ]
+      }
+    },
+    {
+      "id": "stove",
+      "label": "灶台",
+      "key": 3,
+      "anchor": [
+        0.72,
+        0.9,
+        -0.7
+      ],
+      "camera": {
+        "pos": [
+          0.72,
+          1.65,
+          0.45
+        ],
+        "target": [
+          0.72,
+          0.9,
+          -0.7
+        ]
+      }
+    },
+    {
+      "id": "plate",
+      "label": "盘子",
+      "key": 4,
+      "anchor": [
+        1.7,
+        0.9,
+        -0.7
+      ],
+      "camera": {
+        "pos": [
+          1.7,
+          1.65,
+          0.45
+        ],
+        "target": [
+          1.7,
+          0.9,
+          -0.7
+        ]
+      }
+    },
+    {
+      "id": "bowl",
+      "label": "搅拌碗",
+      "key": 5,
+      "anchor": [
+        -0.35,
+        0.9,
+        0.55
+      ],
+      "camera": {
+        "pos": [
+          -0.2,
+          1.6,
+          1.7
+        ],
+        "target": [
+          -0.2,
+          0.9,
+          0.6
+        ]
+      }
+    }
   ],
   "snaps": [
-    { "id": "bowl_rim", "station": "bowl", "pos": [-0.35, 1.04, 0.55], "radius": 0.2, "accepts": ["egg"] },
-    { "id": "stove_left", "station": "stove", "pos": [0.5, 0.91, -0.7], "radius": 0.18, "accepts": ["pan"] },
-    { "id": "stove_right", "station": "stove", "pos": [0.95, 0.91, -0.7], "radius": 0.18, "accepts": ["pan"] },
-    { "id": "board_spot", "station": "board", "pos": [-0.9, 0.93, -0.7], "radius": 0.14, "accepts": ["tomato"] },
-    { "id": "plate_center", "station": "plate", "pos": [1.5, 0.925, -0.65], "radius": 0.16, "accepts": ["*"] }
+    {
+      "id": "bowl_rim",
+      "station": "bowl",
+      "pos": [
+        -0.35,
+        1.04,
+        0.55
+      ],
+      "radius": 0.2,
+      "accepts": [
+        "egg"
+      ]
+    },
+    {
+      "id": "stove_left",
+      "station": "stove",
+      "pos": [
+        0.5,
+        0.91,
+        -0.7
+      ],
+      "radius": 0.18,
+      "accepts": [
+        "pan"
+      ]
+    },
+    {
+      "id": "stove_right",
+      "station": "stove",
+      "pos": [
+        0.95,
+        0.91,
+        -0.7
+      ],
+      "radius": 0.18,
+      "accepts": [
+        "pan"
+      ]
+    },
+    {
+      "id": "board_spot",
+      "station": "board",
+      "pos": [
+        -0.9,
+        0.93,
+        -0.7
+      ],
+      "radius": 0.14,
+      "accepts": [
+        "tomato"
+      ]
+    },
+    {
+      "id": "plate_center",
+      "station": "plate",
+      "pos": [
+        1.5,
+        0.925,
+        -0.65
+      ],
+      "radius": 0.16,
+      "accepts": [
+        "*"
+      ]
+    }
   ],
   "props": [
-    { "id": "fridge", "kind": "fridge", "model": "home_room_fridge", "shape": "box", "size": [0.8, 1.9, 0.7], "color": "#D7ECEC", "pos": [-1.85, 0, -0.7], "grabbable": false },
-    { "id": "board", "kind": "board", "model": "home_tool_board", "shape": "box", "size": [0.5, 0.03, 0.32], "color": "#E2A968", "pos": [-0.9, 0.9, -0.7], "grabbable": false },
-    { "id": "burner_left", "kind": "burner", "shape": "cylinder", "size": [0.3, 0.01, 0.3], "color": "#3B3A3F", "pos": [0.5, 0.9, -0.7], "grabbable": false },
-    { "id": "burner_right", "kind": "burner", "shape": "cylinder", "size": [0.3, 0.01, 0.3], "color": "#3B3A3F", "pos": [0.95, 0.9, -0.7], "grabbable": false },
-    { "id": "pan", "kind": "pan", "model": "home_tool_pan", "shape": "cylinder", "size": [0.42, 0.05, 0.42], "color": "#45454D", "pos": [0.5, 0.91, -0.7] },
-    { "id": "plate", "kind": "plate_serving", "model": "shared_tool_plate", "shape": "cylinder", "size": [0.36, 0.025, 0.36], "color": "#FFFFFF", "pos": [1.5, 0.9, -0.65], "grabbable": false },
-    { "id": "plates_stack", "kind": "plate", "model": "shared_tool_plate_stack", "shape": "cylinder", "size": [0.36, 0.08, 0.36], "color": "#FFFFFF", "pos": [1.95, 0.9, -0.8], "toy": true },
-    { "id": "bowl", "kind": "bowl", "model": "home_tool_bowl", "shape": "cylinder", "size": [0.38, 0.14, 0.38], "color": "#FFFFFF", "pos": [-0.35, 0.9, 0.55], "grabbable": false },
-    { "id": "carton", "kind": "carton", "shape": "box", "size": [0.3, 0.06, 0.16], "color": "#D8BE96", "pos": [0.05, 0.9, 0.78], "grabbable": false },
-    { "id": "egg_1", "kind": "egg", "model": "shared_food_egg", "shape": "sphere", "size": [0.09, 0.11, 0.09], "color": "#FFF7EA", "pos": [-0.02, 0.96, 0.78] },
-    { "id": "egg_2", "kind": "egg", "model": "shared_food_egg", "shape": "sphere", "size": [0.09, 0.11, 0.09], "color": "#FFF7EA", "pos": [0.1, 0.96, 0.78] },
-    { "id": "whisk", "kind": "whisk", "model": "home_tool_whisk", "shape": "box", "size": [0.1, 0.26, 0.1], "color": "#9AA0A6", "pos": [-0.65, 0.9, 0.8] },
-    { "id": "flour", "kind": "flour", "model": "home_prop_flour", "shape": "box", "size": [0.2, 0.28, 0.14], "color": "#FFFFFF", "pos": [0.55, 0.9, 0.45], "toy": true },
-    { "id": "tomato_1", "kind": "tomato", "model": "shared_food_tomato", "shape": "sphere", "size": [0.12, 0.11, 0.12], "color": "#E2553F", "pos": [0.4, 0.9, 0.85], "toy": true },
-    { "id": "tomato_2", "kind": "tomato", "model": "shared_food_tomato", "shape": "sphere", "size": [0.12, 0.11, 0.12], "color": "#E2553F", "pos": [-1.05, 0.93, -0.7] },
-    { "id": "duck", "kind": "duck", "model": "home_prop_duck", "shape": "sphere", "size": [0.1, 0.09, 0.1], "color": "#F4C842", "pos": [-1.3, 0.9, -0.85], "toy": true },
-    { "id": "cat_timer", "kind": "timer", "model": "home_prop_cat_timer", "shape": "box", "size": [0.1, 0.1, 0.1], "color": "#F7D9B5", "pos": [0.8, 0.9, 0.85], "toy": true }
+    {
+      "id": "fridge",
+      "kind": "fridge",
+      "model": "home_room_fridge",
+      "shape": "box",
+      "size": [
+        0.8,
+        1.9,
+        0.7
+      ],
+      "color": "#D7ECEC",
+      "pos": [
+        -1.85,
+        0,
+        -0.7
+      ],
+      "grabbable": false
+    },
+    {
+      "id": "board",
+      "kind": "board",
+      "model": "home_tool_board",
+      "shape": "box",
+      "size": [
+        0.5,
+        0.03,
+        0.32
+      ],
+      "color": "#E2A968",
+      "pos": [
+        -0.9,
+        0.9,
+        -0.7
+      ],
+      "grabbable": false
+    },
+    {
+      "id": "burner_left",
+      "kind": "burner",
+      "shape": "cylinder",
+      "size": [
+        0.3,
+        0.01,
+        0.3
+      ],
+      "color": "#3B3A3F",
+      "pos": [
+        0.5,
+        0.9,
+        -0.7
+      ],
+      "grabbable": false
+    },
+    {
+      "id": "burner_right",
+      "kind": "burner",
+      "shape": "cylinder",
+      "size": [
+        0.3,
+        0.01,
+        0.3
+      ],
+      "color": "#3B3A3F",
+      "pos": [
+        0.95,
+        0.9,
+        -0.7
+      ],
+      "grabbable": false
+    },
+    {
+      "id": "pan",
+      "kind": "pan",
+      "model": "home_tool_pan",
+      "shape": "cylinder",
+      "size": [
+        0.42,
+        0.05,
+        0.42
+      ],
+      "color": "#45454D",
+      "pos": [
+        0.5,
+        0.91,
+        -0.7
+      ]
+    },
+    {
+      "id": "plate",
+      "kind": "plate_serving",
+      "model": "shared_tool_plate",
+      "shape": "cylinder",
+      "size": [
+        0.36,
+        0.025,
+        0.36
+      ],
+      "color": "#FFFFFF",
+      "pos": [
+        1.5,
+        0.9,
+        -0.65
+      ],
+      "grabbable": false
+    },
+    {
+      "id": "plates_stack",
+      "kind": "plate",
+      "model": "shared_tool_plate_stack",
+      "shape": "cylinder",
+      "size": [
+        0.36,
+        0.08,
+        0.36
+      ],
+      "color": "#FFFFFF",
+      "pos": [
+        1.95,
+        0.9,
+        -0.8
+      ],
+      "toy": true
+    },
+    {
+      "id": "bowl",
+      "kind": "bowl",
+      "model": "home_tool_bowl",
+      "shape": "cylinder",
+      "size": [
+        0.38,
+        0.14,
+        0.38
+      ],
+      "color": "#FFFFFF",
+      "pos": [
+        -0.35,
+        0.9,
+        0.55
+      ],
+      "grabbable": false
+    },
+    {
+      "id": "carton",
+      "kind": "carton",
+      "shape": "box",
+      "size": [
+        0.3,
+        0.06,
+        0.16
+      ],
+      "color": "#D8BE96",
+      "pos": [
+        0.05,
+        0.9,
+        0.78
+      ],
+      "grabbable": false
+    },
+    {
+      "id": "egg_1",
+      "kind": "egg",
+      "model": "shared_food_egg",
+      "shape": "sphere",
+      "size": [
+        0.09,
+        0.11,
+        0.09
+      ],
+      "color": "#FFF7EA",
+      "pos": [
+        -0.02,
+        0.96,
+        0.78
+      ]
+    },
+    {
+      "id": "egg_2",
+      "kind": "egg",
+      "model": "shared_food_egg",
+      "shape": "sphere",
+      "size": [
+        0.09,
+        0.11,
+        0.09
+      ],
+      "color": "#FFF7EA",
+      "pos": [
+        0.1,
+        0.96,
+        0.78
+      ]
+    },
+    {
+      "id": "whisk",
+      "kind": "whisk",
+      "model": "home_tool_whisk",
+      "shape": "box",
+      "size": [
+        0.1,
+        0.26,
+        0.1
+      ],
+      "color": "#9AA0A6",
+      "pos": [
+        -0.65,
+        0.9,
+        0.8
+      ]
+    },
+    {
+      "id": "flour",
+      "kind": "flour",
+      "model": "home_prop_flour",
+      "shape": "box",
+      "size": [
+        0.2,
+        0.28,
+        0.14
+      ],
+      "color": "#FFFFFF",
+      "pos": [
+        0.55,
+        0.9,
+        0.45
+      ],
+      "toy": true
+    },
+    {
+      "id": "tomato_1",
+      "kind": "tomato",
+      "model": "shared_food_tomato",
+      "shape": "sphere",
+      "size": [
+        0.12,
+        0.11,
+        0.12
+      ],
+      "color": "#E2553F",
+      "pos": [
+        0.4,
+        0.9,
+        0.85
+      ],
+      "toy": true
+    },
+    {
+      "id": "tomato_2",
+      "kind": "tomato",
+      "model": "shared_food_tomato",
+      "shape": "sphere",
+      "size": [
+        0.12,
+        0.11,
+        0.12
+      ],
+      "color": "#E2553F",
+      "pos": [
+        -1.05,
+        0.93,
+        -0.7
+      ]
+    },
+    {
+      "id": "duck",
+      "kind": "duck",
+      "model": "home_prop_duck",
+      "shape": "sphere",
+      "size": [
+        0.1,
+        0.09,
+        0.1
+      ],
+      "color": "#F4C842",
+      "pos": [
+        -1.3,
+        0.9,
+        -0.85
+      ],
+      "toy": true
+    },
+    {
+      "id": "cat_timer",
+      "kind": "timer",
+      "model": "home_prop_cat_timer",
+      "shape": "box",
+      "size": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "color": "#F7D9B5",
+      "pos": [
+        0.8,
+        0.9,
+        0.85
+      ],
+      "toy": true
+    }
   ],
   "slots": [
-    { "itemId": "wok_burner", "pos": [2.0, 0, 0.6], "size": [0.7, 0.8, 0.6] },
-    { "itemId": "syrup_pot", "pos": [1.9, 0.9, -0.45], "size": [0.14, 0.2, 0.14] },
-    { "itemId": "stand_mixer", "pos": [-0.2, 0.9, -0.8], "size": [0.25, 0.35, 0.25] }
+    {
+      "itemId": "wok_burner",
+      "pos": [
+        2,
+        0,
+        0.6
+      ],
+      "size": [
+        0.7,
+        0.8,
+        0.6
+      ]
+    },
+    {
+      "itemId": "syrup_pot",
+      "pos": [
+        1.9,
+        0.9,
+        -0.45
+      ],
+      "size": [
+        0.14,
+        0.2,
+        0.14
+      ]
+    },
+    {
+      "itemId": "stand_mixer",
+      "pos": [
+        -0.2,
+        0.9,
+        -0.8
+      ],
+      "size": [
+        0.25,
+        0.35,
+        0.25
+      ]
+    }
   ],
   "eggs": [
-    { "id": "home_duck", "propId": "duck", "coins": 10 },
-    { "id": "home_cat_timer", "propId": "cat_timer", "coins": 10 }
-  ]
+    {
+      "id": "home_duck",
+      "propId": "duck",
+      "coins": 10
+    },
+    {
+      "id": "home_cat_timer",
+      "propId": "cat_timer",
+      "coins": 10
+    }
+  ],
+  "environment": {
+    "shell": {
+      "halfWidth": 3.2,
+      "halfDepth": 3,
+      "wallHeight": 2.5,
+      "wallColor": "#F6E9D2",
+      "ceiling": true,
+      "windows": [
+        {
+          "wall": "north",
+          "center": [
+            0.5,
+            1.5
+          ],
+          "size": [
+            1.6,
+            1.2
+          ],
+          "kind": "rect"
+        }
+      ]
+    },
+    "backdrop": [
+      {
+        "texture": "home_sky.png",
+        "depth": 6,
+        "parallax": 0.15
+      },
+      {
+        "texture": "home_skyline.png",
+        "depth": 4.5,
+        "parallax": 0.3
+      }
+    ],
+    "cameraLimits": {
+      "pitchMin": -1.1,
+      "pitchMax": 0.55,
+      "roomLimit": 3
+    }
+  }
 }
