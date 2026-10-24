@@ -38,3 +38,19 @@ appends `moves-knife` (B, `src/moves/knife/`). Asset-name regex widened to
 
 ## Starter prompt for your AI
 > I am owner A (runtime + integration). Read AGENTS.md and docs/briefs/A-runtime.md. Task: <…>. Keep src/core/api.ts and src/contracts/** backward compatible. Finish with npm run check and npm run smoke.
+
+## Integration checks (October 24, 2026)
+
+The runtime supports first-person walking (`?firstperson` or F), with pointer capture,
+collision against counters, and input release on focus loss. The fixed camera remains
+the default. Switching views preserves dish progress.
+
+The active CI is `.github/workflows/ci.yml`: Windows and Linux run `check` and
+`build`; Linux also runs browser smoke tests. Smoke tests cover the unlock loop,
+every recipe, every registered dev scene, input/view switching, and rapid navigation.
+Asset instances own their geometry and materials; stale kitchen/equipment loads are
+discarded. Kitchen scaffolding checks all destinations before writing any files.
+
+Projector FPS, B's grab-feel sign-off, audio calibration, and a physical USB/offline
+rehearsal still require human acceptance. Do not mark those milestones complete from
+automated checks alone.

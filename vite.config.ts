@@ -15,5 +15,5 @@ export default defineConfig({
   preview: { host: true, port: 4173 },
   // Rapier (wasm) is a deliberately large, lazy-loaded chunk — don't warn on it.
   build: { chunkSizeWarningLimit: 5000 },
-  test: { environment: 'node', include: ['src/**/*.test.ts', 'tests/**/*.test.ts'] },
+  test: { environment: 'node', include: ['src/**/*.test.ts', 'tests/**/*.test.ts', 'tests/**/*.test.mjs'] },
 });
