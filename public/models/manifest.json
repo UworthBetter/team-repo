@@ -1,3 +1,35 @@
 {
-  "files": []
+  "files": [
+    "home_eq_nonstick_pan",
+    "home_eq_stand_mixer",
+    "home_eq_syrup_pot",
+    "home_eq_wok_burner",
+    "home_prop_flour",
+    "home_room_fridge",
+    "home_tool_board",
+    "home_tool_bowl",
+    "home_tool_pan",
+    "home_tool_whisk",
+    "shared_food_egg",
+    "shared_food_tomato",
+    "shared_prop_crate",
+    "shared_tool_plate",
+    "wok_eq_carbon_wok",
+    "wok_eq_dome_ladle",
+    "wok_eq_flame_booster",
+    "wok_eq_pro_knives",
+    "wok_food_bowl_chicken",
+    "wok_food_bowl_chili",
+    "wok_food_bowl_egg",
+    "wok_food_bowl_peanut",
+    "wok_food_bowl_rice",
+    "wok_food_bowl_scallion",
+    "wok_food_oil",
+    "wok_food_soy",
+    "wok_food_vinegar",
+    "wok_prop_lucky_cat",
+    "wok_prop_stock_pot",
+    "wok_tool_plate",
+    "wok_tool_wok"
+  ]
 }
