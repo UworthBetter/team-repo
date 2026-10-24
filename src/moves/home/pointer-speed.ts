@@ -15,8 +15,9 @@ export function createPointerSpeed(ctx: Ctx) {
     if (dt <= 0.002) return;
     if (dt < 0.12) {
       // exponential blend: fast enough to track a flick, slow enough to ignore one noisy sample
-      vx = vx * 0.4 + ((e.clientX - last.x) / dt) * 0.6;
-      vy = vy * 0.4 + ((e.clientY - last.y) / dt) * 0.6;
+      const locked = document.pointerLockElement !== null;
+      vx = vx * 0.4 + ((locked ? e.movementX : e.clientX - last.x) / dt) * 0.6;
+      vy = vy * 0.4 + ((locked ? e.movementY : e.clientY - last.y) / dt) * 0.6;
     }
     last = { x: e.clientX, y: e.clientY, t: now };
   });

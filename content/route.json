@@ -25,8 +25,7 @@
       "region": "jiangsu",
       "mapPos": [585, 300],
       "branch": "main",
-      "blurb": "白墙黑瓦，月洞窗外运河慢船，比精度不比速度",
-      "placeholder": true
+      "blurb": "白墙黑瓦，月洞窗外运河慢船，比精度不比速度"
     },
     {
       "kitchenId": "cantonese",
@@ -107,17 +106,6 @@
       "branch": "north",
       "blurb": "雪中农家院，铁锅炖贴饼子",
       "placeholder": true
-    },
-    {
-      "kitchenId": "huaiyang",
-      "name": "扬州园林厨房",
-      "gate": null,
-      "region": "huaiyang",
-      "mapPos": [
-        0,
-        0
-      ],
-      "blurb": "新厨房占位，待布置"
     }
   ]
 }

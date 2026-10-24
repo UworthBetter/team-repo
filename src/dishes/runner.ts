@@ -10,12 +10,16 @@ export function createRunner(ctx: Ctx) {
   let lastDishId: string | null = null;
   let idx = -1;
   let inst: MoveInstance | null = null;
+  let generation = 0;
+  let cancelNext = () => {};
   const results: { stepId: string; quality: number }[] = [];
   const clamp01 = (v: number) => Math.max(0, Math.min(1, Number.isFinite(v) ? v : 0));
 
   ctx.onFrame((dt) => inst?.update?.(dt));
 
   function stop() {
+    generation++;
+    cancelNext();
     const old = inst;
     inst = null;
     dish = null;
@@ -46,7 +50,10 @@ export function createRunner(ctx: Ctx) {
     ctx.bus.emit('station:focus', { stationId: s.station });
     ctx.bus.emit('step:start', step);
     try {
-      inst = ctx.moves.get(s.move).start(ctx, step);
+      const started = ctx.moves.get(s.move).start(ctx, step);
+      // Some reusable moves complete immediately when there is nothing to place.
+      if (results.length > idx) started.dispose();
+      else inst = started;
     } catch (err) {
       console.error(`[runner] move "${s.move}" threw on start — skipping with quality 0.5`, err);
       ctx.bus.emit('step:complete', { dishId: dish.id, stepId: s.id, quality: 0.5, tags: ['crashed'] });
@@ -78,9 +85,13 @@ export function createRunner(ctx: Ctx) {
     const old = inst;
     inst = null;
     old?.dispose();
-    ctx.after(250, next);
+    const run = generation;
+    cancelNext = ctx.after(250, () => {
+      if (generation === run) next();
+    });
   });
 
+  ctx.bus.on('kitchen:enter', stop);
   ctx.bus.on('kitchen:ready', ({ kitchenId }) => {
     stop();
     if (ctx.flags.scene) return; // dev scenes drive moves themselves

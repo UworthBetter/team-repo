@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { defineMove } from '@core/api';
 import { findDishItems } from './dish-items';
 import { createTweens, fallAndBounce, groundHeightAt } from './tween';
+import { effectOf, watchInstalled } from './equipment';
 
 /**
  * 叠放 (B4, reusable). Drag each item onto a ghost disc above the plate-center snap; score
@@ -16,19 +17,39 @@ export const stack = defineMove({
   start(ctx, step) {
     const kind = typeof step.params.itemKind === 'string' ? step.params.itemKind : 'pancake';
     const label = typeof step.params.label === 'string' ? step.params.label : '煎饼';
-    const ghostR = 0.15;
-    const layerH = 0.026;
+    const ghostR = Math.max(0.03, Number(step.params.ghostSize ?? 0.15));
+    const layerH = Math.max(0.003, Number(step.params.layerHeight ?? 0.026));
+    const spread = step.params.layout === 'fan' ? Number(step.params.spread ?? 0.03) : 0;
     let layers = Math.max(1, Number(step.params.layers ?? 3));
     let done = false;
     let placed = 0;
     const quality: number[] = [];
     const offs: (() => void)[] = [];
     const tweens = createTweens(ctx);
+    const installed = watchInstalled(ctx, offs);
+    const snapMultiplier = Number(effectOf(ctx, installed, 'celadon_bowl', 'stack')?.snapRadius ?? 1);
 
-    const items = findDishItems(ctx, step.dishId, kind);
+    let items = findDishItems(ctx, step.dishId, kind);
+    if (step.params.bundle === true && items.length) {
+      ctx.world.root.updateMatrixWorld(true);
+      const bounds = new THREE.Box3();
+      items.forEach((item) => bounds.expandByObject(item));
+      const bundle = new THREE.Group();
+      bundle.position.copy(bounds.getCenter(new THREE.Vector3()));
+      bundle.userData.dishItem = { dishId: step.dishId, kind: `${kind}_bundle`, order: 0 };
+      ctx.world.root.add(bundle);
+      for (const item of items) {
+        bundle.attach(item);
+        delete item.userData.dishItem;
+      }
+      items = [bundle];
+    }
+    const placedItems = new Set<THREE.Object3D>();
+    let placing = false;
     // Fewer items than layers would dead-end the dish; clamp (B9 tuning keeps them equal).
     layers = Math.min(layers, items.length);
-    const plate = ctx.world.snapPos('plate_center') ?? new THREE.Vector3(1.5, 0.925, -0.65);
+    const snapId = typeof step.params.snapId === 'string' ? step.params.snapId : 'plate_center';
+    const plate = ctx.world.snapPos(snapId) ?? new THREE.Vector3(1.5, 0.925, -0.65);
 
     const tower = new THREE.Group();
     tower.position.set(plate.x, plate.y, plate.z);
@@ -41,7 +62,8 @@ export const stack = defineMove({
     ghost.renderOrder = 2;
     tower.add(ghost);
 
-    const slotY = (i: number) => 0.012 + i * layerH + 0.011;
+    const slotY = (i: number) => 0.023 + (spread ? 0 : i * layerH);
+    const targetAt = (i: number) => new THREE.Vector3((i - (layers - 1) / 2) * spread, slotY(i), 0);
     const syncGhost = () => (ghost.position.y = slotY(placed) + 0.02);
     syncGhost();
 
@@ -64,7 +86,7 @@ export const stack = defineMove({
     );
 
     const hint = () =>
-      ctx.bus.emit('hint:show', { text: `把${label}拖到盘子的虚影上 · ${placed}/${layers}`, gesture: 'drag' });
+      ctx.bus.emit('hint:show', { text: `把${label}拖到虚影上 · ${placed}/${layers}`, gesture: 'drag' });
 
     const wobble = (offset: number) => {
       wobbleAmp = Math.min(0.12, offset * 2.5);
@@ -72,13 +94,14 @@ export const stack = defineMove({
     };
 
     const place = (item: THREE.Object3D, target: THREE.Vector3, q: number) => {
-      item.removeFromParent();
-      tower.add(item);
-      const from = tower.worldToLocal(item.position.clone());
-      item.position.copy(from);
+      placing = true;
+      placedItems.add(item);
+      tower.attach(item);
+      const from = item.position.clone();
       tweens.go(0.16, (v) => item.position.lerpVectors(from, target, v), () => {
         quality.push(q);
         placed++;
+        placing = false;
         syncGhost();
         if (q < 0.85) {
           wobble(1 - q);
@@ -103,7 +126,9 @@ export const stack = defineMove({
       ctx.bus.emit('fx:pop', { text: q >= 0.9 ? '叠好了!' : '歪歪塔!', style: q >= 0.9 ? 'perfect' : 'good' });
       ctx.bus.emit('sfx:play', { id: 'step_done' });
       // Star tag: the demo dish's star id is 'stack5' (叠满 5 层) — D5 matches tags to star ids.
-      ctx.bus.emit('step:complete', { dishId: step.dishId, stepId: step.stepId, quality: q, tags: [`stack${layers}`] });
+      const successTags = q >= 0.9 && Array.isArray(step.params.successTags)
+        ? step.params.successTags.filter((tag): tag is string => typeof tag === 'string') : [];
+      ctx.bus.emit('step:complete', { dishId: step.dishId, stepId: step.stepId, quality: q, tags: [`stack${layers}`, ...successTags] });
     };
 
     // Custom drag (core grab only handles props; dish items are module meshes).
@@ -111,11 +136,11 @@ export const stack = defineMove({
     const screenPos = new THREE.Vector3();
     offs.push(
       ctx.input.onPointer((kindP) => {
-        if (done || layers === 0) return;
+        if (done || layers === 0 || placing) return;
         if (kindP === 'down') {
           let best: THREE.Object3D | null = null;
           let bd = 70;
-          for (const item of items.slice(placed)) {
+          for (const item of items.filter((candidate) => !placedItems.has(candidate))) {
             item.getWorldPosition(screenPos);
             const s = ctx.world.toScreen(screenPos);
             if (!s.visible) continue;
@@ -125,7 +150,10 @@ export const stack = defineMove({
               best = item;
             }
           }
-          if (best) dragging = best;
+          if (best) {
+            ctx.world.root.attach(best);
+            dragging = best;
+          }
           return;
         }
         if (!dragging) return;
@@ -139,10 +167,10 @@ export const stack = defineMove({
           dragging = null;
           if (!item) return;
           const d = cp ? Math.hypot(cp.x - plate.x, cp.z - plate.z) : 1;
-          if (cp && d < ghostR * 1.9) {
+          if (cp && d < ghostR * 1.9 * snapMultiplier) {
             const offset = Math.min(d, ghostR);
             const q = Math.max(0.25, 1 - offset / 0.09);
-            const target = new THREE.Vector3(cp.x - plate.x, slotY(placed), cp.z - plate.z);
+            const target = spread ? targetAt(placed) : new THREE.Vector3(cp.x - plate.x, slotY(placed), cp.z - plate.z);
             place(item, target, q);
           } else if (cp) {
             // missed the plate: it falls where it was released and can be picked up again
@@ -159,7 +187,7 @@ export const stack = defineMove({
       items.slice(0, layers).forEach((item, i) => {
         ctx.after(500 + i * 380, () => {
           if (done || placed !== i) return;
-          const target = new THREE.Vector3((i % 2 ? 0.008 : -0.006), slotY(i), i % 3 ? 0.005 : -0.007);
+          const target = targetAt(i);
           place(item, target, 0.94);
         });
       });
@@ -170,10 +198,12 @@ export const stack = defineMove({
     return {
       dispose() {
         if (!done) ctx.bus.emit('hint:clear', {});
+        done = true;
         ghost.removeFromParent();
         ghost.geometry.dispose();
         (ghost.material as THREE.Material).dispose();
         offs.forEach((f) => f());
+        tweens.dispose();
       },
     };
   },

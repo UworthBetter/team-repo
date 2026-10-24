@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { watchMeta } from './equipment';
 import { defineMove, type StepStart } from '@core/api';
 import './dome-scoop.css';
 
@@ -219,7 +220,7 @@ export const domeScoop = defineMove({
       if (!done && phase === 'flipped' && e.objectId === 'bowl_mold') reveal(); // grabbing the flipped bowl = lifting it
     }));
     offs.push(
-      ctx.bus.on('meta:state', (m) => {
+      watchMeta(ctx, (m) => {
         const eq = m.installed.includes('dome_ladle') ? ctx.content.equipment.get('dome_ladle') : undefined;
         const eff = eq?.effects as Record<string, { snapRadius?: number } | undefined> | undefined;
         ladleMult = eff?.dome_scoop?.snapRadius ?? 1;

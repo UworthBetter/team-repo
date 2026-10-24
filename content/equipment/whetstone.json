@@ -1,0 +1,8 @@
+{
+  "id": "whetstone",
+  "name": "磨刀石",
+  "kitchen": "huaiyang",
+  "price": 200,
+  "blurb": "刀路引导更宽容",
+  "effects": { "slice_lines": { "tolerance": 1.3 } }
+}

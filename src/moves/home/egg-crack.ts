@@ -21,11 +21,13 @@ export const eggCrack = defineMove({
     const need = Math.max(1, Number(step.params.eggs ?? 1));
     let cracked = 0;
     let done = false;
+    let disposed = false;
     let anyOops = false;
     const offs: (() => void)[] = [];
     const visuals = new Set<THREE.Object3D>();
     const tweens = createTweens(ctx);
     const speed = createPointerSpeed(ctx);
+    offs.push(speed.dispose);
 
     let eggId: string | null = null;
     let eggAnchor = new THREE.Vector3();
@@ -43,7 +45,7 @@ export const eggCrack = defineMove({
       visuals.delete(o);
       o.removeFromParent();
       o.traverse((m) => {
-        if (m instanceof THREE.Mesh) {
+        if (m instanceof THREE.Mesh || m instanceof THREE.Line) {
           m.geometry.dispose();
           const mat = m.material as THREE.Material | THREE.Material[];
           (Array.isArray(mat) ? mat : [mat]).forEach((x) => x.dispose());
@@ -232,7 +234,8 @@ export const eggCrack = defineMove({
 
     return {
       dispose() {
-        if (done) return;
+        if (disposed) return;
+        disposed = true;
         done = true;
         offs.forEach((f) => f());
         tweens.dispose();

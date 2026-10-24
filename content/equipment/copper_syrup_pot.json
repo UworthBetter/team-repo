@@ -1,7 +1,7 @@
 {
   "id": "copper_syrup_pot",
   "name": "铜熬糖锅",
-  "kitchen": "wok",
+  "kitchen": "huaiyang",
   "price": 500,
   "key": true,
   "unlocks": "shandong",

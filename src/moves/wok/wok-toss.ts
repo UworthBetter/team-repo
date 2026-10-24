@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { watchMeta } from './equipment';
 import { defineMove, type StepStart } from '@core/api';
 import './wok-toss.css';
 
@@ -264,7 +265,7 @@ export const wokToss = defineMove({
     ctx.input.setGrabEnabled(false);
     offs.push(ctx.input.onPointer(onPointer));
     offs.push(
-      ctx.bus.on('meta:state', (m) => {
+      watchMeta(ctx, (m) => {
         if (!m.installed.includes('carbon_wok')) {
           windowMult = 1;
           return;

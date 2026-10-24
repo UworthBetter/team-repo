@@ -37,3 +37,16 @@ Add one line per decision at the bottom: `D-xxx · date · who · decision — w
 - `content/route.json` 扩到 11 节点（文档「地方菜系厨房」全表），每节点带 `region`/`mapPos`/`branch`/`blurb`；`wok` 节点名改为「川 · 成都苍蝇馆子」配合 C4。
 - `huaiyang` 节点暂为 `placeholder: true`（crossCheck 要求非占位节点必须有厨房文件）。**E6 合并 content/kitchens/huaiyang.json 后由 D 翻成 false 并把三件淮扬装备落进商店**：磨刀石 200（slice_lines 引导更宽容）、砂锅 250（汤步骤更容易）、青瓷碗 150（装盘加分）——价格已定，文件待 E6。
 - 地图是风格化山水（丘陵、河流、海岸），**刻意不画任何行政边界**（设计文档明确要求）。
+
+## D-011 · October 24, 2026 · A integration (authorized)
+
+The merged route keeps D's 11 nodes and activates its single huaiyang node after E's
+scene lands. The generated huaiyang recipe/key placeholders are replaced by B8's
+five-step wensi_tofu and the three planned regional upgrades. Branch teaser cards
+now belong to huaiyang. Slice, stack, and whisk share dish meshes and accept the
+regional snap points through recipe parameters.
+
+Professional knives cost 290, superseding D-008's 320. With demo coins 600, a first
+perfect pancake pays 110; buying the 700 burner leaves 10. A first perfect fried
+rice pays 180, and a second pays 100, leaving exactly 290. Repeat stars never pay a
+second first-time bonus. Kung pao's higher payout keeps the two-dish route affordable.

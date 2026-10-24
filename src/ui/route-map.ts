@@ -91,7 +91,10 @@ export function createRouteMap(ctx: Ctx) {
         }
       };
       drawChain(mainChain, 'main');
-      for (const b of ['south', 'east', 'north']) drawChain(chain(b), b);
+      for (const b of ['south', 'east', 'north']) {
+        const trunk = mainChain[mainChain.length - 1];
+        drawChain(trunk ? [trunk, ...chain(b)] : chain(b), b);
+      }
 
       const pinsSvg = nodes
         .map((n) => {

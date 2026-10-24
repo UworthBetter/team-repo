@@ -1,7 +1,7 @@
 {
   "id": "purple_clay_pot",
   "name": "紫砂砂锅",
-  "kitchen": "wok",
+  "kitchen": "huaiyang",
   "price": 450,
   "key": true,
   "unlocks": "zhejiang",

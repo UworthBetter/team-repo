@@ -1,7 +1,7 @@
 {
   "id": "bamboo_steamer",
   "name": "竹蒸笼塔",
-  "kitchen": "wok",
+  "kitchen": "huaiyang",
   "price": 400,
   "key": true,
   "unlocks": "cantonese",

@@ -221,6 +221,7 @@ export function createWorld(
       if (!p) return;
       p.object.position.copy(p.home);
       p.object.rotation.set(0, 0, 0);
+      p.object.scale.set(1, 1, 1);
       p.object.visible = true;
     },
     snapPos(id) {

@@ -11,14 +11,14 @@ export default defineModule({
   owner: 'B',
   setup(ctx) {
     ctx.moves.register(sliceLines);
-    ctx.dev.scene('slice_lines', { kitchen: 'home', station: 'board' }, (c) => {
+    ctx.dev.scene('slice_lines', { kitchen: 'huaiyang', station: 'board' }, (c) => {
       const inst = sliceLines.start(
         c,
         devStep('slice_lines', 'board', {
-          strokes: 4,
+          strokes: 8,
           axis: 'x',
-          target: 'tomato_2',
-          sheetColor: '#E2553F',
+          target: 'tofu_block',
+          sheetColor: '#F7F4EA',
         }),
       );
       return () => inst.dispose();

@@ -37,7 +37,8 @@ export const pancakeFlip = defineMove({
     const offs: (() => void)[] = [];
     const tweens = createTweens(ctx);
     const speed = createPointerSpeed(ctx);
-    const installed = watchInstalled(ctx);
+    const installed = watchInstalled(ctx, offs);
+    offs.push(speed.dispose);
 
     const pan = () => ctx.world.prop('pan');
     const colors = COOK_COLORS.map((c) => new THREE.Color(c));
@@ -214,6 +215,7 @@ export const pancakeFlip = defineMove({
     return {
       dispose() {
         if (!done) ctx.bus.emit('hint:clear', {});
+        done = true;
         // Landed pancakes stay (stack step needs them); the one still cooking is removed.
         if (current && current.state !== 'landed') {
           current.mesh.removeFromParent();

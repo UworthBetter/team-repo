@@ -18,7 +18,7 @@ export const syrupDrizzle = defineMove({
   start(ctx, step) {
     let done = false;
     const offs: (() => void)[] = [];
-    const installed = watchInstalled(ctx);
+    const installed = watchInstalled(ctx, offs);
 
     const plate = ctx.world.snapPos('plate_center') ?? new THREE.Vector3(1.5, 0.925, -0.65);
     const layers = findDishItems(ctx, step.dishId, 'pancake').length;
@@ -124,6 +124,7 @@ export const syrupDrizzle = defineMove({
 
     return {
       dispose() {
+        done = true;
         if (!done) ctx.bus.emit('hint:clear', {});
         for (const d of drops) {
           d.removeFromParent();

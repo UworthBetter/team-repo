@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { defineMove } from '@core/api';
+import { effectOf, watchInstalled } from './equipment';
 
 /**
  * 搅拌 (B2). Count full pointer circles around the bowl-rim snap (summing angle deltas in
@@ -14,20 +15,19 @@ export const whisk = defineMove({
     const target = Math.max(1, Number(step.params.circles ?? 3));
     let done = false;
     const offs: (() => void)[] = [];
+    const installed = watchInstalled(ctx, offs);
+    const tolerance = Number(effectOf(ctx, installed, 'clay_pot', 'whisk')?.tolerance ?? 1);
 
-    const rim = ctx.world.snapPos('bowl_rim');
-    const bowlProp = ctx.world.prop('bowl');
+    const rim = ctx.world.snapPos(typeof step.params.snapId === 'string' ? step.params.snapId : 'bowl_rim');
+    const bowlProp = ctx.world.prop(typeof step.params.bowlProp === 'string' ? step.params.bowlProp : 'bowl');
     const bowlCx = rim?.x ?? bowlProp?.home.x ?? 0;
     const bowlCz = rim?.z ?? bowlProp?.home.z ?? 0;
     const batterY = bowlProp ? bowlProp.home.y + bowlProp.size[1] * 0.5 : 0.97;
-    const center = ctx.world.toScreen([bowlCx, rim?.y ?? 1.04, bowlCz]);
-    const edge = ctx.world.toScreen([bowlCx + 0.19, rim?.y ?? 1.04, bowlCz]);
-    const screenR = Math.max(30, Math.hypot(edge.x - center.x, edge.y - center.y));
 
     // Batter + swirl decal inside the bowl; both removed on dispose (step end or restart).
     const batter = new THREE.Mesh(
       new THREE.CircleGeometry(0.16, 28),
-      new THREE.MeshToonMaterial({ color: '#F7E8C9' }),
+      new THREE.MeshToonMaterial({ color: typeof step.params.color === 'string' ? step.params.color : '#F7E8C9' }),
     );
     batter.rotation.x = -Math.PI / 2;
     batter.position.set(bowlCx, batterY, bowlCz);
@@ -57,7 +57,9 @@ export const whisk = defineMove({
       ctx.bus.emit('hint:clear', {});
       ctx.bus.emit('fx:pop', { text: quality >= 0.9 ? '搅匀了!' : '拌好了!', style: quality >= 0.9 ? 'perfect' : 'good' });
       ctx.bus.emit('sfx:play', { id: 'step_done' });
-      ctx.bus.emit('step:complete', { dishId: step.dishId, stepId: step.stepId, quality, tags: [] });
+      const tags = quality >= 0.9 && Array.isArray(step.params.successTags)
+        ? step.params.successTags.filter((tag): tag is string => typeof tag === 'string') : [];
+      ctx.bus.emit('step:complete', { dishId: step.dishId, stepId: step.stepId, quality, tags });
     };
 
     offs.push(
@@ -65,6 +67,10 @@ export const whisk = defineMove({
         if (done) return;
         if (kind === 'down') lastAngle = null;
         if (kind !== 'move' || !ctx.input.pointer.down) return;
+        // Camera glides and first-person movement change the projected bowl position.
+        const center = ctx.world.toScreen([bowlCx, rim?.y ?? 1.04, bowlCz]);
+        const edge = ctx.world.toScreen([bowlCx + 0.19, rim?.y ?? 1.04, bowlCz]);
+        const screenR = Math.max(30, Math.hypot(edge.x - center.x, edge.y - center.y));
         const dx = ctx.input.pointer.x - center.x;
         const dy = ctx.input.pointer.y - center.y;
         const dist = Math.hypot(dx, dy);
@@ -87,7 +93,7 @@ export const whisk = defineMove({
           ctx.bus.emit('hint:show', { text: `绕碗画圈搅拌 · ${pct}%`, gesture: 'circle' });
           if (circles() >= target) {
             const meanDev = devSum / Math.max(1, devCount);
-            finish(Math.max(0.3, Math.min(1, 0.55 + 0.45 * (1 - meanDev / 0.5))));
+            finish(Math.max(0.3, Math.min(1, 0.55 + 0.45 * (1 - meanDev / (0.5 * tolerance)))));
           }
         }
         lastAngle = ang;
@@ -95,7 +101,7 @@ export const whisk = defineMove({
     );
     offs.push(ctx.input.onKey('Space', () => finish(0.8))); // demo escape hatch
     if (ctx.flags.auto) {
-      ctx.after(900, () => finish(0.92));
+      offs.push(ctx.after(900, () => finish(0.92)));
       offs.push(
         ctx.onFrame((dt) => {
           signed += dt * 7;
@@ -127,10 +133,13 @@ export const whisk = defineMove({
     return {
       dispose() {
         if (!done) ctx.bus.emit('hint:clear', {});
+        done = true;
         batter.removeFromParent();
         swirl.removeFromParent();
         batter.geometry.dispose();
         swirl.geometry.dispose();
+        (batter.material as THREE.Material).dispose();
+        (swirl.material as THREE.Material).dispose();
         if (whiskProp && home) {
           whiskProp.object.position.copy(home);
           whiskProp.object.rotation.set(0, 0, 0);

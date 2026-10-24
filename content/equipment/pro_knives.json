@@ -2,7 +2,7 @@
   "id": "pro_knives",
   "name": "专业刀具",
   "kitchen": "wok",
-  "price": 320,
+  "price": 290,
   "key": true,
   "unlocks": "huaiyang",
   "model": "wok_eq_pro_knives",

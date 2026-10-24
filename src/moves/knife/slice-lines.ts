@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { defineMove } from '@core/api';
+import type { MetaState } from '@contracts/types';
 
 /**
  * slice_lines (B7) — guided knife work shared by the regional kitchens. N dashed guide lines
@@ -13,22 +14,37 @@ export const sliceLines = defineMove({
   start(ctx, step) {
     const strokes = Math.max(1, Number(step.params.strokes ?? 4));
     const axis = step.params.axis === 'z' ? 'z' : 'x';
-    const tol = 0.035; // meters: how far a stroke may wander off the guide
+    const latestMeta = [...ctx.bus.log].reverse().find((event) => event.name === 'meta:state')?.payload as MetaState | undefined;
+    const sharpening = latestMeta?.installed.includes('whetstone') ? ctx.content.equipment.get('whetstone')?.effects.slice_lines as { tolerance?: number } | undefined : undefined;
+    const tol = 0.035 * (sharpening?.tolerance ?? 1); // meters: allowed distance from the guide
     const minTravel = 0.07; // meters: a stroke must travel along the guide direction
     const sheetKind = typeof step.params.sheetKind === 'string' ? step.params.sheetKind : 'slice_sheet';
     const sheetColor = typeof step.params.sheetColor === 'string' ? step.params.sheetColor : '#FFF8F0';
     let done = false;
+    let disposed = false;
     let cuts = 0;
     const strokeQ: number[] = [];
     const offs: (() => void)[] = [];
 
     // Target block: a kitchen prop (params.target) or an explicit box from params.
     const prop = typeof step.params.target === 'string' ? ctx.world.prop(step.params.target) : undefined;
-    const center = prop
+    const targets: THREE.Object3D[] = [];
+    if (typeof step.params.targetKind === 'string') {
+      ctx.world.root.traverse((object) => {
+        const tag = object.userData.dishItem as { dishId?: string; kind?: string } | undefined;
+        if (tag?.dishId === step.dishId && tag.kind === step.params.targetKind) targets.push(object);
+      });
+    }
+    ctx.world.root.updateMatrixWorld(true);
+    const bounds = new THREE.Box3();
+    targets.forEach((object) => bounds.expandByObject(object));
+    const center = targets.length ? bounds.getCenter(new THREE.Vector3()) : prop
       ? prop.object.position.clone()
       : new THREE.Vector3(...(Array.isArray(step.params.blockCenter) ? (step.params.blockCenter as [number, number, number]) : [0, 0.9, 0]));
-    const size = prop ? prop.size : (Array.isArray(step.params.blockSize) ? (step.params.blockSize as [number, number, number]) : [0.12, 0.11, 0.12]);
+    if (targets.length) center.y = bounds.min.y;
+    const size = targets.length ? bounds.getSize(new THREE.Vector3()).toArray() : prop ? prop.size : (Array.isArray(step.params.blockSize) ? (step.params.blockSize as [number, number, number]) : [0.12, 0.11, 0.12]);
     const topY = center.y + size[1] + 0.006;
+    const wasGrabbable = prop?.grabbable;
     if (prop) prop.grabbable = false; // the ingredient stays put while you slice it
 
     // Guide lines: dashed marks across the block top, one per planned cut.
@@ -80,7 +96,7 @@ export const sliceLines = defineMove({
       const sheet = new THREE.Mesh(
         new THREE.BoxGeometry(
           axis === 'x' ? thickness : size[0] * 0.9,
-          size[1] * 0.9,
+          Number(step.params.sheetHeight ?? size[1] * 0.9),
           axis === 'x' ? size[2] * 0.9 : thickness,
         ),
         new THREE.MeshToonMaterial({ color: sheetColor }),
@@ -97,7 +113,7 @@ export const sliceLines = defineMove({
       if (cuts === 1) {
         // A3: slow-motion blade close-up on the first cut, then glide back.
         ctx.bus.emit('camera:push', { at: [sheet.position.x, topY, sheet.position.z], zoom: 1.6, ms: 700 });
-        ctx.after(900, () => ctx.bus.emit('camera:release', {}));
+        offs.push(ctx.after(900, () => ctx.bus.emit('camera:release', {})));
       }
       ctx.bus.emit('sfx:play', { id: 'slice', at: [sheet.position.x, topY, sheet.position.z] });
       ctx.bus.emit('fx:pop', { text: '唰!', style: 'good', at: [sheet.position.x, topY + 0.05, sheet.position.z] });
@@ -122,6 +138,10 @@ export const sliceLines = defineMove({
         evenness = Math.max(0, 1 - Math.sqrt(variance) / Math.max(mean, 1e-4) / 0.8);
       }
       const q = Math.max(0.15, Math.min(1, meanStraight * evenness));
+      if (cuts > 0) {
+        if (prop) prop.object.visible = false;
+        targets.forEach((object) => { object.visible = false; });
+      }
       ctx.bus.emit('fx:pop', { text: q >= 0.85 ? '好刀工!' : '切好了', style: q >= 0.85 ? 'perfect' : 'good' });
       ctx.bus.emit('sfx:play', { id: 'step_done' });
       ctx.bus.emit('step:complete', { dishId: step.dishId, stepId: step.stepId, quality: q, tags: q >= 0.85 ? ['even_threads'] : [] });
@@ -169,15 +189,18 @@ export const sliceLines = defineMove({
     );
     offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     if (ctx.flags.auto) {
-      guides.forEach((g, i) => ctx.after(500 + i * 450, () => !done && !g.used && cutSheet(g.at, 0.95)));
+      guides.forEach((g, i) => offs.push(ctx.after(500 + i * 450, () => !done && !g.used && cutSheet(g.at, 0.95))));
     }
     hint();
 
     return {
       dispose() {
+        if (disposed) return;
+        disposed = true;
         if (!done) ctx.bus.emit('hint:clear', {});
+        done = true;
         ctx.bus.emit('camera:release', {}); // no-op unless the close-up is still active
-        if (prop) prop.grabbable = true;
+        if (prop) prop.grabbable = wasGrabbable ?? true;
         for (const g of guides) {
           g.line.removeFromParent();
           g.line.geometry.dispose();

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { defineMove, type StepStart } from '@core/api';
+import { watchMeta } from './equipment';
 
 /**
  * 爆火 — the heat move. Hold the pointer: the wok edge tips toward the burner and a
@@ -141,7 +142,7 @@ export const flare = defineMove({
       }),
     );
     offs.push(
-      ctx.bus.on('meta:state', (m) => {
+      watchMeta(ctx, (m) => {
         const eq = m.installed.includes('flame_booster') ? ctx.content.equipment.get('flame_booster') : undefined;
         const eff = eq?.effects as Record<string, { power?: number } | undefined> | undefined;
         power = eff?.flare?.power ?? 1;
