@@ -2,11 +2,11 @@
   "id": "home",
   "name": "家庭厨房",
   "mood": {
-    "background": "#FFF3E2",
-    "floor": "#F3E3C6",
-    "counter": "#EBD5B1",
+    "background": "#FFEBCC",
+    "floor": "#EDD9A6",
+    "counter": "#F5D9A0",
     "light": "#FFF4DC",
-    "lightIntensity": 1.3
+    "lightIntensity": 1.45
   },
   "defaultDish": "pancake_tower",
   "overview": {
@@ -342,7 +342,7 @@
         0.08,
         0.36
       ],
-      "color": "#FFFFFF",
+      "color": "#8DBF9F",
       "pos": [
         1.95,
         0.9,
@@ -360,7 +360,7 @@
         0.09,
         0.38
       ],
-      "color": "#FFFFFF",
+      "color": "#F4A7B9",
       "pos": [
         -0.35,
         0.9,
@@ -377,7 +377,7 @@
         0.06,
         0.16
       ],
-      "color": "#D8BE96",
+      "color": "#EFC25C",
       "pos": [
         0.05,
         0.9,
@@ -429,7 +429,7 @@
         0.26,
         0.1
       ],
-      "color": "#9AA0A6",
+      "color": "#2A8C9A",
       "pos": [
         -0.65,
         0.9,
@@ -446,7 +446,7 @@
         0.28,
         0.14
       ],
-      "color": "#FFFFFF",
+      "color": "#E8B33B",
       "pos": [
         0.55,
         0.9,
@@ -517,7 +517,7 @@
         0.1,
         0.1
       ],
-      "color": "#F7D9B5",
+      "color": "#F2A65E",
       "pos": [
         0.8,
         0.9,

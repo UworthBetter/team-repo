@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import type { Ctx } from '@core/api';
 
 export function usesSoftwareRenderer(gl: WebGLRenderingContext | WebGL2RenderingContext): boolean {
@@ -9,74 +8,53 @@ export function usesSoftwareRenderer(gl: WebGLRenderingContext | WebGL2Rendering
   return /swiftshader|llvmpipe|softpipe|software|microsoft basic render/i.test(names.join(' '));
 }
 
+/** 风格 A 的两档平涂渐变（与 core/world.ts 的 twoTone 同规则，供动作模块自建的 toon 材质共享）。 */
+const TWO_TONE = new THREE.DataTexture(new Uint8Array([138, 255]), 2, 1, THREE.RedFormat);
+TWO_TONE.minFilter = THREE.NearestFilter;
+TWO_TONE.magFilter = THREE.NearestFilter;
+TWO_TONE.needsUpdate = true;
+
 /**
- * Owner: E. 暖金实感画风（2026-10-24 参考图风格转换）：
- * filmic tone mapping + 环境光 + 太阳软阴影 + 材质柔化，让物品有参考图那种
- * 温暖、受光、落地的感觉。草图书风的描边改为可选（?outline=1），默认关闭。
- * lil-gui「Style (E)」里可实时调曝光，投影上校准用。
+ * Owner: E. 风格 A · 纸感平涂（2026-10-24 用户在风格稿 A/B/C 中确认 A）：
+ * 线性色调映射让平涂颜色与 CSS 色板直出一致；不再用环境反射/金属感（那是上一版
+ * 暖金实感的手法），保留太阳软阴影作为"落地"层次；所有 toon 材质统一套两档
+ * gradientMap，GLB 的 standard 材质去金属、提高粗糙度，让整体读作同一套纸片。
+ * CI 的软渲染早退（NoToneMapping、不排扫描）沿用 E 的修复，保住自动播放节拍。
  */
 export function setupStyle(ctx: Ctx): void {
   const renderer = ctx.three.renderer;
-
-  // Software GL (CI smoke runs SwiftShader) can't afford shadow maps or PMREM —
-  // they tank the frame rate so far the auto-play misses its beat windows.
-  // Real GPUs (the projector machine) get the full treatment.
   const gl = renderer.getContext();
   const isSoftware = usesSoftwareRenderer(gl);
   if (isSoftware) {
     renderer.toneMapping = THREE.NoToneMapping;
     return;
   }
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
 
-  if (!isSoftware) {
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.LinearToneMapping;
+  renderer.toneMappingExposure = 1.08; // 上色 pass：轻微提亮让平涂色更接近 CSS 色板的饱和度
 
-    // Soft image-based ambient so flat-colored props stop looking cardboard-flat.
-    // Kept below the sun's weight so grounded shadows stay visible (reference look).
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const room = new RoomEnvironment();
-    ctx.three.scene.environment = pmrem.fromScene(room, 0.04).texture;
-    room.dispose();
-    pmrem.dispose();
-    ctx.three.scene.environmentIntensity = 0.5;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    let sun: THREE.DirectionalLight | null = null;
-    let hemi: THREE.HemisphereLight | null = null;
-    ctx.three.scene.traverse((o) => {
-      if (o instanceof THREE.DirectionalLight && !sun) sun = o;
-      if (o instanceof THREE.HemisphereLight && !hemi) hemi = o;
-    });
-    if (hemi) (hemi as THREE.HemisphereLight).intensity *= 0.72;
-    if (sun) {
-      const s = sun as THREE.DirectionalLight;
-      s.intensity *= 1.1; // golden-key weighting, reference look
-      s.castShadow = true;
-      s.shadow.mapSize.set(1024, 1024); // 2048 cost ~13 fps on the projector target; 1024 reads softer anyway
-      const c = s.shadow.camera;
-      c.left = -7; c.right = 7; c.top = 7; c.bottom = -7; c.near = 0.5; c.far = 25;
-      c.updateProjectionMatrix();
-      s.shadow.bias = -0.0002;
-      s.shadow.normalBias = 0.02;
-    }
+  let sun: THREE.DirectionalLight | null = null;
+  ctx.three.scene.traverse((o) => {
+    if (o instanceof THREE.DirectionalLight && !sun) sun = o;
+  });
+  if (sun) {
+    const s = sun as THREE.DirectionalLight;
+    s.castShadow = true;
+    s.shadow.mapSize.set(1024, 1024); // 2048 cost ~13 fps on the projector target; 1024 reads softer anyway
+    const c = s.shadow.camera;
+    c.left = -7; c.right = 7; c.top = 7; c.bottom = -7; c.near = 0.5; c.far = 25;
+    c.updateProjectionMatrix();
+    s.shadow.bias = -0.0002;
+    s.shadow.normalBias = 0.02;
   }
 
-  // Re-run whenever the kitchen (re)builds: core recreates meshes and toon materials per build.
+  // Re-run whenever the kitchen (re)builds: core recreates meshes and materials per build.
   const styled = new WeakMap<THREE.Mesh, THREE.Material | THREE.Material[]>();
-  const apply = () => {
-    if (!isSoftware) softenScene(ctx, styled);
-  };
-  ctx.bus.on('kitchen:ready', () => {
-    const kitchen = ctx.content.kitchens.get(ctx.world.kitchenId ?? '');
-    if (!isSoftware && kitchen) {
-      ctx.three.scene.traverse((object) => {
-        if (object instanceof THREE.DirectionalLight) object.intensity = kitchen.mood.lightIntensity * 1.1;
-      });
-    }
-    apply();
-  });
+  const apply = () => flattenScene(ctx, styled);
+  ctx.bus.on('kitchen:ready', apply);
   // Models attach asynchronously, and cooking moves create meshes after kitchen:ready.
   let elapsed = 0;
   ctx.onFrame((dt) => {
@@ -92,7 +70,7 @@ export function setupStyle(ctx: Ctx): void {
   }
 }
 
-function softenScene(ctx: Ctx, styled: WeakMap<THREE.Mesh, THREE.Material | THREE.Material[]>): void {
+function flattenScene(ctx: Ctx, styled: WeakMap<THREE.Mesh, THREE.Material | THREE.Material[]>): void {
   ctx.three.scene.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
     if (styled.get(o) === o.material) return;
@@ -102,40 +80,28 @@ function softenScene(ctx: Ctx, styled: WeakMap<THREE.Mesh, THREE.Material | THRE
     o.receiveShadow = !isHull;
     if (isHull) return;
 
-    // Moves retain their materials to animate doneness. Preserve those references.
-    let staticKitchen = false;
-    for (let parent = o.parent; parent; parent = parent.parent) {
-      if (parent.name === 'core-kitchen') { staticKitchen = true; break; }
-    }
-
-    const single = o.material as THREE.Material;
     if (Array.isArray(o.material)) {
-      o.material = o.material.map((material) => softenMaterial(material, staticKitchen));
+      o.material = o.material.map((m) => flattenMaterial(m));
     } else {
-      o.material = softenMaterial(single, staticKitchen);
+      o.material = flattenMaterial(o.material);
     }
     styled.set(o, o.material);
   });
 }
 
-// Cache by source identity: equal colors can still differ in opacity, side, or ownership.
-// A global color cache would also reuse materials after kitchen disposal frees them.
-const softened = new WeakMap<THREE.MeshToonMaterial, THREE.MeshStandardMaterial>();
-
-function softenMaterial(m: THREE.Material, staticKitchen: boolean): THREE.Material {
-  if (staticKitchen && m instanceof THREE.MeshToonMaterial) {
-    const cached = softened.get(m);
-    if (cached) return cached;
-    // Core builds greyboxes in toon; match them to the GLB standard materials.
-    const std = new THREE.MeshStandardMaterial({ color: m.color.clone(), roughness: 0.85, metalness: 0 });
-    softened.set(m, std);
-    m.dispose();
-    return std;
+function flattenMaterial(m: THREE.Material): THREE.Material {
+  // 动作模块自建的 toon（蛋黄、蛋壳、圆顶…）与 core 灰盒统一两档平涂。
+  // 原地修改、不 dispose、不替换实例——共享材质的归属与生命周期保持不变
+  // （上一版 toon→Standard 的转换缓存因此不再需要）。
+  if (m instanceof THREE.MeshToonMaterial) {
+    m.gradientMap = TWO_TONE;
+    return m;
   }
+  // GLB 的 standard 材质：去金属、高粗糙，颜色贴图保留但不再反光——纸片感。
   if (m instanceof THREE.MeshStandardMaterial) {
-    m.roughness = Math.min(m.roughness, 0.72);
-    m.metalness = Math.min(m.metalness, 0.55);
-    m.envMapIntensity = 0.7;
+    m.roughness = 0.95;
+    m.metalness = 0;
+    m.envMapIntensity = 0;
   }
   return m;
 }

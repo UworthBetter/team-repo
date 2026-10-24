@@ -8,7 +8,7 @@
 .row { display: flex; gap: 12px; justify-content: center; }
 
 .dish-card { position: absolute; top: 24px; left: 24px; min-width: 240px; }
-.dish-title { font: 400 30px var(--font-display); margin-bottom: 6px; }
+.dish-title { font: 400 30px var(--font-display); margin-bottom: 6px; text-decoration: underline wavy var(--tomato) 3px; text-underline-offset: 8px; }
 .dish-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 19px; font-weight: 800; }
 .dish-steps li { padding: 3px 10px; border-radius: 10px; color: var(--ink); }
 .dish-steps li::before { content: '○ '; color: var(--muted); }
@@ -25,8 +25,11 @@
 
 /* Centered via left/right + margin auto, NOT left:50% + translateX(-50%): the transform
  * parks the pill on a half pixel and its text rasterizes smeared. Layout centering keeps
- * the glyphs on the pixel grid; only the brief pop animation transforms it. */
-.hint-pill { position: absolute; bottom: 24px; left: 0; right: 0; margin: 0 auto; width: max-content; background: var(--teal); color: #fff; border: 3px solid var(--ink); border-radius: 999px; padding: 12px 26px; font: 900 21px var(--font-ui); white-space: nowrap; }
+ * the glyphs on the pixel grid; only the brief pop animation transforms it.
+ * 风格 A 四态：正文=纸底墨字（旧的高饱和青底白字在亮厨房里刺眼），警告=.warn（step:oops 后 2.5s），弱化=.dim。 */
+.hint-pill { position: absolute; bottom: 24px; left: 0; right: 0; margin: 0 auto; width: max-content; background: var(--paper); color: var(--ink); border: 3.5px solid var(--ink); border-radius: 999px; padding: 12px 26px; font: 900 21px var(--font-ui); white-space: nowrap; box-shadow: 0 4px 0 rgba(43, 36, 34, 0.22); }
+.hint-pill.warn { background: var(--red); color: #fff; }
+.hint-pill.dim { opacity: 0.72; filter: saturate(0.55); }
 .dock { position: absolute; bottom: 24px; left: 24px; padding: 6px 10px; }
 .dock-key { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--ink); background: #fff; color: var(--ink); font: 900 16px var(--font-ui); cursor: pointer; }
 .dock-key.on { background: var(--ink); color: var(--paper); }
@@ -35,7 +38,7 @@
 .layer.dim { background: rgba(43, 36, 34, 0.45); display: grid; place-items: center; z-index: 10; }
 .layer.dim[hidden] { display: none; }
 .result-card { min-width: 360px; text-align: center; display: grid; gap: 12px; }
-.result-dish { font: 400 34px var(--font-display); }
+.result-dish { font: 400 34px var(--font-display); text-decoration: underline wavy var(--gold) 3px; text-underline-offset: 9px; }
 .stamp { justify-self: center; font: 400 60px var(--font-display); padding: 4px 26px; border: 7px solid currentColor; border-radius: 18px; transform: rotate(-10deg); animation: slam 0.35s cubic-bezier(.2,1.6,.4,1); }
 .stamp-perfect { color: var(--red); } .stamp-great { color: var(--amber); } .stamp-good { color: var(--sage-ink); } .stamp-oops { color: var(--muted); }
 @keyframes slam { from { transform: rotate(-10deg) scale(2.2); opacity: 0; } }
@@ -107,8 +110,10 @@
 .hint-pill { display: flex; align-items: center; gap: 10px; }
 .hint-pill.pop { animation: hintpop 0.28s cubic-bezier(.2,1.6,.4,1); }
 @keyframes hintpop { from { transform: scale(0.85); } 60% { transform: scale(1.06); } to { transform: scale(1); } }
-.hint-pill svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
-.hint-count { background: rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 2px 12px; font-variant-numeric: tabular-nums; }
+.hint-pill svg { width: 24px; height: 24px; padding: 5px; box-sizing: content-box; background: var(--teal); border-radius: 50%; stroke: #fff; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.hint-pill.warn svg { background: rgba(255, 255, 255, 0.22); }
+.hint-count { background: var(--teal-tint); color: var(--teal-ink); border-radius: 999px; padding: 2px 12px; font-variant-numeric: tabular-nums; }
+.hint-pill.warn .hint-count { background: rgba(255, 255, 255, 0.22); color: #fff; }
 .dock { gap: 8px; flex-wrap: wrap; max-width: 46vw; }
 .dock-key { display: inline-flex; align-items: center; gap: 7px; width: auto; height: 34px; border-radius: 999px; padding: 0 12px 0 6px; font: 900 15px var(--font-ui); }
 .dock-key b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 14px; }
@@ -116,8 +121,17 @@
 @keyframes floatup { from { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } to { opacity: 0; transform: translateY(-34px); } }
 
 /* ---------- juice: press feedback on every control ---------- */
-.btn:hover, .round:hover, .dock-key:hover { transform: translateY(-2px); box-shadow: 0 3px 0 rgba(43, 36, 34, 0.35); }
-.btn:active, .round:active, .dock-key:active { transform: translateY(1px); box-shadow: none; }
+/* 风格 A：硬偏移阴影（双色平涂的"影子层"），主按钮用更深的同色相暗档。 */
+.btn, .round, .dock-key { box-shadow: 0 4px 0 rgba(43, 36, 34, 0.26); }
+.btn.primary { box-shadow: 0 4px 0 #b74534; }
+.btn:hover, .round:hover, .dock-key:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(43, 36, 34, 0.26); }
+.btn.primary:hover { box-shadow: 0 6px 0 #b74534; }
+.btn:active, .round:active, .dock-key:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(43, 36, 34, 0.26); }
+.btn.primary:active { box-shadow: 0 1px 0 #b74534; }
+/* 虚线装饰框：主操作按钮与面板卡（focus 时浏览器焦点环优先）。 */
+.btn.primary { outline: 2.5px dashed rgba(42, 140, 154, 0.5); outline-offset: 5px; }
+.btn.primary:focus-visible { outline: 4px solid var(--teal); outline-offset: 2px; }
+.panel { outline: 2.5px dashed rgba(42, 140, 154, 0.3); outline-offset: 9px; }
 .shop-item { transition: transform 0.12s ease, box-shadow 0.12s ease; }
 .shop-item:hover { transform: translateY(-3px) rotate(0deg) !important; box-shadow: 0 5px 0 rgba(43, 36, 34, 0.22); }
 

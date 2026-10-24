@@ -4,7 +4,7 @@
   "region": "sichuan",
   "pacing": { "bpm": 110, "camera": "handheld" },
   "ambience": { "fog": "#2B2422", "music": "mus_wok" },
-  "mood": { "background": "#2B2422", "floor": "#352B28", "counter": "#5A4C46", "light": "#FFC58A", "lightIntensity": 1.6 },
+  "mood": { "background": "#2B2422", "floor": "#3E2E24", "counter": "#6E5546", "light": "#FFBE7A", "lightIntensity": 1.7 },
   "defaultDish": "kung_pao",
   "overview": { "pos": [0.4, 2.3, 2.8], "target": [0.4, 0.9, -0.4] },
   "counters": [
@@ -22,7 +22,7 @@
     { "id": "pass_center", "station": "pass", "pos": [2.9, 0.925, 0.4], "radius": 0.2, "accepts": ["*"] }
   ],
   "props": [
-    { "id": "bowl_rice", "kind": "rice", "model": "wok_food_bowl_rice", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#FFFFFF", "pos": [-2.0, 0.9, -0.75] },
+    { "id": "bowl_rice", "kind": "rice", "model": "wok_food_bowl_rice", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#FFF6E0", "pos": [-2.0, 0.9, -0.75] },
     { "id": "bowl_egg", "kind": "egg_liquid", "model": "wok_food_bowl_egg", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#F6CF4A", "pos": [-1.7, 0.9, -0.75] },
     { "id": "bowl_scallion", "kind": "scallion", "model": "wok_food_bowl_scallion", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#7DC07A", "pos": [-1.4, 0.9, -0.75] },
     { "id": "bowl_chicken", "kind": "chicken", "model": "wok_food_bowl_chicken", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#E9C394", "pos": [-2.0, 0.9, -0.45] },
@@ -30,7 +30,7 @@
     { "id": "bowl_chili", "kind": "chili", "model": "wok_food_bowl_chili", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#D63A2E", "pos": [-1.4, 0.9, -0.45] },
     { "id": "bowl_huajiao", "kind": "huajiao", "model": "wok_food_bowl_huajiao", "shape": "cylinder", "size": [0.14, 0.06, 0.14], "color": "#C9A84C", "pos": [-1.1, 0.9, -0.75] },
     { "id": "wok", "kind": "wok", "model": "wok_tool_wok", "shape": "cylinder", "size": [0.62, 0.12, 0.62], "color": "#3E3A3A", "pos": [0, 0.9, -0.6], "grabbable": false },
-    { "id": "stock_pot", "kind": "pot", "model": "wok_prop_stock_pot", "shape": "cylinder", "size": [0.4, 0.32, 0.4], "color": "#A9AEB4", "pos": [0.75, 0.9, -0.7], "toy": true },
+    { "id": "stock_pot", "kind": "pot", "model": "wok_prop_stock_pot", "shape": "cylinder", "size": [0.4, 0.32, 0.4], "color": "#C9A24B", "pos": [0.75, 0.9, -0.7], "toy": true },
     { "id": "soy", "kind": "sauce", "model": "wok_food_soy", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#3A1E14", "pos": [1.2, 0.9, -0.8] },
     { "id": "vinegar", "kind": "sauce", "model": "wok_food_vinegar", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#6E3B22", "pos": [1.35, 0.9, -0.8] },
     { "id": "oil", "kind": "sauce", "model": "wok_food_oil", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#D8A33A", "pos": [1.5, 0.9, -0.8] },
@@ -41,7 +41,7 @@
     { "id": "chili_string_2", "kind": "chili_string", "model": "wok_prop_chili_string", "shape": "box", "size": [0.09, 0.38, 0.08], "color": "#B92E24", "pos": [-0.68, 1.58, -0.92], "grabbable": false, "toy": true },
     { "id": "chili_string_3", "kind": "chili_string", "model": "wok_prop_chili_string", "shape": "box", "size": [0.11, 0.42, 0.08], "color": "#D63A2E", "pos": [1.1, 1.52, -0.92], "grabbable": false, "toy": true },
     { "id": "douban_jar", "kind": "douban", "model": "wok_prop_douban_jar", "shape": "cylinder", "size": [0.18, 0.24, 0.18], "color": "#8E3B2A", "pos": [1.68, 0.9, -0.68] },
-    { "id": "gaiwan", "kind": "gaiwan", "model": "wok_prop_gaiwan", "shape": "cylinder", "size": [0.12, 0.09, 0.12], "color": "#E8E3D8", "pos": [3.05, 0.9, -0.02], "toy": true },
+    { "id": "gaiwan", "kind": "gaiwan", "model": "wok_prop_gaiwan", "shape": "cylinder", "size": [0.12, 0.09, 0.12], "color": "#B8D8C8", "pos": [3.05, 0.9, -0.02], "toy": true },
     { "id": "mahjong", "kind": "mahjong", "model": "wok_prop_mahjong", "shape": "box", "size": [0.08, 0.05, 0.12], "color": "#F2EAD3", "pos": [-1.08, 0.9, -0.35], "toy": true },
     { "id": "panda", "kind": "panda", "model": "wok_prop_panda", "shape": "box", "size": [0.12, 0.16, 0.1], "color": "#F4EFE6", "pos": [3.18, 0.9, -0.05], "toy": true }
   ],

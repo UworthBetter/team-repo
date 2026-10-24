@@ -112,6 +112,13 @@ export function createHud(ctx: Ctx, open: (panel: 'shop' | 'route' | 'stickers')
     hint.hidden = true;
     hintShownAt = 0;
   });
+  // 风格 A 四态之一：失误后的 2.5 秒里提示转警告红，让"哎呀"有颜色回应。
+  // 不在 hint:show 里清除——进度计数会高频重发 hint:show，会把警告瞬间洗掉。
+  bus.on('step:oops', () => {
+    if (hint.hidden) return;
+    hint.classList.add('warn');
+    ctx.after(2500, () => hint.classList.remove('warn'));
+  });
 
   const setCoins = (s: Pick<MetaState, 'coins'>) => (coinNum.textContent = String(s.coins));
   bus.on('meta:state', setCoins);
