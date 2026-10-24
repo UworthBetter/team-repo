@@ -47,17 +47,22 @@ export function createWorld(
   const snapMeshes = new Map<string, THREE.Mesh>();
   const installed = new Set<string>();
   const slotGroup = new THREE.Group();
+  let slotGeneration = 0;
 
   const toon = (color: string | number) => new THREE.MeshToonMaterial({ color });
 
   function disposeTree(group: THREE.Object3D) {
+    const geometries = new Set<THREE.BufferGeometry>();
+    const materials = new Set<THREE.Material>();
     group.traverse((o) => {
-      if (o instanceof THREE.Mesh || o instanceof THREE.LineSegments) {
-        o.geometry.dispose();
+      if (o instanceof THREE.Mesh || o instanceof THREE.Line || o instanceof THREE.Points) {
+        geometries.add(o.geometry);
         const m = o.material as THREE.Material | THREE.Material[];
-        (Array.isArray(m) ? m : [m]).forEach((x) => x.dispose());
+        (Array.isArray(m) ? m : [m]).forEach((x) => materials.add(x));
       }
     });
+    geometries.forEach((g) => g.dispose());
+    materials.forEach((m) => m.dispose());
     group.clear();
   }
 
@@ -87,7 +92,11 @@ export function createWorld(
     pickList.push(mesh);
     if (p.model && assets.hasModel(p.model)) {
       void assets.loadModel(p.model).then((model) => {
-        if (!model || props.get(p.id) !== h) return;
+        if (!model) return;
+        if (props.get(p.id) !== h) {
+          disposeTree(model);
+          return;
+        }
         fitModel(model, p.size);
         mesh.visible = false;
         group.add(model);
@@ -101,6 +110,7 @@ export function createWorld(
   }
 
   function buildSlots() {
+    const generation = ++slotGeneration;
     disposeTree(slotGroup);
     const k = kitchen;
     for (const s of k?.slots ?? []) {
@@ -113,7 +123,11 @@ export function createWorld(
         if (model && assets.hasModel(model)) {
           const box = obj;
           void assets.loadModel(model).then((loaded) => {
-            if (!loaded || kitchen !== k || !installed.has(s.itemId)) return;
+            if (!loaded) return;
+            if (generation !== slotGeneration || kitchen !== k || !installed.has(s.itemId)) {
+              disposeTree(loaded);
+              return;
+            }
             fitModel(loaded, s.size);
             loaded.position.set(s.pos[0], s.pos[1], s.pos[2]);
             box.visible = false;
@@ -207,6 +221,7 @@ export function createWorld(
       if (!p) return;
       p.object.position.copy(p.home);
       p.object.rotation.set(0, 0, 0);
+      p.object.scale.set(1, 1, 1);
       p.object.visible = true;
     },
     snapPos(id) {
@@ -224,7 +239,13 @@ export function createWorld(
       return { x: ((v.x + 1) / 2) * r.width + r.left, y: ((1 - v.y) / 2) * r.height + r.top, visible: v.z > -1 && v.z < 1 };
     },
 
-    pickables: () => pickList.filter((o) => o.visible || o.parent?.visible),
+    pickables: () => pickList.filter((o) => {
+      // Hidden greyboxes and consumed ingredients must not intercept another prop's grab.
+      for (let parent: THREE.Object3D | null = o; parent; parent = parent.parent) {
+        if (!parent.visible) return false;
+      }
+      return true;
+    }),
     handleOf(obj) {
       let o: THREE.Object3D | null = obj;
       while (o) {

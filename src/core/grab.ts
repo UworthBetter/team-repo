@@ -90,6 +90,8 @@ export function createGrab(o: {
       bus.emit('sfx:play', { id: 'grab' });
       return;
     }
+    // In walk mode a click acts on the aimed prop; empty space must not teleport the player.
+    if (input.lookActive) return;
     const cp = input.counterPoint();
     const k = world.kitchen;
     if (!cp || !k) return;

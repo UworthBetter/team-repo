@@ -1,0 +1,11 @@
+{
+  "id": "copper_syrup_pot",
+  "name": "铜熬糖锅",
+  "kitchen": "huaiyang",
+  "price": 500,
+  "key": true,
+  "unlocks": "shandong",
+  "blurb": "解锁 → 鲁 · 济南老字号（北线支线）",
+  "comingSoon": true,
+  "effects": {}
+}

@@ -6,8 +6,11 @@
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+// fileURLToPath, not .pathname: on Windows the pathname keeps a leading slash
+// ("/D:/…") that join() turns into a drive-relative "D:\D:\…" path.
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const check = process.argv.includes('--check');
 const MAX_FILE_MB = 3;
 const MAX_TOTAL_MB = 80;

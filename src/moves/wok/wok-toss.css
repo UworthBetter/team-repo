@@ -1,0 +1,41 @@
+/* Owner: C — beat dots for 颠勺. Colors are the global tokens from src/style.css:
+   teal = actionable, gold = reward, red = miss. */
+.wt-dots {
+  position: absolute;
+  left: 50%;
+  top: 16%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.wt-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--line);
+  opacity: 0.5;
+  transform: scale(0.75);
+  transition: background 0.08s, border-color 0.08s, opacity 0.08s;
+}
+
+.wt-dot.wt-live {
+  border-color: var(--teal);
+  background: var(--teal-tint);
+  opacity: 1;
+}
+
+.wt-dot.wt-hit {
+  border-color: var(--gold-rim);
+  background: var(--gold);
+  opacity: 1;
+  transform: scale(1.25);
+}
+
+.wt-dot.wt-miss {
+  border-color: var(--red);
+  background: var(--red);
+  opacity: 1;
+}

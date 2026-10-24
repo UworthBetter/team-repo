@@ -1,13 +1,18 @@
 # 滋啦厨房 · Sizzle Kitchen
 
-Browser 3D cooking toy box (hackathon build). Two kitchens — 家庭厨房 and 炒锅灶台 — signature hand moves, coins, gear that unlocks the next kitchen.
+Browser 3D cooking toy box (hackathon build). Three kitchens — 家庭厨房、川菜炒锅和
+淮扬园林 — guided hand moves, coins, and gear that unlocks the next kitchen.
 
 ```bash
 npm install
 npm run dev            # http://localhost:5173  (debug panel on the right)
 ```
 
-The starter already plays the whole demo path in greybox: pancake tower → result → shop → 猛火灶 → Wok Station → fried rice. Every move except 打蛋 is a stub (Space = done, O = funny fail). Try `http://localhost:5173/?auto&fast=4&fresh&coins=600` to watch it play itself.
+The integrated demo follows 煎饼塔 → shop → 猛火灶 → 宫保鸡丁 / 蛋炒饭 →
+专业刀具 → 文思豆腐. Models, fonts, music, particles, crate unboxing, and the
+11-node food map are local assets. Try
+`http://localhost:5173/?auto&fast=4&fresh&coins=600` to watch the route play itself.
+Use `?stub=moves-home,moves-wok,moves-knife` for placeholder moves during debugging.
 
 ## Who owns what
 
@@ -36,9 +41,12 @@ Smoke test setup, once: `npm i --no-save playwright@1.48.2 && npx playwright ins
 
 ## URL flags
 
-`?scene=egg_crack` one isolated dev scene · `?kitchen=wok` · `?dish=fried_rice` · `?coins=999` · `?unlock=all` · `?fresh` ignore save · `?stub=meta,ui` / `?stub=all` · `?only=dishes,moves-home` · `?auto&fast=4` auto-play · `?log` · `?debug=0` · `?mute` · `?skipResult` · `?fps` FPS/draw-call counter
+`?scene=egg_crack` one isolated dev scene · `?kitchen=wok` · `?dish=fried_rice` · `?coins=999` · `?unlock=all` · `?fresh` ignore save · `?stub=meta,ui` / `?stub=all` · `?only=dishes,moves-home` · `?auto&fast=4` auto-play · `?log` · `?debug=0` · `?mute` · `?skipResult` · `?fps` FPS/draw-call counter · `?firstperson` walk the kitchen in first person
 
-Keys: `1–9` stations, `0` overview, `Space` / `O` on stub steps, `R` restart dish, `Esc` close panel, `Backspace` restart a dev scene.
+Keys: `1–9` stations, `0` overview, `F` first-person walk (click to capture the mouse,
+move the mouse to look, WASD to walk, Shift to jog, Esc to release the mouse),
+`Space` / `O` on stub steps, `R` restart dish, `Esc` close panel,
+`Backspace` restart a dev scene.
 Console: `__sizzle.log`, `__sizzle.bus.emit('fx:pop', { text: '咔!' })`, `__sizzle.ctx`.
 
 ## First-hour setup (owner A)

@@ -18,6 +18,7 @@ export interface Flags {
   mute: boolean;
   skipResult: boolean;
   fps: boolean;
+  firstperson: boolean;
 }
 
 export const FLAG_HELP: [string, string][] = [
@@ -36,6 +37,7 @@ export const FLAG_HELP: [string, string][] = [
   ['mute', 'no sound'],
   ['skipResult', 'close the result screen immediately'],
   ['fps', 'show an FPS / draw-call / triangle counter in the corner (works with ?debug=0)'],
+  ['firstperson', 'first-person walk mode: click to capture mouse, mouse look, WASD walk, Shift jog, Esc cursor (F toggles)'],
 ];
 
 export function readFlags(search: string): Flags {
@@ -70,5 +72,6 @@ export function readFlags(search: string): Flags {
     mute: bool('mute'),
     skipResult: bool('skipResult'),
     fps: bool('fps'),
+    firstperson: bool('firstperson'),
   };
 }

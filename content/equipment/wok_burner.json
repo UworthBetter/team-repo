@@ -2,10 +2,10 @@
   "id": "wok_burner",
   "name": "猛火灶",
   "kitchen": "home",
-  "price": 600,
+  "price": 700,
   "key": true,
   "unlocks": "wok",
   "model": "home_eq_wok_burner",
-  "blurb": "解锁 → 炒锅灶台",
+  "blurb": "解锁 → 川 · 成都苍蝇馆子",
   "effects": {}
 }
