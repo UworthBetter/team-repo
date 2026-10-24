@@ -30,6 +30,15 @@ function die(msg) {
 
 if (!id) die('usage: npm run new:kitchen <id> [--name 中文名]');
 if (!/^[a-z][a-z0-9_]*$/.test(id)) die(`id "${id}" must be lower-case letters, digits and underscores (start with a letter)`);
+if (nameIdx >= 0 && (!name || name.startsWith('--'))) die('--name needs a kitchen name');
+
+// Check every destination before writing: a late collision must not leave half a kitchen.
+for (const rel of [`content/kitchens/${id}.json`, `content/dishes/${id}_dish.json`, `content/equipment/${id}_key.json`]) {
+  if (existsSync(join(ROOT, rel))) die(`${rel} already exists — refusing to overwrite`);
+}
+const routePath = join(ROOT, 'content/route.json');
+const route = JSON.parse(readFileSync(routePath, 'utf8'));
+if (!Array.isArray(route.nodes)) die('content/route.json needs a nodes array');
 
 const label = name ?? id;
 const write = (rel, obj) => {
@@ -95,8 +104,6 @@ write(`content/equipment/${id}_key.json`, key);
 
 // Append a route node (idempotent: skip if one already exists for this id).
 const routeRel = 'content/route.json';
-const routePath = join(ROOT, routeRel);
-const route = JSON.parse(readFileSync(routePath, 'utf8'));
 if (route.nodes.some((n) => n.kitchenId === id)) {
   console.log(`  ${routeRel} already has a node for "${id}" — left as is`);
 } else {

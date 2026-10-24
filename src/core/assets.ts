@@ -43,7 +43,17 @@ export async function loadAssets(): Promise<Assets> {
           });
         cache.set(name, p);
       }
-      return p.then((scene) => (scene ? scene.clone(true) : null));
+      return p.then((scene) => {
+        if (!scene) return null;
+        const instance = scene.clone(true);
+        // Kitchen disposal owns each instance; never dispose the cached model's resources.
+        instance.traverse((o) => {
+          if (!(o instanceof THREE.Mesh)) return;
+          o.geometry = o.geometry.clone();
+          o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
+        });
+        return instance;
+      });
     },
   };
 }
