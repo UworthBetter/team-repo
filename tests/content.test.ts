@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { MOVE_IDS } from '@contracts/ids';
-import { ContentError, loadContent } from '@core/content';
+import { ContentError, crossCheck, loadContent } from '@core/content';
 
 /** Owner: A. Fails CI when any content/ JSON breaks its schema or points at something missing. */
 describe('content/', () => {
+  it('rejects duplicate route nodes left by an otherwise clean Git merge', () => {
+    const content = loadContent();
+    const first = content.route.nodes[0]!;
+    content.route = { nodes: [...content.route.nodes, { ...first }] };
+    expect(crossCheck(content)).toContain(`content/route.json: duplicate kitchen node "${first.kitchenId}"`);
+  });
   it('every file matches its schema and every reference resolves', () => {
     try {
       loadContent();
