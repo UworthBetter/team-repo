@@ -76,8 +76,9 @@ export function createTitle(ctx: Ctx, actions: { onStart(): void; onMap(): void 
 
   root.innerHTML = `<div class="title-stage interactive">${SCENE}<button class="title-start" type="button" aria-label="开始游戏">开 始 游 戏</button><button class="title-route" type="button">选择厨房 · 美食地图</button></div>`;
 
+  const layerRoot = root.parentElement;
   const parkHud = (on: boolean) => {
-    for (const layer of root.parentElement?.querySelectorAll<HTMLElement>(':scope > .layer') ?? []) {
+    for (const layer of layerRoot?.querySelectorAll<HTMLElement>(':scope > .layer') ?? []) {
       if (layer !== root) layer.inert = on;
     }
   };
