@@ -4,8 +4,7 @@ import { defineMove, type StepStart } from '@core/api';
 /**
  * 双剁 — rhythm_chop prototype (C-S2), the 湘菜 double-cleaver beat.
  *
- * TODO(contract): append 'rhythm_chop' to MOVE_IDS (owner A) before any dish JSON can
- * reference it; until then this prototype only runs from its dev scene.
+ * Registered by the additive C prototype contract; available in its isolated dev scene.
  *
  * A board with two zones. Click LEFT / RIGHT alternately in time with the beat
  * (4 beat dots, same judge as 颠勺). Wrong side or off-beat = a miss (刀钝了);
@@ -17,7 +16,7 @@ const LEAD = 1.4;
 const HITS = 8;
 
 export const rhythmChop = defineMove({
-  id: 'rhythm_chop' as never, // TODO(contract): MoveId once A appends rhythm_chop
+  id: 'rhythm_chop',
   label: '双剁',
   start(ctx, step: StepStart) {
     const num = (v: unknown, dflt: number) => {

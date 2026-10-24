@@ -4,8 +4,7 @@ import { defineMove, type StepStart } from '@core/api';
 /**
  * 推拌 — 麻婆豆腐's gentle push-stir (C-S1 prototype).
  *
- * TODO(contract): append 'push_stir' to MOVE_IDS (owner A) before any dish JSON can
- * reference it; until then this prototype only runs from its dev scene.
+ * Registered by the additive C prototype contract; available in its isolated dev scene.
  *
  * Hold inside the wok and drag slowly to nudge the tofu cubes around the pan —
  * accumulate STIR_NEED meters of gentle contact to finish. Drag too fast and every
@@ -21,7 +20,7 @@ const RADIUS = 0.26; // wok radius cubes live in
 type Cube = { mesh: THREE.Mesh; p: THREE.Vector3; v: THREE.Vector3; broken: boolean; spin: number };
 
 export const pushStir = defineMove({
-  id: 'push_stir' as never, // TODO(contract): MoveId once A appends push_stir
+  id: 'push_stir',
   label: '推拌',
   start(ctx, step: StepStart) {
     const center = ctx.world.prop('wok')?.object.position.clone() ?? new THREE.Vector3(0, 0.9, -0.6);

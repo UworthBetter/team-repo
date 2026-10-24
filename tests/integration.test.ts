@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import * as THREE from 'three';
 import { Bus } from '@core/bus';
 import { loadContent } from '@core/content';
 import { readFlags } from '@core/flags';
@@ -6,6 +7,7 @@ import type { Ctx, MoveDef } from '@core/api';
 import { createRunner } from '../src/dishes/runner';
 import { payout } from '../src/meta/score';
 import { watchInstalled } from '../src/moves/home/equipment';
+import { stack } from '../src/moves/home/stack';
 
 afterEach(() => vi.useRealTimers());
 
@@ -33,6 +35,33 @@ function runnerFixture(synchronous = false) {
 }
 
 describe('integrated progression', () => {
+  it('auto-places every layer even when timers run ahead of rendered frames', () => {
+    vi.useFakeTimers();
+    const bus = new Bus();
+    const root = new THREE.Group();
+    for (let i = 0; i < 3; i++) {
+      const item = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial());
+      item.userData.dishItem = { dishId: 'slow', kind: 'pancake', order: i };
+      root.add(item);
+    }
+    const frames = new Set<(dt: number) => void>();
+    const ctx = {
+      bus, content: loadContent(), flags: readFlags('?auto'),
+      world: { root, snapPos: () => new THREE.Vector3(0, 0.9, 0) },
+      input: { onPointer: () => () => {}, onKey: () => () => {} },
+      onFrame(fn: (dt: number) => void) { frames.add(fn); return () => frames.delete(fn); },
+      after(ms: number, fn: () => void) { const id = setTimeout(fn, ms); return () => clearTimeout(id); },
+    } as unknown as Ctx;
+    const move = stack.start(ctx, { dishId: 'slow', stepId: 'stack', move: 'stack', station: 'plate', params: { layers: 3 } });
+    for (let i = 0; i < 3; i++) {
+      vi.advanceTimersByTime(10000);
+      for (const frame of [...frames]) frame(1);
+    }
+    const completed = bus.log.filter((event) => event.name === 'step:complete');
+    expect(completed).toHaveLength(1);
+    expect((completed[0]!.payload as { tags: string[] }).tags).toContain('stack3');
+    move.dispose();
+  });
   it('affords the knives after two perfect fried-rice dishes without repeat star bonuses', () => {
     const content = loadContent();
     const pancake = content.dishes.get('pancake_tower')!;

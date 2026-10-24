@@ -3,8 +3,7 @@ import { sliceLines } from './slice-lines';
 
 /**
  * Owner: B. 精细动作类 — knife work, shared by the regional kitchens (B7). The demo target is
- * the huaiyang kitchen (文思豆腐, B8); until E6 lands there, the dev scene runs on the home
- * board. Auto-discovered by src/main.ts like any other module.
+ * the huaiyang kitchen (文思豆腐, B8). Auto-discovered like any other module.
  */
 export default defineModule({
   id: 'moves-knife',

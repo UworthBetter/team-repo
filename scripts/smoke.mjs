@@ -67,7 +67,8 @@ async function open(path, label) {
     await page.waitForFunction(() => document.pointerLockElement?.tagName === 'CANVAS', null, { timeout: 5000 });
     const before = await page.evaluate(() => window.__sizzle.ctx.three.camera.quaternion.toArray());
     stage = 'look without holding a button';
-    await page.mouse.move(740, 370);
+    // Explicit relative motion is stable on both desktop and headless pointer-lock drivers.
+    await page.locator('canvas').dispatchEvent('pointermove', { pointerId: 1, movementX: 40, movementY: 20 });
     await page.waitForFunction((previous) => window.__sizzle.ctx.three.camera.quaternion.toArray().some((n, i) => Math.abs(n - previous[i]) > 0.01), before);
 
     // Aim by relative mouse motion; the camera is never assigned by the test.

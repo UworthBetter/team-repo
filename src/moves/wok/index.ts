@@ -17,9 +17,7 @@ export default defineModule({
   id: 'moves-wok',
   owner: 'C',
   setup(ctx) {
-    // TODO(contract): prototypes pending A's MOVE_IDS append —
-    // push_stir (C-S1 麻婆豆腐), rhythm_chop (C-S2 湘菜双剁刀), pull_stretch (C-S3 拔丝).
-    [wokToss, flare, domeScoop, sprinkle, pushStir, rhythmChop, pullStretch].forEach((m) => ctx.moves.register(m as never));
+    [wokToss, flare, domeScoop, sprinkle, pushStir, rhythmChop, pullStretch].forEach((m) => ctx.moves.register(m));
     attachWokProps(ctx);
 
     ctx.dev.scene('wok_toss', { kitchen: 'wok', station: 'wok' }, (c) => {
@@ -39,15 +37,15 @@ export default defineModule({
       return () => inst.dispose();
     });
     ctx.dev.scene('push_stir', { kitchen: 'wok', station: 'wok' }, (c) => {
-      const inst = (pushStir as { start: typeof pushStir.start }).start(c, devStep('push_stir' as never, 'wok', {}));
+      const inst = pushStir.start(c, devStep('push_stir', 'wok', {}));
       return () => inst.dispose();
     });
     ctx.dev.scene('rhythm_chop', { kitchen: 'wok', station: 'wok' }, (c) => {
-      const inst = (rhythmChop as { start: typeof rhythmChop.start }).start(c, devStep('rhythm_chop' as never, 'wok', { bpm: 100 }));
+      const inst = rhythmChop.start(c, devStep('rhythm_chop', 'wok', { bpm: 100 }));
       return () => inst.dispose();
     });
     ctx.dev.scene('pull_stretch', { kitchen: 'wok', station: 'sauce' }, (c) => {
-      const inst = (pullStretch as { start: typeof pullStretch.start }).start(c, devStep('pull_stretch' as never, 'sauce', {}));
+      const inst = pullStretch.start(c, devStep('pull_stretch', 'sauce', {}));
       return () => inst.dispose();
     });
 

@@ -4,8 +4,7 @@ import { defineMove, type StepStart } from '@core/api';
 /**
  * 拉丝 — pull_stretch prototype (C-S3), the 拔丝/biangbiang gesture.
  *
- * TODO(contract): append 'pull_stretch' to MOVE_IDS (owner A) before any dish JSON
- * can reference it; until then this prototype only runs from its dev scene.
+ * Registered by the additive C prototype contract; available in its isolated dev scene.
  *
  * Press near the candy blob to grab the strand, drag away slowly to stretch it —
  * a glowing thread spans anchor → pointer. Pull faster than SNAP_SPEED and it snaps
@@ -19,7 +18,7 @@ const SNAP_SPEED = 1.4; // m/s of pointer travel that snaps the strand
 const GOOD_PULLS = 3;
 
 export const pullStretch = defineMove({
-  id: 'pull_stretch' as never, // TODO(contract): MoveId once A appends pull_stretch
+  id: 'pull_stretch',
   label: '拉丝',
   start(ctx, step: StepStart) {
     let good = 0;

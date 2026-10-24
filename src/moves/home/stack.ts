@@ -112,9 +112,18 @@ export const stack = defineMove({
           ctx.bus.emit('fx:pop', { text: '稳!', style: 'good' });
         }
         if (placed >= layers) finish();
-        else hint();
+        else {
+          hint();
+          if (ctx.flags.auto) offs.push(ctx.after(220, autoPlace));
+        }
       });
     };
+
+    function autoPlace() {
+      if (done || placing || placed >= layers) return;
+      const item = items[placed];
+      if (item) place(item, targetAt(placed), 0.94);
+    }
 
     const finish = () => {
       if (done) return;
@@ -184,13 +193,8 @@ export const stack = defineMove({
     );
     offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     if (ctx.flags.auto) {
-      items.slice(0, layers).forEach((item, i) => {
-        ctx.after(500 + i * 380, () => {
-          if (done || placed !== i) return;
-          const target = targetAt(i);
-          place(item, target, 0.94);
-        });
-      });
+      // Chain placements after their animation completes; a slow frame must not drop a layer.
+      offs.push(ctx.after(500, autoPlace));
     }
     if (layers === 0) finish();
     else hint();
