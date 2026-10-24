@@ -3,10 +3,10 @@
   "name": "宫保鸡丁",
   "kitchen": "wok",
   "steps": [
-    { "id": "toss_chicken", "move": "wok_toss", "station": "wok", "weight": 2, "params": { "beats": 6, "bpm": 110, "beatOffsetMs": 0, "ingredient": "chicken" } },
+    { "id": "toss_chicken", "move": "wok_toss", "station": "wok", "weight": 2, "params": { "beats": 6, "bpm": 110, "beatOffsetMs": 227, "ingredient": "chicken" } },
     { "id": "spice", "move": "sprinkle", "station": "wok", "weight": 1, "params": { "item": "huajiao", "amount": 8 } },
     { "id": "flare", "move": "flare", "station": "wok", "weight": 1.5, "params": {} },
-    { "id": "toss_peanut", "move": "wok_toss", "station": "wok", "weight": 2, "params": { "beats": 4, "bpm": 110, "beatOffsetMs": 0, "ingredient": "peanut" } },
+    { "id": "toss_peanut", "move": "wok_toss", "station": "wok", "weight": 2, "params": { "beats": 4, "bpm": 110, "beatOffsetMs": 227, "ingredient": "peanut" } },
     { "id": "dome", "move": "dome_scoop", "station": "pass", "weight": 1.5, "params": {} }
   ],
   "rating": { "good": 0.4, "great": 0.7, "perfect": 0.9 },
