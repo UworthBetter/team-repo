@@ -15,8 +15,14 @@ export function setupStyle(ctx: Ctx): void {
   // even per-fragment ACES tonemapping slows the rasterizer enough that the
   // ?fast=4 full-loop smoke misses its 90 s budget. The style pass is for the
   // projector's real GPU; CI doesn't screenshot.
+  // NOTE: gl.getParameter(RENDERER) reports "WebKit WebGL" under SwiftShader —
+  // the unmasked renderer (WEBGL_debug_renderer_info) is the only honest source.
   const gl = renderer.getContext();
-  const isSoftware = /swiftshader|llvmpipe|software/i.test(String(gl.getParameter(gl.RENDERER)));
+  const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+  const rendererName = String(
+    dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+  );
+  const isSoftware = /swiftshader|llvmpipe|softpipe|software/i.test(rendererName);
   if (isSoftware) {
     ctx.bus.on('kitchen:ready', () => softenScene(ctx, true));
     return;
