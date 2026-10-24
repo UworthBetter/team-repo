@@ -28,6 +28,7 @@ export function setupStyle(ctx: Ctx): void {
 
   const gl = renderer.getContext();
   const isSoftware = usesSoftwareRenderer(gl);
+  if (isSoftware) setupBlobShadows(ctx); // P1-5: 软渲染没有阴影贴图，blob 贴片补落地感
 
   if (!isSoftware) {
     renderer.shadowMap.enabled = true;
@@ -100,4 +101,53 @@ function flattenMaterial(m: THREE.Material): THREE.Material {
     m.envMapIntensity = 0;
   }
   return m;
+}
+
+/**
+ * P1-5 (design_fix_zh.md §4)：blob 接触阴影——仅在软件渲染（无阴影贴图）时启用。
+ * 每个 prop 组下挂一张径向渐变贴片，随道具移动自动跟随；真 GPU 上有真实阴影，不加。
+ * 贴片是 MeshBasicMaterial，不参与风格 A 的两档平涂（unlit 才能保持渐变贴片的观感）。
+ */
+let blobTexture: THREE.CanvasTexture | null = null;
+
+function setupBlobShadows(ctx: Ctx): void {
+  if (typeof document === 'undefined') return; // vitest node 环境：无 DOM 也无画面
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 128;
+  const g = canvas.getContext('2d')!;
+  const grad = g.createRadialGradient(64, 64, 4, 64, 64, 62);
+  grad.addColorStop(0, 'rgba(30,20,12,0.5)');
+  grad.addColorStop(0.7, 'rgba(30,20,12,0.22)');
+  grad.addColorStop(1, 'rgba(30,20,12,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  blobTexture = new THREE.CanvasTexture(canvas);
+
+  const addBlobs = () => {
+    ctx.three.scene.traverse((o) => {
+      if (!(o instanceof THREE.Group) || !o.name.startsWith('prop:') || o.userData.blob) return;
+      o.userData.blob = true;
+      const box = new THREE.Box3().setFromObject(o);
+      const size = box.getSize(new THREE.Vector3());
+      const w = Math.min(1.2, Math.max(0.14, size.x * 1.18));
+      const d = Math.min(1.2, Math.max(0.14, size.z * 1.18));
+      const blob = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, d),
+        new THREE.MeshBasicMaterial({ map: blobTexture!, transparent: true, depthWrite: false, opacity: 0.5 }),
+      );
+      blob.rotation.x = -Math.PI / 2;
+      blob.position.y = 0.005;
+      blob.renderOrder = 1;
+      blob.name = 'blob-shadow';
+      o.add(blob);
+    });
+  };
+  ctx.bus.on('kitchen:ready', addBlobs);
+  let acc = 0;
+  ctx.onFrame((dt) => {
+    acc += dt;
+    if (acc < 0.25) return;
+    acc = 0;
+    addBlobs(); // GLB/道具异步后挂，低频补扫
+  });
 }

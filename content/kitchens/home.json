@@ -178,7 +178,7 @@
       "station": "stove",
       "pos": [
         0.5,
-        0.91,
+        0.945,
         -0.7
       ],
       "radius": 0.18,
@@ -191,7 +191,7 @@
       "station": "stove",
       "pos": [
         0.95,
-        0.91,
+        0.945,
         -0.7
       ],
       "radius": 0.18,
@@ -233,9 +233,9 @@
       "model": "home_room_fridge",
       "shape": "box",
       "size": [
-        0.8,
-        1.9,
-        0.7
+        0.7,
+        1.6,
+        0.65
       ],
       "color": "#D7ECEC",
       "pos": [
@@ -269,7 +269,7 @@
       "shape": "cylinder",
       "size": [
         0.3,
-        0.01,
+        0.05,
         0.3
       ],
       "color": "#3B3A3F",
@@ -278,7 +278,8 @@
         0.9,
         -0.7
       ],
-      "grabbable": false
+      "grabbable": false,
+      "model": "home_tool_burner_ring"
     },
     {
       "id": "burner_right",
@@ -286,7 +287,7 @@
       "shape": "cylinder",
       "size": [
         0.3,
-        0.01,
+        0.05,
         0.3
       ],
       "color": "#3B3A3F",
@@ -295,7 +296,8 @@
         0.9,
         -0.7
       ],
-      "grabbable": false
+      "grabbable": false,
+      "model": "home_tool_burner_ring"
     },
     {
       "id": "pan",
@@ -310,7 +312,7 @@
       "color": "#45454D",
       "pos": [
         0.5,
-        0.91,
+        0.945,
         -0.7
       ]
     },
@@ -374,7 +376,7 @@
       "shape": "box",
       "size": [
         0.3,
-        0.06,
+        0.07,
         0.16
       ],
       "color": "#D8BE96",
@@ -383,7 +385,8 @@
         0.9,
         0.78
       ],
-      "grabbable": false
+      "grabbable": false,
+      "model": "home_food_egg_carton"
     },
     {
       "id": "egg_1",
