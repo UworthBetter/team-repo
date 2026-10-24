@@ -1,6 +1,7 @@
 import { defineModule, devStep, stubMove } from '@core/api';
 import { domeScoop } from './dome-scoop';
 import { flare } from './flare';
+import { attachWokProps } from './props';
 import { sprinkle } from './sprinkle';
 import { wokToss } from './wok-toss';
 
@@ -14,6 +15,7 @@ export default defineModule({
   owner: 'C',
   setup(ctx) {
     [wokToss, flare, domeScoop, sprinkle].forEach((m) => ctx.moves.register(m));
+    attachWokProps(ctx);
 
     ctx.dev.scene('wok_toss', { kitchen: 'wok', station: 'wok' }, (c) => {
       const inst = wokToss.start(c, devStep('wok_toss', 'wok', { beats: 8, bpm: 110, ingredient: 'rice' }));
