@@ -290,7 +290,6 @@ export const domeScoop = defineMove({
         ladleMult = eff?.dome_scoop?.snapRadius ?? 1;
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     offs.push(
       ctx.bus.on('kitchen:enter', () => {
         if (done) return;

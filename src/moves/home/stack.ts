@@ -191,7 +191,6 @@ export const stack = defineMove({
         }
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     if (ctx.flags.auto) {
       // Chain placements after their animation completes; a slow frame must not drop a layer.
       offs.push(ctx.after(500, autoPlace));

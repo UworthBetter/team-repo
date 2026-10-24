@@ -187,7 +187,6 @@ export const sliceLines = defineMove({
         cutSheet(best.at, Math.max(0, 1 - aimDev / tol));
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     if (ctx.flags.auto) {
       guides.forEach((g, i) => offs.push(ctx.after(500 + i * 450, () => !done && !g.used && cutSheet(g.at, 0.95))));
     }

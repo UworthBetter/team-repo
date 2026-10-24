@@ -116,7 +116,6 @@ export const syrupDrizzle = defineMove({
         if (Math.hypot(cp.x - plate.x, cp.z - plate.z) < R) addPoint(new THREE.Vector3(cp.x, topY, cp.z));
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     if (ctx.flags.auto) {
       spiral.forEach((p, i) => ctx.after(400 + i * 12, () => !done && addPoint(p)));
       ctx.after(400 + spiral.length * 12 + 200, () => !done && finish());
