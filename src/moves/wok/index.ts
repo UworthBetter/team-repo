@@ -2,6 +2,7 @@ import { defineModule, devStep, stubMove } from '@core/api';
 import { domeScoop } from './dome-scoop';
 import { flare } from './flare';
 import { attachWokProps } from './props';
+import { pullStretch } from './pull-stretch';
 import { pushStir } from './push-stir';
 import { rhythmChop } from './rhythm-chop';
 import { sprinkle } from './sprinkle';
@@ -16,9 +17,9 @@ export default defineModule({
   id: 'moves-wok',
   owner: 'C',
   setup(ctx) {
-    // TODO(contract): push_stir (C-S1 麻婆豆腐) and rhythm_chop (C-S2 湘菜双剁刀)
-    // are prototypes — A appends their ids to MOVE_IDS.
-    [wokToss, flare, domeScoop, sprinkle, pushStir, rhythmChop].forEach((m) => ctx.moves.register(m as never));
+    // TODO(contract): prototypes pending A's MOVE_IDS append —
+    // push_stir (C-S1 麻婆豆腐), rhythm_chop (C-S2 湘菜双剁刀), pull_stretch (C-S3 拔丝).
+    [wokToss, flare, domeScoop, sprinkle, pushStir, rhythmChop, pullStretch].forEach((m) => ctx.moves.register(m as never));
     attachWokProps(ctx);
 
     ctx.dev.scene('wok_toss', { kitchen: 'wok', station: 'wok' }, (c) => {
@@ -43,6 +44,10 @@ export default defineModule({
     });
     ctx.dev.scene('rhythm_chop', { kitchen: 'wok', station: 'wok' }, (c) => {
       const inst = (rhythmChop as { start: typeof rhythmChop.start }).start(c, devStep('rhythm_chop' as never, 'wok', { bpm: 100 }));
+      return () => inst.dispose();
+    });
+    ctx.dev.scene('pull_stretch', { kitchen: 'wok', station: 'sauce' }, (c) => {
+      const inst = (pullStretch as { start: typeof pullStretch.start }).start(c, devStep('pull_stretch' as never, 'sauce', {}));
       return () => inst.dispose();
     });
 
