@@ -21,6 +21,17 @@
       "name": "厨房 4",
       "gate": null,
       "placeholder": true
+    },
+    {
+      "kitchenId": "huaiyang",
+      "name": "扬州园林厨房",
+      "gate": null,
+      "region": "huaiyang",
+      "mapPos": [
+        0,
+        0
+      ],
+      "blurb": "新厨房占位，待布置"
     }
   ]
 }
