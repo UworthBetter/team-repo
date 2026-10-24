@@ -33,6 +33,18 @@ export default defineModule({
       const inst = sprinkle.start(c, devStep('sprinkle', 'wok', { item: 'huajiao', amount: 8 }));
       return () => inst.dispose();
     });
+
+    // Debug panel: switch the wok kitchen's dish (runner reads flags.dish on kitchen:ready).
+    if (ctx.dev.gui) {
+      const f = ctx.dev.gui.addFolder('Wok (C)');
+      const play = (dishId: string) => {
+        ctx.flags.dish = dishId;
+        ctx.bus.emit('kitchen:enter', { kitchenId: 'wok' });
+      };
+      f.add({ k: () => play('kung_pao') }, 'k').name('宫保鸡丁 (主打)');
+      f.add({ d: () => play('fried_rice') }, 'd').name('蛋炒饭 (热身)');
+      f.close();
+    }
   },
   stub(ctx) {
     [stubMove('wok_toss', '颠勺'), stubMove('flare', '爆火'), stubMove('dome_scoop', '扣圆顶')].forEach((m) => ctx.moves.register(m));

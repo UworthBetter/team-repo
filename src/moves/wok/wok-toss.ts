@@ -65,7 +65,14 @@ export const wokToss = defineMove({
 
     /* ---------------- rice: one InstancedMesh ---------------- */
 
-    const grainColor = step.params.ingredient === 'egg_liquid' ? '#F6CF4A' : '#F7F3E8';
+    const INGREDIENT_COLORS: Record<string, string> = {
+      egg_liquid: '#F6CF4A',
+      chicken: '#E9C394',
+      peanut: '#C68A4E',
+      chili: '#D63A2E',
+      rice: '#F7F3E8',
+    };
+    const grainColor = INGREDIENT_COLORS[String(step.params.ingredient)] ?? '#F7F3E8';
     const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.02, 0.009, 0.032), new THREE.MeshToonMaterial({ color: grainColor }), GRAINS);
     mesh.frustumCulled = false;
     ctx.world.root.add(mesh);

@@ -5,7 +5,7 @@
   "pacing": { "bpm": 110, "camera": "handheld" },
   "ambience": { "fog": "#2B2422", "music": "mus_wok" },
   "mood": { "background": "#2B2422", "floor": "#352B28", "counter": "#5A4C46", "light": "#FFC58A", "lightIntensity": 1.6 },
-  "defaultDish": "fried_rice",
+  "defaultDish": "kung_pao",
   "overview": { "pos": [0.4, 2.3, 2.8], "target": [0.4, 0.9, -0.4] },
   "counters": [
     { "pos": [0, 0, -0.6], "size": [5, 0.9, 0.8] },
