@@ -31,6 +31,7 @@
     { "id": "vinegar", "kind": "sauce", "model": "wok_food_vinegar", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#6E3B22", "pos": [1.35, 0.9, -0.8] },
     { "id": "oil", "kind": "sauce", "model": "wok_food_oil", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#D8A33A", "pos": [1.5, 0.9, -0.8] },
     { "id": "plate", "kind": "plate_serving", "model": "wok_tool_plate", "shape": "cylinder", "size": [0.4, 0.025, 0.4], "color": "#F4EFE6", "pos": [2.9, 0.9, 0.4], "grabbable": false },
+    { "id": "bowl_mold", "kind": "rice", "model": "wok_tool_bowl_mold", "shape": "cylinder", "size": [0.22, 0.14, 0.22], "color": "#F4EFE6", "pos": [2.62, 0.9, 0.4] },
     { "id": "lucky_cat", "kind": "cat", "model": "wok_prop_lucky_cat", "shape": "box", "size": [0.14, 0.18, 0.12], "color": "#FFFFFF", "pos": [2.9, 0.9, -0.05], "toy": true }
   ],
   "slots": [

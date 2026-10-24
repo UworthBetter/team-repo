@@ -1,4 +1,5 @@
 import { defineModule, devStep, stubMove } from '@core/api';
+import { domeScoop } from './dome-scoop';
 import { wokToss } from './wok-toss';
 
 /**
@@ -6,7 +7,6 @@ import { wokToss } from './wok-toss';
  * See docs/briefs/C-wok-moves.md
  */
 const flare = stubMove('flare', '爆火');
-const domeScoop = stubMove('dome_scoop', '扣圆顶');
 
 export default defineModule({
   id: 'moves-wok',
@@ -24,6 +24,6 @@ export default defineModule({
     });
   },
   stub(ctx) {
-    [stubMove('wok_toss', '颠锅'), flare, domeScoop].forEach((m) => ctx.moves.register(m));
+    [stubMove('wok_toss', '颠勺'), flare, stubMove('dome_scoop', '扣圆顶')].forEach((m) => ctx.moves.register(m));
   },
 });
