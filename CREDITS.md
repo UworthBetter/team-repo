@@ -4,3 +4,5 @@ Every third-party asset, with its license and source URL. Owner: E. Add a line w
 
 | File | Author | License | Source |
 | --- | --- | --- | --- |
+| public/fonts/** (ZCOOL KuaiLe, Nunito, Noto Sans SC) | various | SIL OFL 1.1 | self-hosted slices generated from @fontsource packages (fonts.google.com) |
+| public/models/*.glb | E (original) | project-internal | procedural low-poly builds, three.js GLTFExporter — no external source |

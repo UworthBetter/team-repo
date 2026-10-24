@@ -1,3 +1,20 @@
 {
-  "files": []
+  "files": [
+    "home_eq_nonstick_pan",
+    "home_eq_stand_mixer",
+    "home_eq_syrup_pot",
+    "home_eq_wok_burner",
+    "home_prop_cat_timer",
+    "home_prop_duck",
+    "home_prop_flour",
+    "home_room_fridge",
+    "home_tool_board",
+    "home_tool_bowl",
+    "home_tool_pan",
+    "home_tool_whisk",
+    "shared_food_egg",
+    "shared_food_tomato",
+    "shared_tool_plate",
+    "shared_tool_plate_stack"
+  ]
 }
