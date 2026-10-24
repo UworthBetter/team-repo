@@ -52,6 +52,14 @@ export interface Events {
   'fx:pop': { text: string; at?: Vec3; style?: FxStyle };
   /** Plays public/sfx/sfx_<id>.ogg if listed in the manifest, else a placeholder blip. */
   'sfx:play': { id: string; at?: Vec3 };
+  /** Camera kick: decaying noise shake. `strength` ~0..1 meters of jitter, `ms` to decay to zero. Core (A) implements. */
+  'camera:shake': { strength: number; ms: number };
+  /** Temporary dolly toward a world point. `zoom` >= 1 (1 = no move, 2 = halfway in); holds until camera:release. Core (A) implements. */
+  'camera:push': { at: Vec3; zoom: number; ms: number };
+  /** Release any active camera:push, gliding back to the base rig. Core (A) implements. */
+  'camera:release': Record<string, never>;
+  /** Spawn a named particle preset at `at` (world space; omitted = screen center). E implements the presets. */
+  'fx:emit': { preset: string; at?: Vec3 };
 }
 
 export type EventName = keyof Events;
@@ -84,4 +92,8 @@ export const EVENT_EMITTERS: Record<EventName, string> = {
   'kitchen:unlocked': 'D',
   'fx:pop': 'any',
   'sfx:play': 'any',
+  'camera:shake': 'A, C',
+  'camera:push': 'A, B, D',
+  'camera:release': 'A, D',
+  'fx:emit': 'any',
 };
