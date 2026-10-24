@@ -179,7 +179,8 @@ export const stack = defineMove({
           if (cp && d < ghostR * 1.9 * snapMultiplier) {
             const offset = Math.min(d, ghostR);
             const q = Math.max(0.25, 1 - offset / 0.09);
-            const target = spread ? targetAt(placed) : new THREE.Vector3(cp.x - plate.x, slotY(placed), cp.z - plate.z);
+            // 落点取盘心正上方（松手偏移只影响评分与摇晃），煎饼塔始终叠在盘子中心
+            const target = spread ? targetAt(placed) : new THREE.Vector3(0, slotY(placed), 0);
             place(item, target, q);
           } else if (cp) {
             // missed the plate: it falls where it was released and can be picked up again
