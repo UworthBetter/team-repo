@@ -4,8 +4,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
-const fixtures: string[] = [];
-afterEach(() => fixtures.splice(0).forEach((dir) => rmSync(dir, { recursive: true, force: true })));
+const fixtures = [];
+afterEach(() => fixtures.splice(0).forEach((dir) => {
+  if (!dir.startsWith(join(tmpdir(), 'sizzle-scaffold-'))) throw new Error('Unexpected fixture path');
+  rmSync(dir, { recursive: true, force: true });
+}));
 
 function fixture() {
   const dir = mkdtempSync(join(tmpdir(), 'sizzle-scaffold-'));
@@ -13,7 +16,7 @@ function fixture() {
   for (const path of ['scripts', 'content/kitchens', 'content/dishes', 'content/equipment']) mkdirSync(join(dir, path), { recursive: true });
   copyFileSync(new URL('../scripts/new-kitchen.mjs', import.meta.url), join(dir, 'scripts/new-kitchen.mjs'));
   writeFileSync(join(dir, 'content/route.json'), '{"nodes":[]}');
-  const run = (...args: string[]) => execFileSync(process.execPath, [join(dir, 'scripts/new-kitchen.mjs'), ...args], { stdio: 'pipe' });
+  const run = (...args) => execFileSync(process.execPath, [join(dir, 'scripts/new-kitchen.mjs'), ...args], { stdio: 'pipe' });
   return { dir, run };
 }
 
