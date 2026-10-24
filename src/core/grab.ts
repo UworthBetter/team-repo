@@ -24,6 +24,12 @@ export interface GrabParams {
   snapScale: number;
 }
 
+export interface GrabPhysics {
+  readonly ready: boolean;
+  toss(handle: PropHandle, velocity: THREE.Vector3): boolean;
+  drop(handle: PropHandle): void;
+}
+
 export function createGrab(o: {
   input: InputInternal;
   world: WorldInternal;
@@ -31,6 +37,7 @@ export function createGrab(o: {
   camera: THREE.Camera;
   hand: HTMLElement;
   gui?: GUI | null;
+  physics?: GrabPhysics;
 }) {
   const { input, world, bus, camera, hand } = o;
   const params: GrabParams = { LIFT: 0.14, FOLLOW: 14, TILT: 0.18, snapScale: 1 };
@@ -72,6 +79,7 @@ export function createGrab(o: {
         bus.emit('easter:found', { eggId: egg.id });
       }
       if (!p.grabbable) return;
+      o.physics?.drop(p); // reclaim it if it was still tumbling in physics
       held = p;
       falling.delete(p);
       target.copy(p.object.position);
@@ -113,8 +121,14 @@ export function createGrab(o: {
       bus.emit('grab:end', { objectId: p.id, kind: p.kind, snappedTo: snapId });
       bus.emit('sfx:play', { id: 'snap' });
     } else {
-      falling.set(p, { vy: 0, ground: world.groundAt(p.object.position.x, p.object.position.z) });
-      bus.emit('grab:end', { objectId: p.id, kind: p.kind });
+      // Toy props roll/topple/bounce in Rapier; scored props keep the scripted fake bounce.
+      const isToy = world.kitchen?.props.find((pp) => pp.id === p.id)?.toy ?? false;
+      if (isToy && o.physics?.ready && o.physics.toss(p, vel.clone())) {
+        bus.emit('grab:end', { objectId: p.id, kind: p.kind });
+      } else {
+        falling.set(p, { vy: 0, ground: world.groundAt(p.object.position.x, p.object.position.z) });
+        bus.emit('grab:end', { objectId: p.id, kind: p.kind });
+      }
     }
   }
 

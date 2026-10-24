@@ -10,6 +10,7 @@ import type { Flags } from './flags';
 import { createGrab } from './grab';
 import { createInput } from './input';
 import { createMoveRegistry } from './moves';
+import { createPhysics } from './physics';
 import { createUi } from './ui';
 import { COUNTER_TOP, createWorld } from './world';
 
@@ -42,7 +43,8 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
   hand.className = 'hand';
   document.body.append(hand);
   const debug = createDebug(flags, bus, content);
-  const grab = createGrab({ input, world, bus, camera, hand, gui: debug.gui });
+  const physics = createPhysics({ world, bus });
+  const grab = createGrab({ input, world, bus, camera, hand, gui: debug.gui, physics });
   const rig = createCameraRig(camera, bus, world, input);
   const moves = createMoveRegistry();
   const ui = createUi(uiRoot);
@@ -97,6 +99,7 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
     last = now;
     rig.update(dt);
     grab.update(dt);
+    physics.update(dt);
     for (const fn of frameFns) {
       try {
         fn(dt);
