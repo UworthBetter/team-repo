@@ -6,8 +6,10 @@
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+// fileURLToPath: URL.pathname keeps a leading "/C:/" on Windows and breaks join() (owner A: cross-platform fix)
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const check = process.argv.includes('--check');
 const MAX_FILE_MB = 3;
 const MAX_TOTAL_MB = 80;
