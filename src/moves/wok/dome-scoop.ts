@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { watchMeta } from './equipment';
 import { defineMove, type StepStart } from '@core/api';
 import './dome-scoop.css';
@@ -71,6 +72,52 @@ export const domeScoop = defineMove({
       }
     };
 
+    // P0-2 (design_fix_zh.md §3.2): 成品摆盘。dish.platedModel 存在且在 manifest 里 → 加载 GLB
+    // 替换圆顶；否则程序化兜底（按 ingredientVisuals 在圆顶上撒料 + 暖色基底）。
+    // 注：assets 未暴露在 Ctx 上，这里自带 manifest 校验 + GLTFLoader；A 后续可上移到 core。
+    let plated: THREE.Object3D | null = null;
+    const base = import.meta.env.BASE_URL ?? '/';
+    const loadPlated = async (id: string): Promise<THREE.Object3D | null> => {
+      try {
+        const list = await (await fetch(`${base}models/manifest.json`)).json();
+        if (!list.files?.includes(id)) return null;
+        const gltf = await new GLTFLoader().loadAsync(`${base}models/${id}.glb`);
+        return gltf.scene;
+      } catch { return null; }
+    };
+    const scatterToppings = (at: THREE.Vector3) => {
+      const dish = ctx.content.dishes.get(step.dishId);
+      const vis = dish?.ingredientVisuals ?? {};
+      const pieces: THREE.Mesh[] = [];
+      const add = (geo: THREE.BufferGeometry, color: string, n: number, rMax: number) => {
+        for (let i = 0; i < n; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const r = Math.sqrt(Math.random()) * rMax;
+          const m = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ color }));
+          m.position.set(at.x + Math.cos(a) * r, at.y + 0.02 + Math.random() * 0.02, at.z + Math.sin(a) * r);
+          m.rotation.set(Math.random() * 1.2, Math.random() * Math.PI, Math.random());
+          root.add(m);
+          pieces.push(m);
+        }
+      };
+      const shapeFor = (v: { shape: string }) => {
+        switch (v.shape) {
+          case 'cube': return new THREE.BoxGeometry(0.026, 0.026, 0.026);
+          case 'ellipsoid': { const g = new THREE.SphereGeometry(0.011, 8, 6); g.scale(1, 0.72, 1); return g; }
+          case 'cone': return new THREE.ConeGeometry(0.006, 0.03, 6);
+          case 'strip': return new THREE.BoxGeometry(0.006, 0.005, 0.026);
+          default: return new THREE.SphereGeometry(0.007, 8, 6);
+        }
+      };
+      for (const [id, v] of Object.entries(vis)) {
+        if (id === 'rice') continue;
+        add(shapeFor(v), v.color, 6, 0.13);
+      }
+      (dome.material as THREE.MeshToonMaterial).color.set('#E8C579');
+      return () => { for (const p of pieces) { root.remove(p); p.geometry.dispose(); } };
+    };
+    let cleanupScatter: (() => void) | null = null;
+
     /* ---------------- pack ring (DOM) ---------------- */
 
     const layer = ctx.ui.layer('dome_scoop');
@@ -91,6 +138,8 @@ export const domeScoop = defineMove({
       offs.forEach((f) => f());
       ring.remove();
       disposeMeshes();
+      if (plated) { root.remove(plated); plated = null; }
+      cleanupScatter?.();
       ctx.world.resetProp('bowl_mold');
     };
 
@@ -134,6 +183,21 @@ export const domeScoop = defineMove({
         ctx.bus.emit('step:oops', { dishId: step.dishId, stepId: step.stepId, reason: 'loose' });
       }
       ctx.bus.emit('sfx:play', { id: 'snap' });
+      const dish = ctx.content.dishes.get(step.dishId);
+      const platedId = dish?.platedModel;
+      if (platedId) {
+        void loadPlated(platedId).then((model) => {
+          if (!model || phase === 'pack' || phase === 'placed') return;
+          dome.visible = false;
+          cleanupScatter?.(); cleanupScatter = null;
+          model.position.copy(dome.position);
+          model.scale.set(1, Math.max(0.001, dome.scale.y), 1);
+          root.add(model);
+          plated = model;
+        });
+      } else if (pack >= 0.5) {
+        cleanupScatter = scatterToppings(dome.position);
+      }
       void ctx.after(900, finish);
     };
 
@@ -276,7 +340,7 @@ export const domeScoop = defineMove({
           const standH = 0.06 + pack * 0.16;
           const target = pack >= 0.5 ? standH : Math.max(0.02, standH * (1 - slump));
           if (pack < 0.5) slump = Math.min(0.85, slump + dt * 1.4);
-          dome.scale.y += (Math.max(0.001, target) - dome.scale.y) * (1 - Math.exp(-dt * 10));
+          (plated ?? dome).scale.y += (Math.max(0.001, target) - dome.scale.y) * (1 - Math.exp(-dt * 10));
         }
 
         // Pack ring UI follows the bowl's screen position.
