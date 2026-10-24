@@ -1,9 +1,9 @@
 import { defineModule, type Ctx } from '@core/api';
 import './fx.css';
+import { setupParticles } from './particles';
 
 /**
- * Owner: E. Onomatopoeia pops (咔! 啪! 滋啦!), screen shake on funny fails.
- * TODO(E): toon outline pass, steam/bubbles/flame particles, sparkles — add them as files here.
+ * Owner: E. Onomatopoeia pops (咔! 啪! 滋啦!), screen shake on funny fails, pooled particles.
  * See docs/briefs/E-art-audio.md
  */
 function setupFx(ctx: Ctx) {
@@ -27,6 +27,8 @@ function setupFx(ctx: Ctx) {
     void canvas.offsetWidth;
     canvas.classList.add('shake');
   });
+
+  setupParticles(ctx);
 }
 
 export default defineModule({ id: 'fx', owner: 'E', setup: setupFx });
