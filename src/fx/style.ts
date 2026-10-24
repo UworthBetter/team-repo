@@ -12,31 +12,40 @@ export function setupStyle(ctx: Ctx): void {
   const renderer = ctx.three.renderer;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  // Soft image-based ambient so flat-colored props stop looking cardboard-flat.
-  // Kept below the sun's weight so grounded shadows stay visible (reference look).
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  ctx.three.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  ctx.three.scene.environmentIntensity = 0.5;
+  // Software GL (CI smoke runs SwiftShader) can't afford shadow maps or PMREM —
+  // they tank the frame rate so far the auto-play misses its beat windows.
+  // Real GPUs (the projector machine) get the full treatment.
+  const gl = renderer.getContext();
+  const isSoftware = /swiftshader|llvmpipe|software/i.test(String(gl.getParameter(gl.RENDERER)));
 
-  let sun: THREE.DirectionalLight | null = null;
-  let hemi: THREE.HemisphereLight | null = null;
-  ctx.three.scene.traverse((o) => {
-    if (o instanceof THREE.DirectionalLight && !sun) sun = o;
-    if (o instanceof THREE.HemisphereLight && !hemi) hemi = o;
-  });
-  if (hemi) (hemi as THREE.HemisphereLight).intensity *= 0.72;
-  if (sun) {
-    const s = sun as THREE.DirectionalLight;
-    s.intensity *= 1.1; // golden-key weighting, reference look
-    s.castShadow = true;
-    s.shadow.mapSize.set(1024, 1024); // 2048 cost ~13 fps on the projector target; 1024 reads softer anyway
-    const c = s.shadow.camera;
-    c.left = -7; c.right = 7; c.top = 7; c.bottom = -7; c.near = 0.5; c.far = 25;
-    s.shadow.bias = -0.0002;
-    s.shadow.normalBias = 0.02;
+  if (!isSoftware) {
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // Soft image-based ambient so flat-colored props stop looking cardboard-flat.
+    // Kept below the sun's weight so grounded shadows stay visible (reference look).
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    ctx.three.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    ctx.three.scene.environmentIntensity = 0.5;
+
+    let sun: THREE.DirectionalLight | null = null;
+    let hemi: THREE.HemisphereLight | null = null;
+    ctx.three.scene.traverse((o) => {
+      if (o instanceof THREE.DirectionalLight && !sun) sun = o;
+      if (o instanceof THREE.HemisphereLight && !hemi) hemi = o;
+    });
+    if (hemi) (hemi as THREE.HemisphereLight).intensity *= 0.72;
+    if (sun) {
+      const s = sun as THREE.DirectionalLight;
+      s.intensity *= 1.1; // golden-key weighting, reference look
+      s.castShadow = true;
+      s.shadow.mapSize.set(1024, 1024); // 2048 cost ~13 fps on the projector target; 1024 reads softer anyway
+      const c = s.shadow.camera;
+      c.left = -7; c.right = 7; c.top = 7; c.bottom = -7; c.near = 0.5; c.far = 25;
+      s.shadow.bias = -0.0002;
+      s.shadow.normalBias = 0.02;
+    }
   }
 
   // Re-run whenever the kitchen (re)builds: core recreates meshes and toon materials per build.
