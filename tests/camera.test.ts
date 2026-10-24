@@ -56,7 +56,7 @@ describe('first-person camera', () => {
     expect(f.camera.quaternion.angleTo(before)).toBeGreaterThan(0.1);
     f.look(0, 100000);
     const angles = new THREE.Euler().setFromQuaternion(f.camera.quaternion, 'YXZ');
-    expect(angles.x).toBeCloseTo(-1.35);
+    expect(angles.x).toBeCloseTo(-1.1); // home.json cameraLimits.pitchMin
     expect(angles.z).toBeCloseTo(0);
     expect(f.input.grabEnabled).toBe(true);
   });
