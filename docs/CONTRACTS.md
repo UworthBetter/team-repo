@@ -37,7 +37,7 @@ side channels: grab:* snap:* station:focus hint:* fx:pop sfx:play coins:change m
 
 ## Asset names
 
-- Models `public/models/{home|wok|shared}_{room|prop|food|tool|eq}_<name>.glb`, ≤ 3 MB each.
+- Models `public/models/<kitchen>_{room|prop|food|tool|eq|ui}_<name>.glb`, ≤ 3 MB each. `<kitchen>` is any lowercase id (`home`, `wok`, `huaiyang`, `shared`, …).
 - Sounds `public/sfx/sfx_<id>.ogg` (the id used in `sfx:play`), music `mus_<kitchen>.ogg`.
 - Nodes inside a GLB (optional): `snap_<id>`, `col_<name>` (hidden collider), `fx_<name>` (emitter anchor).
 - After adding files: `npm run assets:manifest` and commit the manifest. CI fails if it's stale.

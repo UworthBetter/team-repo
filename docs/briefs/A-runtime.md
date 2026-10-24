@@ -27,5 +27,14 @@
 - [ ] **M3:** outline/toon pass with E; perf ≥ 50 fps on the demo laptop at projector resolution.
 - [ ] **M5:** build + deploy (static host) + offline copy on the demo laptop and a USB stick.
 
+## Regional contract (A4, landed)
+Additive only. Kitchens gained optional `region`, `pacing {bpm, camera: calm|close|handheld}` and
+`ambience {fog, music, particles}`. Route nodes gained `region`, `mapPos [x,y]`, `branch`, `blurb`.
+Equipment gained `comingSoon`. `MOVE_IDS` appends `sprinkle` (C) and `slice_lines` (B); `MODULE_IDS`
+appends `moves-knife` (B, `src/moves/knife/`). Asset-name regex widened to
+`^<kitchen>_(room|prop|food|tool|eq|ui)_<name>$`. Ownership moved in `scripts/owners.json`:
+`content/route.json → D`, `content/kitchens/huaiyang.json → E`, `content/dishes/kung_pao.json → C`,
+`content/dishes/wensi_tofu.json → B`. Owners B–E: please mirror these new paths/ids into your own briefs.
+
 ## Starter prompt for your AI
 > I am owner A (runtime + integration). Read AGENTS.md and docs/briefs/A-runtime.md. Task: <…>. Keep src/core/api.ts and src/contracts/** backward compatible. Finish with npm run check and npm run smoke.

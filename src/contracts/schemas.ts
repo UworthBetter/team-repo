@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { MOVE_IDS } from './ids';
 
 const vec3 = z.tuple([z.number(), z.number(), z.number()]);
+const vec2 = z.tuple([z.number(), z.number()]);
 const color = z.string().regex(/^#[0-9a-fA-F]{6}$/, 'use #RRGGBB');
 const cam = z.object({ pos: vec3, target: vec3 });
 
@@ -25,9 +26,30 @@ export const PropSchema = z.object({
   toy: z.boolean().default(false),
 });
 
+/** Region pacing — A reads this on kitchen:ready (see src/core/camera.ts, world.ts). */
+export const PacingSchema = z.object({
+  /** Toss / beat tempo, read by C's rhythm moves. */
+  bpm: z.number().positive().optional(),
+  /** Camera feel: the current rig (calm), 20% nearer (close) or close + gentle sway (handheld). */
+  camera: z.enum(['calm', 'close', 'handheld']).optional(),
+});
+
+/** Region ambience — fog is applied by A; music + particles are consumed by E. */
+export const AmbienceSchema = z.object({
+  fog: color.optional(),
+  /** Music track id, e.g. 'mus_wok'. */
+  music: z.string().optional(),
+  /** Ambient particle preset names, e.g. ['petals']. */
+  particles: z.array(z.string()).optional(),
+});
+
 export const KitchenSchema = z.object({
   id: z.string(),
   name: z.string(),
+  /** Cuisine region, e.g. 'sichuan'. Cosmetic / grouping only. */
+  region: z.string().optional(),
+  pacing: PacingSchema.optional(),
+  ambience: AmbienceSchema.optional(),
   mood: z.object({
     background: color,
     floor: color,
@@ -77,6 +99,8 @@ export const EquipmentSchema = z.object({
   unlocks: z.string().optional(),
   model: z.string().optional(),
   blurb: z.string().default(''),
+  /** Shown as a "敬请期待" teaser card in the shop; not purchasable yet. */
+  comingSoon: z.boolean().default(false),
   /** Free-form tuning that move owners read, e.g. { "pancake_flip": { "assist": 0.2 } }. */
   effects: z.record(z.unknown()).default({}),
 });
@@ -91,6 +115,14 @@ export const RouteSchema = z.object({
         gate: z.string().nullable(),
         /** Shown locked on the map; no kitchen file exists yet. */
         placeholder: z.boolean().default(false),
+        /** Cuisine region, e.g. 'sichuan'. */
+        region: z.string().optional(),
+        /** Position on the 中华美食地图 (food map), x,y in map units. */
+        mapPos: vec2.optional(),
+        /** Branch the node belongs to on the map, e.g. 'south' | 'east' | 'north'. */
+        branch: z.string().optional(),
+        /** One-line flavour text shown on a locked pin. */
+        blurb: z.string().optional(),
       }),
     )
     .min(1),
@@ -108,6 +140,8 @@ export const SaveSchema = z.object({
 });
 
 export type Prop = z.infer<typeof PropSchema>;
+export type Pacing = z.infer<typeof PacingSchema>;
+export type Ambience = z.infer<typeof AmbienceSchema>;
 export type Kitchen = z.infer<typeof KitchenSchema>;
 export type Step = z.infer<typeof StepSchema>;
 export type Dish = z.infer<typeof DishSchema>;

@@ -12,7 +12,7 @@ const check = process.argv.includes('--check');
 const MAX_FILE_MB = 3;
 const MAX_TOTAL_MB = 80;
 const groups = [
-  { dir: 'public/models', ext: '.glb', re: /^(home|wok|shared)_(room|prop|food|tool|eq)_[a-z0-9_]+$/ },
+  { dir: 'public/models', ext: '.glb', re: /^([a-z0-9]+)_(room|prop|food|tool|eq|ui)_[a-z0-9_]+$/ },
   { dir: 'public/sfx', ext: '.ogg', re: /^(sfx|mus)_[a-z0-9_]+$/ },
 ];
 

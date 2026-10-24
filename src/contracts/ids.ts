@@ -15,16 +15,21 @@ export const MOVE_IDS = [
   'wok_toss',
   'flare',
   'dome_scoop',
+  // Sichuan 花椒 shake (C)
+  'sprinkle',
+  // Huaiyang knife family (B)
+  'slice_lines',
 ] as const;
 export type MoveId = (typeof MOVE_IDS)[number];
 
 /** Feature modules auto-discovered from src/<module>/index.ts and src/moves/<kitchen>/index.ts. */
-export const MODULE_IDS = ['moves-home', 'moves-wok', 'dishes', 'meta', 'ui', 'fx', 'audio'] as const;
+export const MODULE_IDS = ['moves-home', 'moves-wok', 'moves-knife', 'dishes', 'meta', 'ui', 'fx', 'audio'] as const;
 export type ModuleId = (typeof MODULE_IDS)[number];
 
 export const MODULE_OWNERS: Record<ModuleId, OwnerLetter> = {
   'moves-home': 'B',
   'moves-wok': 'C',
+  'moves-knife': 'B',
   dishes: 'B',
   meta: 'D',
   ui: 'D',

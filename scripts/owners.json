@@ -19,12 +19,11 @@
     "package-lock.json",
     "tsconfig.json",
     "vite.config.ts",
-    "index.html",
-    "content/route.json"
+    "index.html"
   ],
-  "B": ["src/moves/home/", "src/dishes/", "content/kitchens/home.json", "content/dishes/pancake_tower.json", "docs/briefs/B-home-moves.md"],
-  "C": ["src/moves/wok/", "content/kitchens/wok.json", "content/dishes/fried_rice.json", "docs/briefs/C-wok-moves.md"],
-  "D": ["src/meta/", "src/ui/", "content/equipment/", "docs/briefs/D-meta-ui.md"],
-  "E": ["src/fx/", "src/audio/", "src/style.css", "public/", "docs/briefs/E-art-audio.md", "CREDITS.md"],
+  "B": ["src/moves/home/", "src/moves/knife/", "src/dishes/", "content/kitchens/home.json", "content/dishes/pancake_tower.json", "content/dishes/wensi_tofu.json", "docs/briefs/B-home-moves.md"],
+  "C": ["src/moves/wok/", "content/kitchens/wok.json", "content/dishes/fried_rice.json", "content/dishes/kung_pao.json", "docs/briefs/C-wok-moves.md"],
+  "D": ["src/meta/", "src/ui/", "content/equipment/", "content/route.json", "docs/briefs/D-meta-ui.md"],
+  "E": ["src/fx/", "src/audio/", "src/style.css", "public/", "content/kitchens/huaiyang.json", "docs/briefs/E-art-audio.md", "CREDITS.md"],
   "shared": ["docs/DECISIONS.md", ".gitignore", ".gitattributes"]
 }
