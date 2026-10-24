@@ -36,7 +36,8 @@ body[data-kitchen='wok'] { background: #2b2422; }
 .hand::before { content: '✋'; }
 .hand.holding::before { content: '✊'; }
 
-.toasts { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); display: grid; gap: 8px; z-index: 30; }
+/* margin-auto centering, not translateX(-50%): a transform here parks text on a half pixel. */
+.toasts { position: absolute; top: 96px; left: 0; right: 0; margin: 0 auto; width: max-content; display: grid; gap: 8px; z-index: 30; }
 .toast { background: var(--ink); color: var(--paper); padding: 8px 16px; border-radius: 12px; font-weight: 800; }
 .toast-error { background: var(--red); }
 

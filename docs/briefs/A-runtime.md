@@ -41,13 +41,15 @@ appends `moves-knife` (B, `src/moves/knife/`). Asset-name regex widened to
 
 ## Integration checks (October 24, 2026)
 
-The runtime supports first-person walking (`?firstperson` or F), with pointer capture,
-collision against counters, and input release on focus loss. The fixed camera remains
-the default. Switching views preserves dish progress.
+The camera is first-person only (October 24, 2026): pointer capture, collision against
+counters, and input release on focus loss. The fixed station rig, its F toggle, and the
+`?firstperson` flag are gone — clicking a station or pressing 1–9/0 moves the player;
+the ceremonial camera:push/shake emits are ignored. Re-capturing the mouse after Esc
+preserves dish progress.
 
 The active CI is `.github/workflows/ci.yml`: Windows and Linux run `check` and
 `build`; Linux also runs browser smoke tests. Smoke tests cover the unlock loop,
-every recipe, every registered dev scene, input/view switching, and rapid navigation.
+every recipe, every registered dev scene, pointer recapture, and rapid navigation.
 Asset instances own their geometry and materials; stale kitchen/equipment loads are
 discarded. Kitchen scaffolding checks all destinations before writing any files.
 

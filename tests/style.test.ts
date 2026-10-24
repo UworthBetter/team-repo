@@ -25,6 +25,16 @@ function context(masked: string, unmasked?: string) {
 }
 
 describe('style renderer selection', () => {
+  it('uses E\'s lightweight software path without scheduling lighting scans', () => {
+    const renderer = {
+      getContext: () => context('WebKit WebGL', 'SwiftShader Device'),
+      toneMapping: THREE.ACESFilmicToneMapping as THREE.ToneMapping,
+    };
+    const onFrame = vi.fn();
+    setupStyle({ three: { renderer }, onFrame } as unknown as Ctx);
+    expect(renderer.toneMapping).toBe(THREE.NoToneMapping);
+    expect(onFrame).not.toHaveBeenCalled();
+  });
   it('recognizes SwiftShader even when the standard renderer name is masked', () => {
     expect(usesSoftwareRenderer(context('WebKit WebGL', 'ANGLE (Google, Vulkan SwiftShader Device)'))).toBe(true);
   });
@@ -45,8 +55,11 @@ describe('style renderer selection', () => {
     const root = new THREE.Group();
     const sun = new THREE.DirectionalLight();
     scene.add(base, root, sun, new THREE.HemisphereLight());
-    const staticMesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshToonMaterial());
-    base.add(staticMesh);
+    const sharedSource = new THREE.MeshToonMaterial();
+    const staticMesh = new THREE.Mesh(new THREE.BoxGeometry(), sharedSource);
+    const sharedMesh = new THREE.Mesh(new THREE.BoxGeometry(), sharedSource);
+    const separateMesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshToonMaterial());
+    base.add(staticMesh, sharedMesh, separateMesh);
     const cookingMaterial = new THREE.MeshToonMaterial();
     root.add(new THREE.Mesh(new THREE.BoxGeometry(), cookingMaterial));
     const bus = new Bus();
@@ -65,6 +78,8 @@ describe('style renderer selection', () => {
     expect(renderer.shadowMap.enabled).toBe(true);
     expect(scene.environment).not.toBeNull();
     expect(staticMesh.material).toBeInstanceOf(THREE.MeshStandardMaterial);
+    expect(sharedMesh.material).toBe(staticMesh.material);
+    expect(separateMesh.material).not.toBe(staticMesh.material);
     expect((root.children[0] as THREE.Mesh).material).toBe(cookingMaterial);
     const lateModel = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial({ roughness: 1 }));
     base.add(lateModel);

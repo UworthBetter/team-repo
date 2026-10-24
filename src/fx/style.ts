@@ -17,14 +17,18 @@ export function usesSoftwareRenderer(gl: WebGLRenderingContext | WebGL2Rendering
  */
 export function setupStyle(ctx: Ctx): void {
   const renderer = ctx.three.renderer;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
 
   // Software GL (CI smoke runs SwiftShader) can't afford shadow maps or PMREM —
   // they tank the frame rate so far the auto-play misses its beat windows.
   // Real GPUs (the projector machine) get the full treatment.
   const gl = renderer.getContext();
   const isSoftware = usesSoftwareRenderer(gl);
+  if (isSoftware) {
+    renderer.toneMapping = THREE.NoToneMapping;
+    return;
+  }
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
 
   if (!isSoftware) {
     renderer.shadowMap.enabled = true;
@@ -114,10 +118,17 @@ function softenScene(ctx: Ctx, styled: WeakMap<THREE.Mesh, THREE.Material | THRE
   });
 }
 
+// Cache by source identity: equal colors can still differ in opacity, side, or ownership.
+// A global color cache would also reuse materials after kitchen disposal frees them.
+const softened = new WeakMap<THREE.MeshToonMaterial, THREE.MeshStandardMaterial>();
+
 function softenMaterial(m: THREE.Material, staticKitchen: boolean): THREE.Material {
   if (staticKitchen && m instanceof THREE.MeshToonMaterial) {
+    const cached = softened.get(m);
+    if (cached) return cached;
     // Core builds greyboxes in toon; match them to the GLB standard materials.
     const std = new THREE.MeshStandardMaterial({ color: m.color.clone(), roughness: 0.85, metalness: 0 });
+    softened.set(m, std);
     m.dispose();
     return std;
   }

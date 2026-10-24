@@ -293,7 +293,6 @@ export const wokToss = defineMove({
         windowMult = eff?.wok_toss?.window ?? 1;
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish(0.6))); // demo escape hatch
     offs.push(
       ctx.input.onKey('KeyO', () => {
         if (done) return;

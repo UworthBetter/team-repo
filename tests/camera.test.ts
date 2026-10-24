@@ -6,7 +6,7 @@ import { loadContent } from '@core/content';
 import type { InputInternal } from '@core/input';
 import type { WorldInternal } from '@core/world';
 
-function fixture(kitchenId = 'home', startFirstPerson = true) {
+function fixture(kitchenId = 'home') {
   const content = loadContent();
   const world = { kitchen: content.kitchens.get(kitchenId)!, counterTop: 0.9 };
   const keys = new Set<string>();
@@ -28,12 +28,12 @@ function fixture(kitchenId = 'home', startFirstPerson = true) {
   };
   const camera = new THREE.PerspectiveCamera(50, 1, 0.05, 60);
   const bus = new Bus();
-  const changed = vi.fn();
-  const rig = createCameraRig(camera, bus, world as WorldInternal, input, { startFirstPerson, onFirstPersonChange: changed });
+  const entered = vi.fn();
+  const rig = createCameraRig(camera, bus, world as WorldInternal, input, { onEnter: entered });
   const ready = () => bus.emit('kitchen:ready', { kitchenId: world.kitchen.id });
   ready();
   return {
-    camera, bus, world, content, input, rig, keys, ready, changed,
+    camera, bus, world, content, input, rig, keys, ready, entered,
     key: (code: string) => keyHandlers.get(code)!({} as KeyboardEvent),
     look: (dx: number, dy: number) => look(dx, dy),
     pause: () => { active = false; },
@@ -48,7 +48,18 @@ function expectOutsideCounters(f: ReturnType<typeof fixture>) {
   }
 }
 
-describe('first-person camera', () => {
+describe('first-person camera (the only view)', () => {
+  it('keeps the picking matrix in sync on focus and faces the station once the glide lands', () => {
+    const f = fixture();
+    f.bus.emit('station:focus', { stationId: 'bowl' });
+    const matrixPosition = new THREE.Vector3().setFromMatrixPosition(f.camera.matrixWorld);
+    expect(matrixPosition.distanceTo(f.camera.position)).toBeLessThan(1e-8);
+    f.rig.update(0.5); // let the 0.45 s glide finish
+    const target = new THREE.Vector3(...f.world.kitchen.stations.find((s) => s.id === 'bowl')!.camera.target);
+    const expected = target.sub(f.camera.position).normalize();
+    const direction = f.camera.getWorldDirection(new THREE.Vector3());
+    expect(direction.distanceTo(expected)).toBeLessThan(1e-8);
+  });
   it('mouse motion turns without a button and keeps the horizon level', () => {
     const f = fixture();
     const before = f.camera.quaternion.clone();
@@ -57,7 +68,7 @@ describe('first-person camera', () => {
     f.look(0, 100000);
     const angles = new THREE.Euler().setFromQuaternion(f.camera.quaternion, 'YXZ');
     expect(angles.x).toBeCloseTo(-1.35);
-    expect(angles.z).toBeCloseTo(0);
+    expect(angles.z).toBeCloseTo(0, 12); // quaternion↔euler round-trip leaves float noise
     expect(f.input.grabEnabled).toBe(true);
   });
 
@@ -66,10 +77,33 @@ describe('first-person camera', () => {
       const f = fixture(kitchen.id);
       for (const s of kitchen.stations) {
         f.bus.emit('station:focus', { stationId: s.id });
+        f.rig.update(0.5); // complete the glide
         expect(f.camera.position.y).toBe(1.6);
         expectOutsideCounters(f);
       }
     }
+  });
+
+  it('glides to a focused station instead of teleporting (0.45 s ease, then free)', () => {
+    const f = fixture();
+    const station = f.world.kitchen.stations[0]!;
+    f.bus.emit('station:focus', { stationId: station.id });
+    const start = f.camera.position.clone();
+    f.rig.update(0.1);
+    const partway = f.camera.position.clone();
+    const goal = new THREE.Vector3(station.camera.pos[0], 1.6, station.camera.pos[2]);
+    // Under way but not arrived: a glide, not a snap.
+    expect(partway.distanceTo(start)).toBeGreaterThan(0.01);
+    expect(partway.distanceTo(goal)).toBeGreaterThan(0.05);
+    f.rig.update(0.5); // past the end of the glide
+    expect(f.camera.position.y).toBe(1.6);
+    expect(f.camera.position.distanceTo(goal)).toBeLessThan(1); // resolve() may nudge a little
+    expectOutsideCounters(f);
+    // The player is free again: walking answers on the very next step.
+    const after = f.camera.position.clone();
+    f.keys.add('KeyW');
+    f.rig.update(0.2);
+    expect(f.camera.position.distanceTo(after)).toBeGreaterThan(0.1);
   });
 
   it('cannot tunnel through a counter on a large fast-forward frame', () => {
@@ -99,23 +133,20 @@ describe('first-person camera', () => {
     expect(f.camera.position.equals(paused)).toBe(true);
   });
 
-  it('preserves move-owned grab state through repeated kitchen switches and exit', () => {
+  it('enters once and preserves move-owned grab state across kitchen switches', () => {
     const f = fixture();
+    expect(f.entered).toHaveBeenCalledTimes(1);
+    expect(f.input.setLookEnabled).toHaveBeenCalledWith(true);
     f.input.setGrabEnabled(false);
     f.world.kitchen = f.content.kitchens.get('wok')!;
     f.ready();
     f.ready();
-    expect(f.changed).toHaveBeenCalledTimes(1);
-    f.key('KeyF');
+    expect(f.entered).toHaveBeenCalledTimes(1);
+    expect(f.camera.position.y).toBe(1.6);
     expect(f.input.grabEnabled).toBe(false);
-    f.input.setGrabEnabled(true);
-    f.key('KeyF');
-    f.ready();
-    f.key('KeyF');
-    expect(f.input.grabEnabled).toBe(true);
   });
 
-  it('returns from the actual player pose and ignores stale push/shake', () => {
+  it('ignores ceremonial camera:push / camera:shake events while walking', () => {
     const f = fixture();
     f.keys.add('KeyD');
     f.rig.update(0.4);
@@ -124,19 +155,10 @@ describe('first-person camera', () => {
     const rotation = f.camera.quaternion.clone();
     f.bus.emit('camera:push', { at: [0, 0, 0], zoom: 2, ms: 200 });
     f.bus.emit('camera:shake', { strength: 1, ms: 1000 });
-    f.key('KeyF');
+    f.keys.clear();
     f.rig.update(0);
+    f.rig.update(1);
     expect(f.camera.position.distanceTo(pos)).toBeLessThan(1e-8);
     expect(f.camera.quaternion.angleTo(rotation)).toBeLessThan(1e-7);
-    f.rig.update(1);
-    expect(f.camera.position.distanceTo(new THREE.Vector3(...f.world.kitchen.overview.pos))).toBeLessThan(1e-8);
-  });
-
-  it('retains fixed station cameras when first-person is off', () => {
-    const f = fixture('home', false);
-    const station = f.world.kitchen.stations[0]!;
-    f.bus.emit('station:focus', { stationId: station.id });
-    f.rig.update(1);
-    expect(f.camera.position.distanceTo(new THREE.Vector3(...station.camera.pos))).toBeLessThan(1e-8);
   });
 });

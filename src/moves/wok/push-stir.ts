@@ -157,7 +157,6 @@ export const pushStir = defineMove({
     }
 
     offs.push(ctx.input.onPointer(onPointer));
-    offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     offs.push(
       ctx.input.onKey('KeyO', () => {
         if (done) return;

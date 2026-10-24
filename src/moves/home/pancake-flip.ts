@@ -209,7 +209,6 @@ export const pancakeFlip = defineMove({
         }
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => current && current.state === 'cooking' && launch(current, 0.85)));
     spawn();
 
     return {

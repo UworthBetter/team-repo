@@ -217,7 +217,6 @@ export const eggCrack = defineMove({
         }
       }),
     );
-    offs.push(ctx.input.onKey('Space', () => finish())); // demo escape hatch
     if (ctx.flags.auto) {
       const eggs = ctx.world.propsOfKind('egg');
       eggs.forEach((egg, i) => {
