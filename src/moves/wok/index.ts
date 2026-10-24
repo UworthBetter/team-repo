@@ -1,12 +1,12 @@
 import { defineModule, devStep, stubMove } from '@core/api';
 import { domeScoop } from './dome-scoop';
+import { flare } from './flare';
 import { wokToss } from './wok-toss';
 
 /**
  * Owner: C. Wok Station moves. One file per move; replace stubs as you go.
  * See docs/briefs/C-wok-moves.md
  */
-const flare = stubMove('flare', '爆火');
 
 export default defineModule({
   id: 'moves-wok',
@@ -22,8 +22,12 @@ export default defineModule({
       const inst = domeScoop.start(c, devStep('dome_scoop', 'pass'));
       return () => inst.dispose();
     });
+    ctx.dev.scene('flare', { kitchen: 'wok', station: 'wok' }, (c) => {
+      const inst = flare.start(c, devStep('flare', 'wok'));
+      return () => inst.dispose();
+    });
   },
   stub(ctx) {
-    [stubMove('wok_toss', '颠勺'), flare, stubMove('dome_scoop', '扣圆顶')].forEach((m) => ctx.moves.register(m));
+    [stubMove('wok_toss', '颠勺'), stubMove('flare', '爆火'), stubMove('dome_scoop', '扣圆顶')].forEach((m) => ctx.moves.register(m));
   },
 });
