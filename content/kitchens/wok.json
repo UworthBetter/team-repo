@@ -28,6 +28,7 @@
     { "id": "bowl_chicken", "kind": "chicken", "model": "wok_food_bowl_chicken", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#E9C394", "pos": [-2.0, 0.9, -0.45] },
     { "id": "bowl_peanut", "kind": "peanut", "model": "wok_food_bowl_peanut", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#C68A4E", "pos": [-1.7, 0.9, -0.45] },
     { "id": "bowl_chili", "kind": "chili", "model": "wok_food_bowl_chili", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#D63A2E", "pos": [-1.4, 0.9, -0.45] },
+    { "id": "bowl_huajiao", "kind": "huajiao", "model": "wok_food_bowl_huajiao", "shape": "cylinder", "size": [0.14, 0.06, 0.14], "color": "#C9A84C", "pos": [-1.1, 0.9, -0.75] },
     { "id": "wok", "kind": "wok", "model": "wok_tool_wok", "shape": "cylinder", "size": [0.62, 0.12, 0.62], "color": "#3E3A3A", "pos": [0, 0.9, -0.6], "grabbable": false },
     { "id": "stock_pot", "kind": "pot", "model": "wok_prop_stock_pot", "shape": "cylinder", "size": [0.4, 0.32, 0.4], "color": "#A9AEB4", "pos": [0.75, 0.9, -0.7], "toy": true },
     { "id": "soy", "kind": "sauce", "model": "wok_food_soy", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#3A1E14", "pos": [1.2, 0.9, -0.8] },

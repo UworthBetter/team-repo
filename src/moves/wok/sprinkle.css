@@ -1,0 +1,19 @@
+/* Owner: C — the 「麻!」 screen tingle for 撒料. Lives on my own UI layer. */
+.sp-tingle {
+  animation: sp-numb 1.1s ease-in-out;
+  backdrop-filter: saturate(0.55);
+}
+
+@keyframes sp-numb {
+  0% { backdrop-filter: saturate(1); }
+  15% { transform: translateX(-7px); backdrop-filter: saturate(0.5); }
+  30% { transform: translateX(6px) translateY(2px); }
+  45% { transform: translateX(-5px) translateY(-2px); backdrop-filter: saturate(0.45); }
+  60% { transform: translateX(4px); }
+  75% { transform: translateX(-3px) translateY(1px); backdrop-filter: saturate(0.55); }
+  100% { transform: none; backdrop-filter: saturate(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-tingle { animation: none; }
+}
