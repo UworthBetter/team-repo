@@ -9,10 +9,6 @@ import { defineMove, type StepStart } from '@core/api';
  *   > 1.6 s  over the fire — quality decays
  * An installed 灶火增压器 (flame_booster) scales the flame and the quality bonus by
  * effects.flare.power (read from meta:state).
- *
- * TODO(contract): 'camera:shake' and 'fx:emit' are A3/E4 events not yet in
- * src/contracts/events.ts — emit them through a widened bus below. They are harmless
- * no-ops until the contract PR lands; then this shim is deleted.
  */
 const BURST_AT = 0.6; // s of holding before the flame can actually burst
 const SWEET_LO = 1.0;
@@ -123,10 +119,8 @@ export const flare = defineMove({
         burst = 1;
         fading = true;
         ctx.bus.emit('sfx:play', { id: 'flare', at: [center.x, center.y, center.z] });
-        const shakeBus = ctx.bus as unknown as { emit(name: 'camera:shake', payload: { strength: number; ms: number }): void };
-        shakeBus.emit('camera:shake', { strength: 0.6 * power, ms: 400 });
-        const fx2Bus = ctx.bus as unknown as { emit(name: 'fx:emit', payload: { preset: string; at?: [number, number, number] }): void };
-        fx2Bus.emit('fx:emit', { preset: 'flame', at: [center.x, center.y + 0.1, center.z] });
+        ctx.bus.emit('camera:shake', { strength: 0.6 * power, ms: 400 });
+        ctx.bus.emit('fx:emit', { preset: 'flame', at: [center.x, center.y + 0.1, center.z] });
         void ctx.after(750, () => finish(qualityFor(held)));
       } else {
         ctx.bus.emit('sfx:play', { id: 'bounce' });
