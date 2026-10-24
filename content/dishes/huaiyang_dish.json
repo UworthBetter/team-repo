@@ -1,0 +1,33 @@
+{
+  "id": "huaiyang_dish",
+  "name": "扬州园林厨房 招牌菜",
+  "kitchen": "huaiyang",
+  "steps": [
+    {
+      "id": "fan_step",
+      "move": "stack",
+      "station": "board",
+      "weight": 1,
+      "params": {}
+    },
+    {
+      "id": "ladle_step",
+      "move": "stack",
+      "station": "bowl",
+      "weight": 1,
+      "params": {}
+    }
+  ],
+  "rating": {
+    "good": 0.4,
+    "great": 0.7,
+    "perfect": 0.9
+  },
+  "coins": {
+    "oops": 5,
+    "good": 20,
+    "great": 50,
+    "perfect": 80
+  },
+  "stars": []
+}
