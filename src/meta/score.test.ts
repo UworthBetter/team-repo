@@ -37,3 +37,19 @@ describe('payout', () => {
     expect(starsEarned(dish, 'perfect')).toEqual(['a', 'b']);
   });
 });
+
+describe('starsEarned (tag-based, card D5)', () => {
+  it('a star is earned only when its id appeared as a step tag in the run', () => {
+    expect(starsEarned(dish, 'perfect', ['a'])).toEqual(['a']);
+    expect(starsEarned(dish, 'great', ['b', 'unrelated'])).toEqual(['b']);
+    expect(starsEarned(dish, 'perfect', ['unrelated'])).toEqual([]);
+  });
+  it('runs with no tags at all (stub moves) keep the tier fallback', () => {
+    expect(starsEarned(dish, 'perfect', [])).toEqual(['a', 'b']);
+    expect(starsEarned(dish, 'great', [])).toEqual(['a']);
+    expect(starsEarned(dish, 'oops', [])).toEqual([]);
+  });
+  it("runs whose only tag is 'stub' (placeholder moves) also fall back", () => {
+    expect(starsEarned(dish, 'perfect', ['stub'])).toEqual(['a', 'b']);
+  });
+});

@@ -1,0 +1,11 @@
+{
+  "id": "bamboo_steamer",
+  "name": "竹蒸笼塔",
+  "kitchen": "huaiyang",
+  "price": 400,
+  "key": true,
+  "unlocks": "cantonese",
+  "blurb": "解锁 → 粤 · 广式茶楼（南线支线）",
+  "comingSoon": true,
+  "effects": {}
+}

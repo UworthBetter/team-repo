@@ -6,7 +6,7 @@
  *   --strict exit 1 when flagged (CI uses this only for contract files)
  * Run it before you commit: an AI agent that wandered outside your folder shows up here.
  */
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
 const args = process.argv.slice(2);
@@ -24,13 +24,15 @@ const ownerOf = (f) => table.find(({ p }) => f === p || f.startsWith(p))?.who ??
 
 let files;
 try {
-  const committed = execSync(`git diff --name-only ${base}...HEAD`, { encoding: 'utf8' });
-  const working = execSync('git diff --name-only HEAD', { encoding: 'utf8' });
-  const staged = execSync('git diff --name-only --cached', { encoding: 'utf8' });
-  files = [...new Set([committed, working, staged].join('\n').split('\n').filter(Boolean))];
+  const git = (...params) => execFileSync('git', params, { encoding: 'utf8' });
+  const committed = git('diff', '--name-only', `${base}...HEAD`, '--');
+  const working = git('diff', '--name-only', 'HEAD', '--');
+  const staged = git('diff', '--name-only', '--cached', '--');
+  const untracked = git('ls-files', '--others', '--exclude-standard');
+  files = [...new Set([committed, working, staged, untracked].join('\n').split('\n').filter(Boolean))];
 } catch {
   console.log(`(could not diff against ${base} — fetch it first, or pass another base)`);
-  process.exit(0);
+  process.exit(1);
 }
 
 const byOwner = {};

@@ -13,8 +13,21 @@ export function rate(dish: Dish, quality: number): Rating {
   return 'oops';
 }
 
-/** TODO(D): real star checks from step tags (e.g. 'no_shell'). For now: perfect = all stars, great = first star. */
-export function starsEarned(dish: Dish, rating: Rating): string[] {
+/**
+ * Tag-based star checks (card D5): a star is earned when its id appears as a tag on some
+ * step:complete in the run (e.g. 'no_shell' from a clean egg crack). Runs whose only tags
+ * are 'stub' (placeholder moves emit it) keep the tier fallback, so the demo never shows
+ * an empty result just because a move is still a stub.
+ */
+export function starsEarned(dish: Dish, rating: Rating, runTags: string[] = []): string[] {
+  if (dish.stars.length === 0) return [];
+  const meaningful = runTags.filter((t) => t !== 'stub');
+  if (meaningful.length === 0) return tierFallback(dish, rating);
+  return dish.stars.filter((s) => meaningful.includes(s.id)).map((s) => s.id);
+}
+
+/** Old behaviour, kept as the fallback: perfect = every star, great = the first star. */
+function tierFallback(dish: Dish, rating: Rating): string[] {
   if (rating === 'perfect') return dish.stars.map((s) => s.id);
   if (rating === 'great') return dish.stars.slice(0, 1).map((s) => s.id);
   return [];

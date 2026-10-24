@@ -53,6 +53,11 @@ function parseAll<S extends ZodTypeAny>(files: Record<string, unknown>, schema: 
 export function crossCheck(c: Content): string[] {
   const p: string[] = [];
   const routeIds = new Set(c.route.nodes.map((n) => n.kitchenId));
+  const seenRouteIds = new Set<string>();
+  for (const node of c.route.nodes) {
+    if (seenRouteIds.has(node.kitchenId)) p.push(`content/route.json: duplicate kitchen node "${node.kitchenId}"`);
+    seenRouteIds.add(node.kitchenId);
+  }
   for (const k of c.kitchens.values()) {
     const where = `content/kitchens/${k.id}.json`;
     const stationIds = new Set(k.stations.map((s) => s.id));

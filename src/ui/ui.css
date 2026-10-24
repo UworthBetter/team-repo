@@ -56,3 +56,105 @@
 .route li { display: flex; align-items: center; gap: 14px; min-height: 48px; padding: 8px 14px; border: 2.5px solid var(--ink); border-radius: 14px; background: #fff; }
 .route li b { flex: 1; font-size: 19px; } .route li small { color: var(--muted); font-size: 15px; }
 .route li.locked { border-style: dashed; color: var(--muted); background: transparent; }
+
+/* ---------- D1 result ceremony (board 5) ---------- */
+.result-catcher { position: absolute; inset: 0; display: grid; place-items: center; }
+.result-seq { min-width: 380px; text-align: center; display: grid; gap: 12px; }
+.stamp.pre { visibility: hidden; }
+.stamp.slam { animation: slam 0.35s cubic-bezier(.2,1.6,.4,1); }
+.result-buttons { opacity: 0; transform: translateY(8px); transition: opacity 0.3s ease, transform 0.3s ease; }
+.result-buttons.show { opacity: 1; transform: none; }
+.result-quality { color: var(--muted); font: 900 19px var(--font-ui); }
+.result-skip { color: var(--muted); font: 400 13px var(--font-ui); opacity: 0.8; }
+.star.on { animation: starpop 0.35s cubic-bezier(.2,1.8,.4,1); }
+.star { position: relative; }
+.star-new { display: none; position: absolute; top: -12px; right: -16px; font: 900 12px var(--font-ui); font-style: normal; background: var(--gold); color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 0 6px; }
+.star.on .star-new { display: inline-block; animation: starpop 0.4s cubic-bezier(.2,1.8,.4,1); }
+@keyframes starpop { from { transform: scale(0) rotate(-40deg); } }
+.coin-fly { position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: var(--gold); border: 3px solid var(--gold-rim); z-index: 5; pointer-events: none; }
+
+/* ---------- D2 crate ---------- */
+.crate-progress { position: absolute; left: 0; top: 0; background: var(--paper); border: 3px solid var(--ink); border-radius: 999px; padding: 4px 14px; font: 900 17px var(--font-ui); pointer-events: none; z-index: 8; }
+.crate-arrow { position: absolute; left: 0; top: 0; width: 46px; height: 30px; margin: -15px 0 0 -6px; color: var(--teal); filter: drop-shadow(0 2px 0 rgba(43, 36, 34, 0.4)); pointer-events: none; z-index: 8; animation: nudge 1s ease-in-out infinite; }
+.crate-arrow svg { width: 100%; height: 100%; }
+@keyframes nudge { 50% { margin-left: 6px; } }
+
+/* ---------- D3 pinned catalog (board 6) ---------- */
+.shop-grid { perspective: 600px; }
+.shop-item::before {
+  content: ''; position: absolute; top: -9px; left: 50%; width: 16px; height: 16px; margin-left: -8px;
+  border-radius: 50%; background: var(--red); border: 3px solid var(--ink);
+  box-shadow: 0 5px 0 -1px rgba(43, 36, 34, 0.35);
+}
+.shop-item { margin-top: 10px; }
+.shop-item:nth-child(3n + 1) { transform: rotate(-1.1deg); }
+.shop-item:nth-child(3n + 2) { transform: rotate(0.8deg); }
+.shop-item:nth-child(3n) { transform: rotate(-0.3deg); }
+.shop-item .unlock-line { color: var(--red); font-weight: 900; }
+.shop-item.soon { border-style: dashed; opacity: 0.85; background: transparent; }
+.shop-item.soon::before { background: var(--muted); }
+.badge.soon-badge { top: -10px; left: 10px; right: auto; background: var(--muted); }
+.btn.poor, .btn.poor.primary { background: var(--line); color: var(--muted); border-color: var(--muted); }
+.muted-line { color: var(--muted); }
+.shop-panel .panel-head { margin-bottom: 6px; }
+
+/* ---------- D6 HUD ---------- */
+.dish-head { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; }
+.step-counter { font: 900 20px var(--font-ui); color: var(--teal-ink); background: var(--teal-tint); border-radius: 10px; padding: 2px 10px; }
+.hint-pill { display: flex; align-items: center; gap: 10px; }
+.hint-pill.pop { animation: hintpop 0.28s cubic-bezier(.2,1.6,.4,1); }
+@keyframes hintpop { from { transform: translateX(-50%) scale(0.85); } 60% { transform: translateX(-50%) scale(1.06); } to { transform: translateX(-50%) scale(1); } }
+.hint-pill svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.hint-count { background: rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 2px 12px; font-variant-numeric: tabular-nums; }
+.dock { gap: 8px; flex-wrap: wrap; max-width: 46vw; }
+.dock-key { display: inline-flex; align-items: center; gap: 7px; width: auto; height: 34px; border-radius: 999px; padding: 0 12px 0 6px; font: 900 15px var(--font-ui); }
+.dock-key b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 14px; }
+.coin-delta { position: absolute; font: 900 22px var(--font-ui); color: var(--gold-ink); animation: floatup 1s ease-out forwards; pointer-events: none; z-index: 6; }
+@keyframes floatup { from { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } to { opacity: 0; transform: translateY(-34px); } }
+
+/* ---------- juice: press feedback on every control ---------- */
+.btn:hover, .round:hover, .dock-key:hover { transform: translateY(-2px); box-shadow: 0 3px 0 rgba(43, 36, 34, 0.35); }
+.btn:active, .round:active, .dock-key:active { transform: translateY(1px); box-shadow: none; }
+.shop-item { transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.shop-item:hover { transform: translateY(-3px) rotate(0deg) !important; box-shadow: 0 5px 0 rgba(43, 36, 34, 0.22); }
+
+/* ---------- D5 sticker book ---------- */
+.sticker-summary { display: flex; gap: 18px; justify-content: center; font: 900 18px var(--font-ui); color: var(--ink); background: var(--teal-tint); border-radius: 12px; padding: 8px 14px; }
+.sticker-groups { display: grid; gap: 14px; }
+.sticker-group h3 { margin: 0 0 6px; font: 400 24px var(--font-display); }
+.sticker-group h3 small { color: var(--muted); font: 900 15px var(--font-ui); margin-left: 6px; }
+.sticker-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.sticker { min-width: 74px; text-align: center; padding: 10px 12px; border: 2.5px dashed var(--line); border-radius: 14px; color: var(--muted); font: 900 16px var(--font-ui); }
+.sticker.on { border: 3px solid var(--red); border-radius: 50%; color: var(--red); transform: rotate(-8deg); background: #FFF6F1; }
+
+/* ---------- D4/D8 food map (board 7) ---------- */
+.route-panel { width: min(920px, 94vw); }
+.route-map svg { width: 100%; height: auto; display: block; border: 3px solid var(--ink); border-radius: 14px; background: var(--paper); }
+.map-title { font: 400 44px var(--font-display); fill: var(--ink); opacity: 0.75; }
+.map-path { stroke: var(--muted); stroke-width: 4.5; stroke-dasharray: 0.06 0.05; stroke-linecap: round; opacity: 0.8; }
+.map-path.open { stroke: var(--sage-ink); stroke-dasharray: none; opacity: 1; }
+.map-path.draw { stroke: var(--red); stroke-width: 6; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.map-path.draw.go { transition: stroke-dashoffset 1.2s ease; stroke-dashoffset: 0; }
+.pin { cursor: pointer; } /* locked pins answer clicks with guidance */
+.pin-body { fill: var(--muted); stroke: var(--ink); stroke-width: 2; }
+.pin.locked .pin-body { fill: #C9C2B8; }
+.pin.open { cursor: pointer; }
+.pin.open .pin-body { fill: var(--red); }
+.pin-dot { fill: var(--paper); }
+.pin.here .pin-body { animation: pinbounce 1.6s ease-in-out infinite; }
+@keyframes pinbounce { 50% { transform: translateY(-7px); } }
+.pin.here { animation: none; }
+.pin.pulse .pin-dot { fill: var(--gold); }
+.pin.pulse .pin-body { animation: pinglow 0.9s ease-in-out 3; }
+@keyframes pinglow { 50% { stroke: var(--gold); stroke-width: 5; } }
+.pin-name { font: 900 17px var(--font-ui); fill: var(--ink); text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; }
+.pin.locked .pin-name { fill: var(--muted); }
+.map-here { font: 900 15px var(--font-ui); fill: var(--red); text-anchor: middle; }
+.map-gate { font: 800 13px var(--font-ui); fill: var(--red); text-anchor: middle; }
+.map-blurb { font: 400 12.5px var(--font-ui); fill: var(--muted); text-anchor: middle; }
+.map-fog { fill: #fff; opacity: 0.42; }
+.map-lock { font-size: 17px; text-anchor: middle; }
+.map-lock.crack { transform-origin: center; transform-box: fill-box; }
+.map-lock.crack.go { animation: lockcrack 0.7s ease forwards; }
+@keyframes lockcrack { 40% { transform: rotate(22deg) translateY(4px); opacity: 1; } 100% { transform: rotate(-38deg) translateY(16px); opacity: 0; } }
+.muted { color: var(--muted); }
