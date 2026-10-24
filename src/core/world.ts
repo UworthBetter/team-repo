@@ -142,6 +142,8 @@ export function createWorld(
       kitchen = k;
 
       scene.background = new THREE.Color(k.mood.background);
+      // Ambience fog (A5): tint the air to match the region; cleared when a kitchen has none.
+      scene.fog = k.ambience?.fog ? new THREE.Fog(new THREE.Color(k.ambience.fog), 3, 16) : null;
       hemi.color.set(k.mood.light);
       hemi.groundColor.set(k.mood.floor);
       sun.color.set(k.mood.light);

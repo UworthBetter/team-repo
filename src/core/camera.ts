@@ -22,6 +22,12 @@ export function createCameraRig(camera: THREE.PerspectiveCamera, bus: Bus, world
   let t = 1;
   let dur = 0.45;
 
+  // --- pacing (A5): set from kitchen.pacing.camera on kitchen:ready ---
+  let baseGlide = 0.45; // default station glide duration
+  let zoomNear = 0; // fraction to dolly the rig toward its target (close/handheld = 0.2)
+  let swayAmp = 0; // handheld hand-held sway amplitude in meters
+  let swayClock = 0;
+
   // --- camera:push state (dolly toward a point) ---
   const pushAt = new THREE.Vector3();
   let pushZoom = 1;
@@ -52,6 +58,12 @@ export function createCameraRig(camera: THREE.PerspectiveCamera, bus: Bus, world
       finalPos.lerp(pushAt, dolly);
       finalLook.lerp(pushAt, 0.6 * pushLevel);
     }
+    if (swayAmp > 0) {
+      // Gentle ~0.6 Hz handheld sway (A5), Lissajous so it never feels like a loop.
+      const w = swayClock * Math.PI * 2 * 0.6;
+      finalPos.x += Math.sin(w) * swayAmp;
+      finalPos.y += Math.cos(w * 0.9) * swayAmp * 0.7;
+    }
     if (shakeT < shakeDur) {
       const amp = shakeAmp * (1 - shakeT / shakeDur) * 0.09;
       finalPos.x += (Math.random() * 2 - 1) * amp;
@@ -64,11 +76,13 @@ export function createCameraRig(camera: THREE.PerspectiveCamera, bus: Bus, world
     camera.lookAt(finalLook);
   }
 
-  function goTo(c: { pos: Vec3; target: Vec3 }, d = 0.45) {
+  function goTo(c: { pos: Vec3; target: Vec3 }, d = baseGlide) {
     from.pos.copy(basePos);
     from.target.copy(baseLook);
     to.pos.set(c.pos[0], c.pos[1], c.pos[2]);
     to.target.set(c.target[0], c.target[1], c.target[2]);
+    // Pacing 'close'/'handheld' dollies the whole rig toward its look point.
+    if (zoomNear > 0) to.pos.lerp(to.target, zoomNear);
     dur = d;
     if (d <= 0) {
       t = 1;
@@ -87,6 +101,11 @@ export function createCameraRig(camera: THREE.PerspectiveCamera, bus: Bus, world
     // A fresh kitchen cancels any lingering push/shake from the previous one.
     pushLevel = pushTarget = 0;
     shakeT = shakeDur;
+    // Pacing (A5): calm = current rig; close = 20% nearer + slower glide; handheld = close + sway.
+    const mode = world.kitchen?.pacing?.camera ?? 'calm';
+    zoomNear = mode === 'calm' ? 0 : 0.2;
+    baseGlide = mode === 'calm' ? 0.45 : 0.6;
+    swayAmp = mode === 'handheld' ? 0.012 : 0;
     if (world.kitchen) goTo(world.kitchen.overview, 0);
   });
   for (let d = 1; d <= 9; d++) {
@@ -116,6 +135,7 @@ export function createCameraRig(camera: THREE.PerspectiveCamera, bus: Bus, world
   return {
     goTo,
     update(dt: number) {
+      swayClock += dt;
       if (t < 1) t = Math.min(1, t + dt / dur);
       if (pushLevel !== pushTarget) {
         const step = dt / Math.max(0.0001, pushDur);
