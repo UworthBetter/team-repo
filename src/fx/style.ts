@@ -9,7 +9,7 @@ export function usesSoftwareRenderer(gl: WebGLRenderingContext | WebGL2Rendering
 }
 
 /** 风格 A 的两档平涂渐变（与 core/world.ts 的 twoTone 同规则，供动作模块自建的 toon 材质共享）。 */
-const TWO_TONE = new THREE.DataTexture(new Uint8Array([150, 255]), 2, 1, THREE.RedFormat);
+const TWO_TONE = new THREE.DataTexture(new Uint8Array([138, 255]), 2, 1, THREE.RedFormat);
 TWO_TONE.minFilter = THREE.NearestFilter;
 TWO_TONE.magFilter = THREE.NearestFilter;
 TWO_TONE.needsUpdate = true;
@@ -24,7 +24,7 @@ TWO_TONE.needsUpdate = true;
 export function setupStyle(ctx: Ctx): void {
   const renderer = ctx.three.renderer;
   renderer.toneMapping = THREE.LinearToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 1.08; // 上色 pass：轻微提亮让平涂色更接近 CSS 色板的饱和度
 
   const gl = renderer.getContext();
   const isSoftware = usesSoftwareRenderer(gl);

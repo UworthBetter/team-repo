@@ -8,7 +8,7 @@
 .row { display: flex; gap: 12px; justify-content: center; }
 
 .dish-card { position: absolute; top: 24px; left: 24px; min-width: 240px; }
-.dish-title { font: 400 30px var(--font-display); margin-bottom: 6px; }
+.dish-title { font: 400 30px var(--font-display); margin-bottom: 6px; text-decoration: underline wavy var(--tomato) 3px; text-underline-offset: 8px; }
 .dish-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 19px; font-weight: 800; }
 .dish-steps li { padding: 3px 10px; border-radius: 10px; color: var(--ink); }
 .dish-steps li::before { content: '○ '; color: var(--muted); }
@@ -38,7 +38,7 @@
 .layer.dim { background: rgba(43, 36, 34, 0.45); display: grid; place-items: center; z-index: 10; }
 .layer.dim[hidden] { display: none; }
 .result-card { min-width: 360px; text-align: center; display: grid; gap: 12px; }
-.result-dish { font: 400 34px var(--font-display); }
+.result-dish { font: 400 34px var(--font-display); text-decoration: underline wavy var(--gold) 3px; text-underline-offset: 9px; }
 .stamp { justify-self: center; font: 400 60px var(--font-display); padding: 4px 26px; border: 7px solid currentColor; border-radius: 18px; transform: rotate(-10deg); animation: slam 0.35s cubic-bezier(.2,1.6,.4,1); }
 .stamp-perfect { color: var(--red); } .stamp-great { color: var(--amber); } .stamp-good { color: var(--sage-ink); } .stamp-oops { color: var(--muted); }
 @keyframes slam { from { transform: rotate(-10deg) scale(2.2); opacity: 0; } }

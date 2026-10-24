@@ -1,7 +1,7 @@
 {
   "id": "home",
   "name": "家庭厨房",
-  "mood": { "background": "#FFF3E2", "floor": "#F3E3C6", "counter": "#EBD5B1", "light": "#FFF4DC", "lightIntensity": 1.3 },
+  "mood": { "background": "#FFEBCC", "floor": "#EDD9A6", "counter": "#F5D9A0", "light": "#FFF4DC", "lightIntensity": 1.45 },
   "defaultDish": "pancake_tower",
   "overview": { "pos": [0.2, 2.6, 3.2], "target": [0.2, 0.9, -0.1] },
   "counters": [
@@ -29,17 +29,17 @@
     { "id": "burner_right", "kind": "burner", "shape": "cylinder", "size": [0.3, 0.01, 0.3], "color": "#3B3A3F", "pos": [0.95, 0.9, -0.7], "grabbable": false },
     { "id": "pan", "kind": "pan", "model": "home_tool_pan", "shape": "cylinder", "size": [0.42, 0.05, 0.42], "color": "#45454D", "pos": [0.5, 0.91, -0.7] },
     { "id": "plate", "kind": "plate_serving", "model": "shared_tool_plate", "shape": "cylinder", "size": [0.36, 0.025, 0.36], "color": "#FFFFFF", "pos": [1.5, 0.9, -0.65], "grabbable": false },
-    { "id": "plates_stack", "kind": "plate", "model": "shared_tool_plate_stack", "shape": "cylinder", "size": [0.36, 0.08, 0.36], "color": "#FFFFFF", "pos": [1.95, 0.9, -0.8], "toy": true },
-    { "id": "bowl", "kind": "bowl", "model": "home_tool_bowl", "shape": "cylinder", "size": [0.38, 0.14, 0.38], "color": "#FFFFFF", "pos": [-0.35, 0.9, 0.55], "grabbable": false },
-    { "id": "carton", "kind": "carton", "shape": "box", "size": [0.3, 0.06, 0.16], "color": "#D8BE96", "pos": [0.05, 0.9, 0.78], "grabbable": false },
+    { "id": "plates_stack", "kind": "plate", "model": "shared_tool_plate_stack", "shape": "cylinder", "size": [0.36, 0.08, 0.36], "color": "#8DBF9F", "pos": [1.95, 0.9, -0.8], "toy": true },
+    { "id": "bowl", "kind": "bowl", "model": "home_tool_bowl", "shape": "cylinder", "size": [0.38, 0.14, 0.38], "color": "#F4A7B9", "pos": [-0.35, 0.9, 0.55], "grabbable": false },
+    { "id": "carton", "kind": "carton", "shape": "box", "size": [0.3, 0.06, 0.16], "color": "#EFC25C", "pos": [0.05, 0.9, 0.78], "grabbable": false },
     { "id": "egg_1", "kind": "egg", "model": "shared_food_egg", "shape": "sphere", "size": [0.09, 0.11, 0.09], "color": "#FFF7EA", "pos": [-0.02, 0.96, 0.78] },
     { "id": "egg_2", "kind": "egg", "model": "shared_food_egg", "shape": "sphere", "size": [0.09, 0.11, 0.09], "color": "#FFF7EA", "pos": [0.1, 0.96, 0.78] },
-    { "id": "whisk", "kind": "whisk", "model": "home_tool_whisk", "shape": "box", "size": [0.1, 0.26, 0.1], "color": "#9AA0A6", "pos": [-0.65, 0.9, 0.8] },
-    { "id": "flour", "kind": "flour", "model": "home_prop_flour", "shape": "box", "size": [0.2, 0.28, 0.14], "color": "#FFFFFF", "pos": [0.55, 0.9, 0.45], "toy": true },
+    { "id": "whisk", "kind": "whisk", "model": "home_tool_whisk", "shape": "box", "size": [0.1, 0.26, 0.1], "color": "#2A8C9A", "pos": [-0.65, 0.9, 0.8] },
+    { "id": "flour", "kind": "flour", "model": "home_prop_flour", "shape": "box", "size": [0.2, 0.28, 0.14], "color": "#E8B33B", "pos": [0.55, 0.9, 0.45], "toy": true },
     { "id": "tomato_1", "kind": "tomato", "model": "shared_food_tomato", "shape": "sphere", "size": [0.12, 0.11, 0.12], "color": "#E2553F", "pos": [0.4, 0.9, 0.85], "toy": true },
     { "id": "tomato_2", "kind": "tomato", "model": "shared_food_tomato", "shape": "sphere", "size": [0.12, 0.11, 0.12], "color": "#E2553F", "pos": [-1.05, 0.93, -0.7] },
     { "id": "duck", "kind": "duck", "model": "home_prop_duck", "shape": "sphere", "size": [0.1, 0.09, 0.1], "color": "#F4C842", "pos": [-1.3, 0.9, -0.85], "toy": true },
-    { "id": "cat_timer", "kind": "timer", "model": "home_prop_cat_timer", "shape": "box", "size": [0.1, 0.1, 0.1], "color": "#F7D9B5", "pos": [0.8, 0.9, 0.85], "toy": true }
+    { "id": "cat_timer", "kind": "timer", "model": "home_prop_cat_timer", "shape": "box", "size": [0.1, 0.1, 0.1], "color": "#F2A65E", "pos": [0.8, 0.9, 0.85], "toy": true }
   ],
   "slots": [
     { "itemId": "wok_burner", "pos": [2.0, 0, 0.6], "size": [0.7, 0.8, 0.6] },

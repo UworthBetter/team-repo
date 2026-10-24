@@ -34,6 +34,25 @@ export function createTitle(ctx: Ctx) {
       <path d="M600 70 q14 -22 0 -44 q-13 -20 2 -40"/>
       <path d="M1000 66 q14 -22 0 -44 q-13 -20 2 -40"/>
     </g>
+    <!-- 上色 pass：横幅下的三角彩旗 + 散落彩点（番茄红/芥末黄/鼠尾草/青/蜜桃） -->
+    <g class="tk" stroke-width="3.5">
+      <path d="M300 104 l30 0 -15 26 Z" fill="var(--tomato)"/>
+      <path d="M360 106 l30 0 -15 24 Z" fill="var(--gold)"/>
+      <path d="M1180 104 l30 0 -15 26 Z" fill="var(--sage)"/>
+      <path d="M1240 106 l30 0 -15 24 Z" fill="#F4A7B9"/>
+      <path d="M700 108 l24 0 -12 20 Z" fill="#2A8C9A"/>
+      <path d="M880 108 l24 0 -12 20 Z" fill="var(--tomato)"/>
+    </g>
+    <g class="tk" stroke-width="3">
+      <circle cx="240" cy="330" r="10" fill="var(--gold)"/>
+      <circle cx="1380" cy="310" r="9" fill="#F4A7B9"/>
+      <circle cx="180" cy="470" r="8" fill="var(--sage)"/>
+      <circle cx="1440" cy="520" r="10" fill="#2A8C9A"/>
+      <circle cx="560" cy="300" r="7" fill="var(--tomato)"/>
+      <circle cx="1060" cy="290" r="7" fill="var(--gold)"/>
+      <circle cx="420" cy="640" r="8" fill="#F2A65E"/>
+      <circle cx="1200" cy="650" r="9" fill="var(--sage)"/>
+    </g>
     <!-- title -->
     <text x="800" y="238" text-anchor="middle" class="title-t">滋啦厨房</text>
     <text x="800" y="286" text-anchor="middle" class="title-en">SIZZLE KITCHEN</text>
