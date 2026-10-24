@@ -31,6 +31,10 @@ export function createResult(ctx: Ctx) {
 
   let active = false;
   let offs: (() => void)[] = [];
+  /** Stars per dish from the last meta:state — meta publishes AFTER result:shown, so at
+   * result time this still holds the pre-run set: diffing it marks first-time stars. */
+  let prevStars: Record<string, string[]> = {};
+  bus.on('meta:state', (s) => (prevStars = s.stars));
   const clearTimers = () => {
     offs.forEach((f) => f());
     offs = [];
@@ -55,13 +59,19 @@ export function createResult(ctx: Ctx) {
 
     const dish = content.dishes.get(r.dishId);
     const total = Math.max(0, r.coins.reduce((a, l) => a + l.amount, 0));
+    const had = new Set(prevStars[r.dishId] ?? []);
     const plate = plateWorldPos(ctx);
     bus.emit('camera:push', { at: plate, zoom: 1.7, ms: 500 });
 
     const stampEl = h('div', { class: `stamp stamp-${r.rating}` }, STAMP[r.rating]);
     const counter = h('b', {}, '+0');
     const coinTotal = h('div', { class: 'coin-total' }, '合计 ', counter);
-    const starEls = (dish?.stars ?? []).map((s) => h('span', { class: 'star', title: s.text }, '★'));
+    const starEls = (dish?.stars ?? []).map((s) => {
+      const el = h('span', { class: 'star', title: s.text }, '★');
+      // First-time stars wear a 新! badge — the classic "new unlock" dopamine marker.
+      if (r.stars.includes(s.id) && !had.has(s.id)) el.append(h('i', { class: 'star-new' }, '新!'));
+      return el;
+    });
     const stars = h('div', { class: 'stars' }, ...starEls);
     const buttons = h(
       'div',
@@ -74,10 +84,12 @@ export function createResult(ctx: Ctx) {
       { class: 'result-seq' },
       h('div', { class: 'result-dish' }, dish?.name ?? r.dishId),
       stampEl,
+      h('div', { class: 'result-quality' }, `完成度 ${Math.round(r.quality * 100)}%`),
       coinTotal,
       h('ul', { class: 'coin-lines' }, ...r.coins.map((l) => h('li', {}, h('span', {}, l.reason), h('b', {}, `+${l.amount}`)))),
       stars,
       buttons,
+      h('div', { class: 'result-skip' }, '点击任意处跳过'),
     );
     // The full-area catcher eats clicks (skip) and keeps them off the kitchen underneath.
     const catcher = h('div', { class: 'result-catcher interactive' }, seq);

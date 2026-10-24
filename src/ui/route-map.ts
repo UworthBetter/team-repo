@@ -114,7 +114,7 @@ export function createRouteMap(ctx: Ctx) {
             );
           }
           return (
-            `<g class="pin locked${celebrating ? ' pulse' : ''}" transform="translate(${x},${y})">` +
+            `<g class="pin locked${celebrating ? ' pulse' : ''}" transform="translate(${x},${y})" data-gate="${esc(gate ?? '')}" data-gate-id="${esc(n.gate ?? '')}" data-blurb="${esc(n.blurb ?? '')}">` +
             `<ellipse rx="52" ry="24" class="map-fog"/>` +
             `<path d="M0 4 C-11 -6 -12 -20 0 -24 C12 -20 11 -6 0 4 Z" class="pin-body"/>` +
             `<circle cy="-14" r="4.6" class="pin-dot"/>` +
@@ -137,6 +137,17 @@ export function createRouteMap(ctx: Ctx) {
         const enter = () => opts.onEnter?.(g.dataset.kitchen!);
         g.addEventListener('click', enter);
         g.addEventListener('keydown', (e) => (e as KeyboardEvent).key === 'Enter' && enter());
+      });
+
+      // Locked pins answer with guidance instead of doing nothing: what unlocks it and where to buy it.
+      svg.querySelectorAll<SVGGElement>('.pin.locked').forEach((g) => {
+        g.addEventListener('click', () => {
+          const gate = g.dataset.gateId ? ctx.content.equipment.get(g.dataset.gateId) : undefined;
+          if (!gate) return ctx.ui.toast(g.dataset.blurb || '敬请期待');
+          const seller = ctx.content.route.nodes.find((n) => n.kitchenId === gate.kitchen)?.name ?? gate.kitchen;
+          const soon = gate.comingSoon ? '（敬请期待）' : '';
+          ctx.ui.toast(`需要 ${gate.name}${soon} · 去「${seller}」的商店看看`);
+        });
       });
 
       // D8: kick off the CSS stroke-draw one frame after mount (auto skips straight to the end state).

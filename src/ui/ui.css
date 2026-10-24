@@ -64,12 +64,20 @@
 .stamp.slam { animation: slam 0.35s cubic-bezier(.2,1.6,.4,1); }
 .result-buttons { opacity: 0; transform: translateY(8px); transition: opacity 0.3s ease, transform 0.3s ease; }
 .result-buttons.show { opacity: 1; transform: none; }
+.result-quality { color: var(--muted); font: 900 19px var(--font-ui); }
+.result-skip { color: var(--muted); font: 400 13px var(--font-ui); opacity: 0.8; }
 .star.on { animation: starpop 0.35s cubic-bezier(.2,1.8,.4,1); }
+.star { position: relative; }
+.star-new { display: none; position: absolute; top: -12px; right: -16px; font: 900 12px var(--font-ui); font-style: normal; background: var(--gold); color: var(--ink); border: 2px solid var(--ink); border-radius: 999px; padding: 0 6px; }
+.star.on .star-new { display: inline-block; animation: starpop 0.4s cubic-bezier(.2,1.8,.4,1); }
 @keyframes starpop { from { transform: scale(0) rotate(-40deg); } }
 .coin-fly { position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: var(--gold); border: 3px solid var(--gold-rim); z-index: 5; pointer-events: none; }
 
 /* ---------- D2 crate ---------- */
 .crate-progress { position: absolute; left: 0; top: 0; background: var(--paper); border: 3px solid var(--ink); border-radius: 999px; padding: 4px 14px; font: 900 17px var(--font-ui); pointer-events: none; z-index: 8; }
+.crate-arrow { position: absolute; left: 0; top: 0; width: 46px; height: 30px; margin: -15px 0 0 -6px; color: var(--teal); filter: drop-shadow(0 2px 0 rgba(43, 36, 34, 0.4)); pointer-events: none; z-index: 8; animation: nudge 1s ease-in-out infinite; }
+.crate-arrow svg { width: 100%; height: 100%; }
+@keyframes nudge { 50% { margin-left: 6px; } }
 
 /* ---------- D3 pinned catalog (board 6) ---------- */
 .shop-grid { perspective: 600px; }
@@ -94,13 +102,24 @@
 .dish-head { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; }
 .step-counter { font: 900 20px var(--font-ui); color: var(--teal-ink); background: var(--teal-tint); border-radius: 10px; padding: 2px 10px; }
 .hint-pill { display: flex; align-items: center; gap: 10px; }
+.hint-pill.pop { animation: hintpop 0.28s cubic-bezier(.2,1.6,.4,1); }
+@keyframes hintpop { from { transform: translateX(-50%) scale(0.85); } 60% { transform: translateX(-50%) scale(1.06); } to { transform: translateX(-50%) scale(1); } }
 .hint-pill svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .hint-count { background: rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 2px 12px; font-variant-numeric: tabular-nums; }
 .dock { gap: 8px; flex-wrap: wrap; max-width: 46vw; }
 .dock-key { display: inline-flex; align-items: center; gap: 7px; width: auto; height: 34px; border-radius: 999px; padding: 0 12px 0 6px; font: 900 15px var(--font-ui); }
 .dock-key b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 14px; }
+.coin-delta { position: absolute; font: 900 22px var(--font-ui); color: var(--gold-ink); animation: floatup 1s ease-out forwards; pointer-events: none; z-index: 6; }
+@keyframes floatup { from { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } to { opacity: 0; transform: translateY(-34px); } }
+
+/* ---------- juice: press feedback on every control ---------- */
+.btn:hover, .round:hover, .dock-key:hover { transform: translateY(-2px); box-shadow: 0 3px 0 rgba(43, 36, 34, 0.35); }
+.btn:active, .round:active, .dock-key:active { transform: translateY(1px); box-shadow: none; }
+.shop-item { transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.shop-item:hover { transform: translateY(-3px) rotate(0deg) !important; box-shadow: 0 5px 0 rgba(43, 36, 34, 0.22); }
 
 /* ---------- D5 sticker book ---------- */
+.sticker-summary { display: flex; gap: 18px; justify-content: center; font: 900 18px var(--font-ui); color: var(--ink); background: var(--teal-tint); border-radius: 12px; padding: 8px 14px; }
 .sticker-groups { display: grid; gap: 14px; }
 .sticker-group h3 { margin: 0 0 6px; font: 400 24px var(--font-display); }
 .sticker-group h3 small { color: var(--muted); font: 900 15px var(--font-ui); margin-left: 6px; }
@@ -116,7 +135,7 @@
 .map-path.open { stroke: var(--sage-ink); stroke-dasharray: none; opacity: 1; }
 .map-path.draw { stroke: var(--red); stroke-width: 6; stroke-dasharray: 1; stroke-dashoffset: 1; }
 .map-path.draw.go { transition: stroke-dashoffset 1.2s ease; stroke-dashoffset: 0; }
-.pin { cursor: default; }
+.pin { cursor: pointer; } /* locked pins answer clicks with guidance */
 .pin-body { fill: var(--muted); stroke: var(--ink); stroke-width: 2; }
 .pin.locked .pin-body { fill: #C9C2B8; }
 .pin.open { cursor: pointer; }

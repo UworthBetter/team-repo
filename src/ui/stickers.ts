@@ -27,10 +27,12 @@ export function renderStickerBook(ctx: Ctx, state: MetaState): HTMLElement {
     });
 
   const totalEggs = [...ctx.content.kitchens.values()].reduce((a, k) => a + k.eggs.length, 0);
+  const totalStars = Object.values(state.stars).reduce((a, list) => a + list.length, 0);
   return h(
     'div',
     { class: 'card panel interactive' },
     h('div', { class: 'panel-head' }, h('h2', {}, '贴纸册'), h('small', { class: 'muted' }, `已收集 ${state.stickers.length}/${totalEggs} · 找到彩蛋自动贴上`)),
+    h('div', { class: 'sticker-summary' }, h('span', {}, `⭐ 星级 ×${totalStars}`), h('span', {}, `🥚 贴纸 ${state.stickers.length}/${totalEggs}`), h('span', {}, `🪙 金币 ${state.coins}`)),
     groups.length ? h('div', { class: 'sticker-groups' }, ...groups) : h('p', { class: 'muted' }, '还没有彩蛋 —— 去厨房里戳一戳那些看起来不对劲的小东西。'),
     h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => ctx.bus.emit('hint:show', { text: '提示：水槽里好像有只小黄鸭', gesture: 'click' }) }, '给个提示')),
   );
