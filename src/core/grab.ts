@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type GUI from 'lil-gui';
 import type { PropHandle } from './api';
 import type { Bus } from './bus';
 import type { InputInternal } from './input';
@@ -8,13 +9,39 @@ import type { WorldInternal } from './world';
  * Toy-box grab: the held prop trails the hand along the counter with ~70 ms of lag and
  * tilts with its velocity. Released near a snap that accepts its kind → snaps in.
  * Otherwise it drops and bounces (fake physics; Rapier for toy props comes later, owner A).
+ *
+ * Feel constants live in `params` so the "Grab (A)" lil-gui folder can tune them live (A2).
+ * These defaults are the committed values; change them here once B signs off on the feel.
  */
-const LIFT = 0.14;
-const FOLLOW = 14; // higher = less lag
-const TILT = 0.18;
+export interface GrabParams {
+  /** Vertical lift of a held prop above the counter, in meters. */
+  LIFT: number;
+  /** Follow stiffness — higher = less lag (about 70 ms at 14). */
+  FOLLOW: number;
+  /** How strongly velocity tilts the held prop. */
+  TILT: number;
+  /** Global multiplier on every snap radius (forgiveness). */
+  snapScale: number;
+}
 
-export function createGrab(o: { input: InputInternal; world: WorldInternal; bus: Bus; camera: THREE.Camera; hand: HTMLElement }) {
+export function createGrab(o: {
+  input: InputInternal;
+  world: WorldInternal;
+  bus: Bus;
+  camera: THREE.Camera;
+  hand: HTMLElement;
+  gui?: GUI | null;
+}) {
   const { input, world, bus, camera, hand } = o;
+  const params: GrabParams = { LIFT: 0.14, FOLLOW: 14, TILT: 0.18, snapScale: 1 };
+  if (o.gui) {
+    const f = o.gui.addFolder('Grab (A)');
+    f.add(params, 'FOLLOW', 4, 30, 0.5).name('follow (less lag →)');
+    f.add(params, 'TILT', 0, 0.5, 0.01).name('tilt');
+    f.add(params, 'LIFT', 0, 0.4, 0.01).name('lift');
+    f.add(params, 'snapScale', 0.5, 2, 0.05).name('snap radius ×');
+    f.close();
+  }
   const ray = new THREE.Raycaster();
   const target = new THREE.Vector3();
   const last = new THREE.Vector3();
@@ -110,20 +137,20 @@ export function createGrab(o: { input: InputInternal; world: WorldInternal; bus:
     if (held) {
       const obj = held.object;
       const cp = input.counterPoint();
-      if (cp) target.set(cp.x, world.counterTop + LIFT, cp.z);
-      const k = 1 - Math.exp(-dt * FOLLOW);
+      if (cp) target.set(cp.x, world.counterTop + params.LIFT, cp.z);
+      const k = 1 - Math.exp(-dt * params.FOLLOW);
       obj.position.lerp(target, k);
       vel.subVectors(obj.position, last).divideScalar(Math.max(dt, 1e-3));
       last.copy(obj.position);
-      obj.rotation.z += (clamp(-vel.x * TILT, 0.45) - obj.rotation.z) * k;
-      obj.rotation.x += (clamp(vel.z * TILT, 0.45) - obj.rotation.x) * k;
+      obj.rotation.z += (clamp(-vel.x * params.TILT, 0.45) - obj.rotation.z) * k;
+      obj.rotation.x += (clamp(vel.z * params.TILT, 0.45) - obj.rotation.x) * k;
 
       let best: string | null = null;
       let bd = Infinity;
       for (const s of world.snaps()) {
         if (!s.accepts.includes(held.kind) && !s.accepts.includes('*')) continue;
         const d = Math.hypot(s.pos[0] - obj.position.x, s.pos[2] - obj.position.z);
-        if (d < s.radius && d < bd) {
+        if (d < s.radius * params.snapScale && d < bd) {
           bd = d;
           best = s.id;
         }

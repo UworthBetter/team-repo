@@ -41,12 +41,12 @@ export async function createCore(flags: Flags, content: Content, canvas: HTMLCan
   const hand = document.createElement('div');
   hand.className = 'hand';
   document.body.append(hand);
-  const grab = createGrab({ input, world, bus, camera, hand });
+  const debug = createDebug(flags, bus, content);
+  const grab = createGrab({ input, world, bus, camera, hand, gui: debug.gui });
   const rig = createCameraRig(camera, bus, world, input);
   const moves = createMoveRegistry();
   const ui = createUi(uiRoot);
   const dev = createDev();
-  const debug = createDebug(flags, bus, content);
   const fpsMeter = flags.fps ? createFpsMeter(renderer) : null;
 
   const frameFns = new Set<(dt: number) => void>();
