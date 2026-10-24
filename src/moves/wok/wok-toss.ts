@@ -134,10 +134,20 @@ export const wokToss = defineMove({
       }
     };
 
+    // C7 calibration instrument: signed beat error of every real (non-auto) toss, ms.
+    // Read the summary in the console at step end; beatOffsetMs ≈ −mean(delta).
+    const beatDeltas: number[] = [];
+    const noteDelta = (i: number, ms: number) => {
+      if (ctx.flags.auto) return;
+      beatDeltas.push(ms);
+      console.debug(`[wok_toss] beat ${i + 1}/${beats} delta ${ms >= 0 ? '+' : ''}${ms.toFixed(0)}ms`);
+    };
+
     const hit = (i: number) => {
       nextBeat = i + 1;
       hits++;
       kickVel = -3.5;
+      noteDelta(i, (t - beatTime(i)) * 1000);
       ctx.bus.emit('sfx:play', { id: 'wok_toss', at: [center.x, center.y, center.z] });
       pop(hits === beats ? '滋啦!!' : '滋啦!', 'good');
       flash(i, 'wt-hit');
@@ -155,6 +165,7 @@ export const wokToss = defineMove({
 
     const miss = (i: number, why: string) => {
       nextBeat = i + 1;
+      if (why === 'early' || why === 'late') noteDelta(i, (t - beatTime(i)) * 1000);
       ctx.bus.emit('step:oops', { dishId: step.dishId, stepId: step.stepId, reason: why });
       ctx.bus.emit('sfx:play', { id: 'bounce' });
       pop('洒了!', 'oops');
@@ -186,6 +197,14 @@ export const wokToss = defineMove({
       if (done) return;
       done = true;
       cleanup();
+      if (beatDeltas.length) {
+        const sorted = [...beatDeltas].sort((a, b) => a - b);
+        const mean = beatDeltas.reduce((a, b) => a + b, 0) / beatDeltas.length;
+        const median = sorted[Math.floor(sorted.length / 2)]!;
+        console.info(
+          `[wok_toss] 校准: n=${beatDeltas.length} mean=${mean.toFixed(0)}ms median=${median.toFixed(0)}ms → 建议 beatOffsetMs ≈ ${(-median).toFixed(0)}`,
+        );
+      }
       ctx.bus.emit('hint:clear', {});
       if (quality >= 0.9) {
         pop('完美!', 'perfect');
