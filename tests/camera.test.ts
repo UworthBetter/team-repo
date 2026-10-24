@@ -56,7 +56,7 @@ describe('first-person camera', () => {
     expect(f.camera.quaternion.angleTo(before)).toBeGreaterThan(0.1);
     f.look(0, 100000);
     const angles = new THREE.Euler().setFromQuaternion(f.camera.quaternion, 'YXZ');
-    expect(angles.x).toBeCloseTo(-1.35);
+    expect(angles.x).toBeCloseTo(-1.1); // home.json cameraLimits.pitchMin
     expect(angles.z).toBeCloseTo(0);
     expect(f.input.grabEnabled).toBe(true);
   });
@@ -82,12 +82,13 @@ describe('first-person camera', () => {
     f.keys.clear();
     f.keys.add('KeyD');
     f.rig.update(20);
-    expect(Math.abs(f.camera.position.x)).toBeLessThanOrEqual(7.4);
+    expect(Math.abs(f.camera.position.x)).toBeLessThanOrEqual(3.0); // home.json cameraLimits.roomLimit
     expectOutsideCounters(f);
   });
 
   it('normalizes diagonal movement and stops when the mouse is released', () => {
     const f = fixture();
+    f.camera.position.set(0, 1.6, 0); // room center: home.json roomLimit 3.0 won't clamp this short walk
     const before = f.camera.position.clone();
     f.keys.add('KeyS');
     f.keys.add('KeyD');
@@ -98,6 +99,8 @@ describe('first-person camera', () => {
     f.rig.update(1);
     expect(f.camera.position.equals(paused)).toBe(true);
   });
+
+
 
   it('preserves move-owned grab state through repeated kitchen switches and exit', () => {
     const f = fixture();
