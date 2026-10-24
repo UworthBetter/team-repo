@@ -1,15 +1,17 @@
 import { defineModule, type Ctx } from '@core/api';
 import './fx.css';
 import { loadFonts } from './fonts';
+import { setupStyle } from './style';
 import { setupOutline } from './outline';
 import { setupParticles } from './particles';
 
 /**
  * Owner: E. Onomatopoeia pops (咔! 啪! 滋啦!), screen shake on funny fails, toon outline pass,
- * self-hosted fonts, pooled particles. See docs/briefs/E-art-audio.md
+ * self-hosted fonts, pooled particles, 暖金实感画风. See docs/briefs/E-art-audio.md
  */
 function setupFx(ctx: Ctx) {
   loadFonts();
+  setupStyle(ctx);
   setupOutline(ctx);
 
   const layer = ctx.ui.layer('fx');

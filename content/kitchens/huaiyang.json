@@ -2,8 +2,15 @@
   "id": "huaiyang",
   "name": "扬州园林厨房",
   "region": "huaiyang",
-  "pacing": { "camera": "close" },
-  "ambience": { "music": "mus_huaiyang", "particles": ["petals"] },
+  "pacing": {
+    "camera": "close"
+  },
+  "ambience": {
+    "music": "mus_huaiyang",
+    "particles": [
+      "petals"
+    ]
+  },
   "mood": {
     "background": "#E9E6DF",
     "floor": "#B9B3A6",
@@ -12,46 +19,157 @@
     "lightIntensity": 1.1
   },
   "defaultDish": "wensi_tofu",
-  "overview": { "pos": [0, 2.6, 3.2], "target": [0, 0.9, -0.4] },
+  "overview": {
+    "pos": [
+      0,
+      2.6,
+      3.2
+    ],
+    "target": [
+      0,
+      0.9,
+      -0.4
+    ]
+  },
   "counters": [
-    { "pos": [0, 0, -0.7], "size": [3.2, 0.9, 0.7] }
+    {
+      "pos": [
+        0,
+        0,
+        -0.7
+      ],
+      "size": [
+        3.2,
+        0.9,
+        0.7
+      ]
+    }
   ],
   "stations": [
     {
       "id": "board",
       "label": "豆腐案",
       "key": 1,
-      "anchor": [0, 0.96, -0.7],
-      "camera": { "pos": [0, 2.35, -0.12], "target": [0, 0.95, -0.7] }
+      "anchor": [
+        0,
+        0.96,
+        -0.7
+      ],
+      "camera": {
+        "pos": [
+          0,
+          2.35,
+          -0.12
+        ],
+        "target": [
+          0,
+          0.95,
+          -0.7
+        ]
+      }
     },
     {
       "id": "pot",
       "label": "汤锅",
       "key": 2,
-      "anchor": [-0.9, 1.12, -0.7],
-      "camera": { "pos": [-0.9, 1.7, 0.4], "target": [-0.9, 1.0, -0.7] }
+      "anchor": [
+        -0.9,
+        1.12,
+        -0.7
+      ],
+      "camera": {
+        "pos": [
+          -0.9,
+          1.7,
+          0.4
+        ],
+        "target": [
+          -0.9,
+          1,
+          -0.7
+        ]
+      }
     },
     {
       "id": "bowl",
       "label": "青瓷碗",
       "key": 3,
-      "anchor": [0.9, 1.02, -0.7],
-      "camera": { "pos": [0.9, 1.7, 0.4], "target": [0.9, 0.95, -0.7] }
+      "anchor": [
+        0.9,
+        1.02,
+        -0.7
+      ],
+      "camera": {
+        "pos": [
+          0.9,
+          1.7,
+          0.4
+        ],
+        "target": [
+          0.9,
+          0.95,
+          -0.7
+        ]
+      }
     }
   ],
   "snaps": [
-    { "id": "board_center", "station": "board", "pos": [0, 0.965, -0.7], "radius": 0.22, "accepts": ["*"] },
-    { "id": "pot_center", "station": "pot", "pos": [-0.9, 1.12, -0.7], "radius": 0.2, "accepts": ["*"] },
-    { "id": "bowl_center", "station": "bowl", "pos": [0.9, 1.02, -0.7], "radius": 0.18, "accepts": ["*"] }
+    {
+      "id": "board_center",
+      "station": "board",
+      "pos": [
+        0,
+        0.965,
+        -0.7
+      ],
+      "radius": 0.22,
+      "accepts": [
+        "*"
+      ]
+    },
+    {
+      "id": "pot_center",
+      "station": "pot",
+      "pos": [
+        -0.9,
+        1.12,
+        -0.7
+      ],
+      "radius": 0.2,
+      "accepts": [
+        "*"
+      ]
+    },
+    {
+      "id": "bowl_center",
+      "station": "bowl",
+      "pos": [
+        0.9,
+        1.02,
+        -0.7
+      ],
+      "radius": 0.18,
+      "accepts": [
+        "*"
+      ]
+    }
   ],
   "props": [
     {
       "id": "tofu_board",
       "kind": "board",
       "shape": "box",
-      "size": [0.6, 0.06, 0.4],
+      "size": [
+        0.6,
+        0.06,
+        0.4
+      ],
       "color": "#C8A878",
-      "pos": [0, 0.9, -0.7],
+      "pos": [
+        0,
+        0.9,
+        -0.7
+      ],
       "grabbable": false,
       "model": "huaiyang_tool_tofu_board"
     },
@@ -59,9 +177,17 @@
       "id": "soup_pot",
       "kind": "pot",
       "shape": "cylinder",
-      "size": [0.34, 0.22, 0.34],
+      "size": [
+        0.34,
+        0.22,
+        0.34
+      ],
       "color": "#8A6A52",
-      "pos": [-0.9, 0.9, -0.7],
+      "pos": [
+        -0.9,
+        0.9,
+        -0.7
+      ],
       "grabbable": false,
       "model": "huaiyang_tool_soup_pot"
     },
@@ -69,9 +195,17 @@
       "id": "celadon_bowl",
       "kind": "bowl_serving",
       "shape": "cylinder",
-      "size": [0.3, 0.12, 0.3],
+      "size": [
+        0.3,
+        0.12,
+        0.3
+      ],
       "color": "#B8D8C8",
-      "pos": [0.9, 0.9, -0.7],
+      "pos": [
+        0.9,
+        0.9,
+        -0.7
+      ],
       "grabbable": false,
       "model": "huaiyang_tool_celadon_bowl"
     },
@@ -79,27 +213,51 @@
       "id": "tofu_block",
       "kind": "tofu",
       "shape": "box",
-      "size": [0.16, 0.1, 0.16],
+      "size": [
+        0.16,
+        0.1,
+        0.16
+      ],
       "color": "#F7F4EA",
-      "pos": [0, 0.96, -0.7],
+      "pos": [
+        0,
+        0.96,
+        -0.7
+      ],
       "model": "huaiyang_food_tofu_block"
     },
     {
       "id": "knife",
       "kind": "knife",
       "shape": "box",
-      "size": [0.28, 0.03, 0.06],
+      "size": [
+        0.28,
+        0.03,
+        0.06
+      ],
       "color": "#D8D8DC",
-      "pos": [-0.35, 0.9, -0.45],
+      "pos": [
+        -0.35,
+        0.9,
+        -0.45
+      ],
       "model": "huaiyang_tool_knife"
     },
     {
       "id": "ink_stone",
       "kind": "decor",
       "shape": "cylinder",
-      "size": [0.12, 0.05, 0.12],
+      "size": [
+        0.12,
+        0.05,
+        0.12
+      ],
       "color": "#3A3430",
-      "pos": [-0.55, 0.9, -0.95],
+      "pos": [
+        -0.55,
+        0.9,
+        -0.95
+      ],
       "toy": true,
       "model": "huaiyang_prop_ink_stone"
     },
@@ -107,9 +265,17 @@
       "id": "teapot",
       "kind": "decor",
       "shape": "box",
-      "size": [0.16, 0.14, 0.12],
+      "size": [
+        0.26,
+        0.15,
+        0.16
+      ],
       "color": "#6A4A4A",
-      "pos": [0.55, 0.9, -0.95],
+      "pos": [
+        0.55,
+        0.9,
+        -0.95
+      ],
       "toy": true,
       "model": "huaiyang_prop_teapot"
     },
@@ -117,9 +283,17 @@
       "id": "window",
       "kind": "decor",
       "shape": "box",
-      "size": [1.6, 1.4, 0.08],
+      "size": [
+        1.6,
+        1.4,
+        0.08
+      ],
       "color": "#F2EEE6",
-      "pos": [0, 0.7, -2.4],
+      "pos": [
+        0,
+        0.7,
+        -2.4
+      ],
       "grabbable": false,
       "model": "huaiyang_room_window"
     },
@@ -127,9 +301,17 @@
       "id": "koi",
       "kind": "egg",
       "shape": "sphere",
-      "size": [0.16, 0.06, 0.1],
+      "size": [
+        0.16,
+        0.06,
+        0.1
+      ],
       "color": "#F4A7B9",
-      "pos": [0.6, 0.03, -2.1],
+      "pos": [
+        0.6,
+        0.03,
+        -2.1
+      ],
       "toy": true,
       "model": "huaiyang_prop_koi"
     },
@@ -137,17 +319,61 @@
       "id": "boat",
       "kind": "egg",
       "shape": "box",
-      "size": [0.3, 0.08, 0.12],
+      "size": [
+        0.3,
+        0.08,
+        0.12
+      ],
       "color": "#8A6A4A",
-      "pos": [-0.4, 0.03, -2.2],
+      "pos": [
+        -0.4,
+        0.03,
+        -2.2
+      ],
       "toy": true,
       "model": "huaiyang_prop_boat"
     }
   ],
   "slots": [
-    { "itemId": "whetstone", "pos": [-1.25, 0.9, -0.7], "size": [0.18, 0.06, 0.12] },
-    { "itemId": "clay_pot", "pos": [-0.9, 0.9, -0.95], "size": [0.24, 0.18, 0.24] },
-    { "itemId": "celadon_bowl", "pos": [1.25, 0.9, -0.7], "size": [0.22, 0.1, 0.22] }
+    {
+      "itemId": "whetstone",
+      "pos": [
+        -1.25,
+        0.9,
+        -0.7
+      ],
+      "size": [
+        0.18,
+        0.06,
+        0.12
+      ]
+    },
+    {
+      "itemId": "clay_pot",
+      "pos": [
+        -0.9,
+        0.9,
+        -0.95
+      ],
+      "size": [
+        0.24,
+        0.18,
+        0.24
+      ]
+    },
+    {
+      "itemId": "celadon_bowl",
+      "pos": [
+        1.25,
+        0.9,
+        -0.7
+      ],
+      "size": [
+        0.22,
+        0.1,
+        0.22
+      ]
+    }
   ],
   "eggs": []
 }
