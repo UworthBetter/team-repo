@@ -2,10 +2,11 @@ import { defineModule, type Ctx } from '@core/api';
 import './fx.css';
 import { loadFonts } from './fonts';
 import { setupOutline } from './outline';
+import { setupParticles } from './particles';
 
 /**
  * Owner: E. Onomatopoeia pops (咔! 啪! 滋啦!), screen shake on funny fails, toon outline pass,
- * self-hosted fonts. See docs/briefs/E-art-audio.md
+ * self-hosted fonts, pooled particles. See docs/briefs/E-art-audio.md
  */
 function setupFx(ctx: Ctx) {
   loadFonts();
@@ -31,6 +32,8 @@ function setupFx(ctx: Ctx) {
     void canvas.offsetWidth;
     canvas.classList.add('shake');
   });
+
+  setupParticles(ctx);
 }
 
 export default defineModule({ id: 'fx', owner: 'E', setup: setupFx });
