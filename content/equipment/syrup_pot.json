@@ -1,0 +1,14 @@
+{
+  "id": "syrup_pot",
+  "name": "糖浆壶",
+  "kitchen": "home",
+  "price": 150,
+  "model": "home_eq_syrup_pot",
+  "blurb": "淋酱更顺，可画花纹",
+  "effects": {
+    "syrup_drizzle": {
+      "patterns": true
+    }
+  },
+  "key": false
+}

@@ -1,0 +1,14 @@
+---
+description: Sizzle Kitchen team rules — ownership boundaries, contracts, definition of done
+alwaysApply: true
+---
+
+Follow AGENTS.md at the repo root; it is the source of truth for every agent.
+
+Short version:
+- Work only inside the paths of the owner you are working for (docs/briefs/<letter>-*.md, scripts/owners.json). Ask which owner if unclear.
+- Modules never import each other. Allowed imports: `@contracts/*`, `@core/api`, your own folder, existing npm packages. Talk across modules through `ctx.bus` events from src/contracts/events.ts.
+- Never edit src/contracts/**, src/core/api.ts, package.json or the lockfile unless you are owner A doing a `contract:` PR (additive only).
+- Tuning numbers go in content/*.json.
+- Before finishing: `npm run check` and `npm run check:owners -- --as <letter>`; revert anything flagged outside your area.
+- Git: explicit `git add <paths>`, small commits, no force-push, no reset --hard, no direct commits to main.

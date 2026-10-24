@@ -1,0 +1,12 @@
+* text=auto eol=lf
+*.glb binary
+*.gltf -diff
+*.ogg binary
+*.mp3 binary
+*.wav binary
+*.png binary
+*.jpg binary
+*.webp binary
+*.woff2 binary
+package-lock.json -diff linguist-generated
+public/**/manifest.json linguist-generated

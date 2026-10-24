@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run check)",
+      "Bash(npm run check:*)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run test)",
+      "Bash(npm run build)",
+      "Bash(npm run smoke)",
+      "Bash(npm run assets:manifest)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git fetch:*)"
+    ],
+    "ask": [
+      "Edit(src/contracts/**)",
+      "Edit(src/core/api.ts)",
+      "Edit(package.json)",
+      "Edit(package-lock.json)",
+      "Bash(npm install:*)",
+      "Bash(npm i:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(rm -rf:*)"
+    ]
+  }
+}

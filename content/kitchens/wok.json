@@ -1,0 +1,43 @@
+{
+  "id": "wok",
+  "name": "炒锅灶台",
+  "mood": { "background": "#2B2422", "floor": "#352B28", "counter": "#5A4C46", "light": "#FFC58A", "lightIntensity": 1.6 },
+  "defaultDish": "fried_rice",
+  "overview": { "pos": [0.4, 2.3, 2.8], "target": [0.4, 0.9, -0.4] },
+  "counters": [
+    { "pos": [0, 0, -0.6], "size": [5, 0.9, 0.8] },
+    { "pos": [2.9, 0, 0.4], "size": [0.8, 0.9, 1.2] }
+  ],
+  "stations": [
+    { "id": "prep", "label": "备料", "key": 1, "anchor": [-1.7, 0.9, -0.6], "camera": { "pos": [-1.7, 1.7, 0.6], "target": [-1.7, 0.9, -0.6] } },
+    { "id": "wok", "label": "炒锅", "key": 2, "anchor": [0, 0.9, -0.6], "camera": { "pos": [0, 1.5, 0.45], "target": [0, 0.95, -0.6] } },
+    { "id": "sauce", "label": "调料", "key": 3, "anchor": [1.3, 0.9, -0.6], "camera": { "pos": [1.3, 1.65, 0.5], "target": [1.3, 0.9, -0.6] } },
+    { "id": "pass", "label": "出餐", "key": 4, "anchor": [2.9, 0.9, 0.4], "camera": { "pos": [2.5, 1.7, 1.6], "target": [2.9, 0.9, 0.4] } }
+  ],
+  "snaps": [
+    { "id": "wok_center", "station": "wok", "pos": [0, 1.0, -0.6], "radius": 0.28, "accepts": ["rice", "egg_liquid", "scallion", "chicken", "peanut", "chili"] },
+    { "id": "pass_center", "station": "pass", "pos": [2.9, 0.925, 0.4], "radius": 0.2, "accepts": ["*"] }
+  ],
+  "props": [
+    { "id": "bowl_rice", "kind": "rice", "model": "wok_food_bowl_rice", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#FFFFFF", "pos": [-2.0, 0.9, -0.75] },
+    { "id": "bowl_egg", "kind": "egg_liquid", "model": "wok_food_bowl_egg", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#F6CF4A", "pos": [-1.7, 0.9, -0.75] },
+    { "id": "bowl_scallion", "kind": "scallion", "model": "wok_food_bowl_scallion", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#7DC07A", "pos": [-1.4, 0.9, -0.75] },
+    { "id": "bowl_chicken", "kind": "chicken", "model": "wok_food_bowl_chicken", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#E9C394", "pos": [-2.0, 0.9, -0.45] },
+    { "id": "bowl_peanut", "kind": "peanut", "model": "wok_food_bowl_peanut", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#C68A4E", "pos": [-1.7, 0.9, -0.45] },
+    { "id": "bowl_chili", "kind": "chili", "model": "wok_food_bowl_chili", "shape": "cylinder", "size": [0.2, 0.08, 0.2], "color": "#D63A2E", "pos": [-1.4, 0.9, -0.45] },
+    { "id": "wok", "kind": "wok", "model": "wok_tool_wok", "shape": "cylinder", "size": [0.62, 0.12, 0.62], "color": "#3E3A3A", "pos": [0, 0.9, -0.6], "grabbable": false },
+    { "id": "stock_pot", "kind": "pot", "model": "wok_prop_stock_pot", "shape": "cylinder", "size": [0.4, 0.32, 0.4], "color": "#A9AEB4", "pos": [0.75, 0.9, -0.7], "toy": true },
+    { "id": "soy", "kind": "sauce", "model": "wok_food_soy", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#3A1E14", "pos": [1.2, 0.9, -0.8] },
+    { "id": "vinegar", "kind": "sauce", "model": "wok_food_vinegar", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#6E3B22", "pos": [1.35, 0.9, -0.8] },
+    { "id": "oil", "kind": "sauce", "model": "wok_food_oil", "shape": "cylinder", "size": [0.08, 0.2, 0.08], "color": "#D8A33A", "pos": [1.5, 0.9, -0.8] },
+    { "id": "plate", "kind": "plate_serving", "model": "wok_tool_plate", "shape": "cylinder", "size": [0.4, 0.025, 0.4], "color": "#F4EFE6", "pos": [2.9, 0.9, 0.4], "grabbable": false },
+    { "id": "lucky_cat", "kind": "cat", "model": "wok_prop_lucky_cat", "shape": "box", "size": [0.14, 0.18, 0.12], "color": "#FFFFFF", "pos": [2.9, 0.9, -0.05], "toy": true }
+  ],
+  "slots": [
+    { "itemId": "dome_ladle", "pos": [2.65, 0.9, -0.75], "size": [0.12, 0.3, 0.12] },
+    { "itemId": "flame_booster", "pos": [0.38, 0.9, -0.28], "size": [0.12, 0.06, 0.12] },
+    { "itemId": "carbon_wok", "pos": [-0.55, 0.9, -0.35], "size": [0.3, 0.05, 0.3] },
+    { "itemId": "pro_knives", "pos": [-2.35, 0.9, -0.75], "size": [0.3, 0.05, 0.1] }
+  ],
+  "eggs": [{ "id": "wok_lucky_cat", "propId": "lucky_cat", "coins": 10 }]
+}

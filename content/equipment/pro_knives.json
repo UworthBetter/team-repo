@@ -1,0 +1,11 @@
+{
+  "id": "pro_knives",
+  "name": "专业刀具",
+  "kitchen": "wok",
+  "price": 800,
+  "key": true,
+  "unlocks": "kitchen_3",
+  "model": "wok_eq_pro_knives",
+  "blurb": "关键 · 解锁下一厨房",
+  "effects": {}
+}

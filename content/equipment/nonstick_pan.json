@@ -1,0 +1,14 @@
+{
+  "id": "nonstick_pan",
+  "name": "不粘锅",
+  "kitchen": "home",
+  "price": 200,
+  "model": "home_eq_nonstick_pan",
+  "blurb": "翻面更稳，不粘底",
+  "effects": {
+    "pancake_flip": {
+      "assist": 0.2
+    }
+  },
+  "key": false
+}

@@ -1,0 +1,14 @@
+{
+  "id": "flame_booster",
+  "name": "灶火增压器",
+  "kitchen": "wok",
+  "price": 300,
+  "model": "wok_eq_flame_booster",
+  "blurb": "爆火更猛",
+  "effects": {
+    "flare": {
+      "power": 1.5
+    }
+  },
+  "key": false
+}

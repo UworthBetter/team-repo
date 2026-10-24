@@ -1,0 +1,14 @@
+{
+  "id": "stand_mixer",
+  "name": "厨师机",
+  "kitchen": "home",
+  "price": 350,
+  "model": "home_eq_stand_mixer",
+  "blurb": "搅拌省力，更均匀",
+  "effects": {
+    "whisk": {
+      "auto": true
+    }
+  },
+  "key": false
+}
