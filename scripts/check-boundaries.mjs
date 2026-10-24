@@ -12,8 +12,10 @@
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+// fileURLToPath: URL.pathname keeps a leading "/C:/" on Windows and breaks resolve() (owner A: cross-platform fix)
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'src');
 const IMPORT_RE = /(?:import|export)\s+(?:type\s+)?(?:[^'"]*?\sfrom\s+)?['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g;
 
