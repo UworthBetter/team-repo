@@ -5,24 +5,25 @@
 ## 里程碑
 
 - [x] **M0** 仓库 / CI（A）：CI 三检查（check / check windows / smoke）+ 分支保护已启用
-- [x] **M0–M3** A：A0–A9 全部（脚手架、节奏氛围运行时、Rapier 玩具物理、切厨房转场、发布构建）+ C 原型契约
-- [x] **M1–M3** E：E1 描边+字体 · E2/E3/E6 51 个模型（13 个采用 Kenney CC0，来源见 CREDITS.md）· E4 粒子 9 预设 · E5 音效+音乐 · 暖金实感画风（`?outline=1` 可回草图书风）
+- [x] **M0–M3** A：运行时、脚手架、Rapier 玩具物理、转场、发布构建和 C 原型契约已集成；投影性能和实体离线演练待验收
+- [x] **M1–M3** E：E1 描边+字体 · E2/E3/E6 51 个模型（13 个采用 Kenney CC0，来源见 CREDITS.md）· E4 粒子 9 预设 · E5 音效+音乐 · 暖金实感画风（`?outline=1` 可启用描边）
 - [x] **M3** B：B1–B7 动作 + B8 文思豆腐（wensi_tofu 已设为淮扬 defaultDish）
 - [x] **M1–M4** D：结算/拆箱/商店/HUD/路线（部分经 #15 集成）
 - [x] **M3** C：C1–C6 + C7 节拍校准手册（beatOffsetMs 误差仪表）
 - [ ] **M4–M5** 淮扬手感打磨、演示排练 ×3 + 备用视频（docs/DEMO.md）
 
-## 进行中的 PR
+## 集成记录
 
 | PR | 内容 | 状态 |
 | --- | --- | --- |
-| #1 | B 家庭厨房动作 | open（等 review） |
-| #3 | D meta & UI 里程碑 | open（等 review） |
-| #17 | E 暖金实感画风 | open（CI 跑完 + 等 1 个 approve） |
-| #18 | E 打蛋器/茶壶重制 + 菜板吸附对齐 + PROGRESS | open（等 review） |
+| #1 / #3 / #15 | 家庭动作、局外界面、三厨房集成 | 已合入 main（8face40） |
+| #17 / #18 | 暖金画风、打蛋器/茶壶和吸附对齐 | 纳入本次美化集成，并修复自动流程稳定性 |
 
 ## 已知事项
 
 - `npm run check` 在 Windows 已可运行（#2 的 fileURLToPath 修复经 #15 入库）
-- 合并顺序约束：E 链（#17→#18）在 B/D 之前或之后皆可，注意 route.json 冲突取双方
-- 模型再生成：`tools/model-generator.mjs`（程序化）与 `tools/kenney-pack-glb.py`（Kenney 管线）互不覆盖（生成器有 KENNEY 跳过名单）
+- #18 已包含 #17。本次保留主线新版模型，不合入与之冲突的旧模型试验分支 #16。
+- 模型来源见 `CREDITS.md`；替换模型后运行 `npm run assets:manifest` 并检查素材命名和体积。
+- 暖金集成修复：使用未屏蔽显卡信息识别 SwiftShader；真实显卡保留阴影和环境光。
+  异步加载的模型也会应用画风；烹饪动作的材质引用保留，以继续显示食物熟度。
+  自动翻饼按每张煎饼的生成和落地衔接，不再因慢帧丢失后续动作。
