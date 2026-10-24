@@ -15,7 +15,7 @@ export default defineModule({
     [wokToss, flare, domeScoop].forEach((m) => ctx.moves.register(m));
 
     ctx.dev.scene('wok_toss', { kitchen: 'wok', station: 'wok' }, (c) => {
-      const inst = wokToss.start(c, devStep('wok_toss', 'wok', { beats: 8, ingredient: 'rice' }));
+      const inst = wokToss.start(c, devStep('wok_toss', 'wok', { beats: 8, bpm: 110, ingredient: 'rice' }));
       return () => inst.dispose();
     });
     ctx.dev.scene('dome_scoop', { kitchen: 'wok', station: 'pass' }, (c) => {
