@@ -89,6 +89,10 @@ export function createHud(ctx: Ctx, open: (panel: 'shop' | 'route' | 'stickers')
     hint.replaceChildren(icon ?? '', hintText, hintCount);
     hintText.textContent = text;
     hint.hidden = false;
+    // Re-trigger the pop so every NEW instruction physically announces itself.
+    hint.classList.remove('pop');
+    void hint.offsetWidth;
+    hint.classList.add('pop');
   });
   bus.on('hint:clear', () => (hint.hidden = true));
 
@@ -100,6 +104,13 @@ export function createHud(ctx: Ctx, open: (panel: 'shop' | 'route' | 'stickers')
       coins.classList.remove('bump');
       void coins.offsetWidth;
       coins.classList.add('bump');
+      // Floating +N: the reward number itself flies up next to the pill (juice pattern:
+      // every gain gets its own visible cause, not just a silent counter change).
+      const gain = h('span', { class: 'coin-delta' }, `+${delta}`);
+      gain.style.right = `${window.innerWidth - coins.getBoundingClientRect().right}px`;
+      gain.style.top = `${coins.getBoundingClientRect().bottom + 4}px`;
+      root.append(gain);
+      window.setTimeout(() => gain.remove(), 1000);
     }
   });
 

@@ -29,7 +29,10 @@ export function createPanels(ctx: Ctx) {
   const routeNodeName = (k: string | undefined) => (k ? (content.route.nodes.find((n) => n.kitchenId === k)?.name ?? k) : '');
 
   function renderShop() {
-    const items = [...content.equipment.values()].filter((e) => e.kitchen === kitchenId);
+    // Key gear first (it's the route forward), then by price so the shop reads as a path, not a pile.
+    const items = [...content.equipment.values()]
+      .filter((e) => e.kitchen === kitchenId)
+      .sort((a, b) => Number(b.key) - Number(a.key) || a.price - b.price);
     return h(
       'div',
       { class: 'card panel interactive shop-panel' },

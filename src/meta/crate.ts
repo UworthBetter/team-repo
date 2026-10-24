@@ -56,11 +56,16 @@ export function runCrate(ctx: Ctx, opts: CrateOpts): () => void {
   tapeR.position.set(size.x / 4, tapeY, 0);
   group.add(tapeL, tapeR);
 
-  // Progress pill floating over the crate (DOM, pointer-events off).
+  // Progress pill floating over the crate + a direction arrow teaching the tear gesture (DOM, pointer-events off).
   const label = document.createElement('div');
   label.className = 'crate-progress';
   label.hidden = true;
-  ctx.ui.layer('crate').append(label);
+  const arrow = document.createElement('div');
+  arrow.className = 'crate-arrow';
+  arrow.innerHTML = '<svg viewBox="0 0 34 22"><path d="M2 11h22m0 0-8-8m8 8-8 8" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  arrow.hidden = true;
+  const layer = ctx.ui.layer('crate');
+  layer.append(label, arrow);
 
   let vy = 0;
   let bounces = 0;
@@ -87,7 +92,8 @@ export function runCrate(ctx: Ctx, opts: CrateOpts): () => void {
     phase = p;
     if (p === 'tape') {
       label.hidden = false;
-      if (!ctx.flags.auto) bus.emit('hint:show', { text: '按住快递箱，沿胶带线拖开', gesture: 'drag' });
+      arrow.hidden = ctx.flags.auto; // the arrow teaches the gesture; auto doesn't need it
+      if (!ctx.flags.auto) bus.emit('hint:show', { text: `按住 ${opts.eq.name} 快递箱，沿胶带线拖开`, gesture: 'drag' });
       else ctx.after(500, () => (tearing = true)); // ?auto tears by itself
     }
     if (p === 'burst') {
@@ -166,9 +172,17 @@ export function runCrate(ctx: Ctx, opts: CrateOpts): () => void {
         tapeR.position.x = size.x / 4 + tape * size.x * 0.55;
         (tapeR.material as THREE.MeshToonMaterial).opacity = 1 - tape * 0.7;
         if (label) {
-          label.textContent = `撕开 ${Math.round(tape * 100)}%`;
+          label.textContent = `${opts.eq.name} · 撕开 ${Math.round(tape * 100)}%`;
           const s = ctx.world.toScreen(new THREE.Vector3(restPos.x, restPos.y + size.y + 0.25, restPos.z));
           label.style.transform = `translate(-50%,0) translate(${Math.round(s.x)}px, ${Math.round(s.y - 18)}px)`;
+        }
+        // Direction arrow rides the un-torn part of the tape until the player gets it.
+        if (!arrow.hidden && tape > 0.25) arrow.hidden = true;
+        if (!arrow.hidden) {
+          const a = ctx.world.toScreen(new THREE.Vector3(restPos.x + size.x * 0.05, restPos.y + size.y + 0.22, restPos.z));
+          const b = ctx.world.toScreen(new THREE.Vector3(restPos.x + size.x * 0.4, restPos.y + size.y + 0.22, restPos.z));
+          const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+          arrow.style.transform = `translate(${Math.round(a.x)}px, ${Math.round(a.y)}px) rotate(${ang}deg)`;
         }
         // Round the label to whole percent but don't require an exact 1.0 — float accumulation
         // can end a full-length tear at 0.995 and a torn crate that never opens is a dead end.
@@ -257,6 +271,7 @@ export function runCrate(ctx: Ctx, opts: CrateOpts): () => void {
     });
     group.removeFromParent();
     label.remove();
+    arrow.remove();
     bus.emit('hint:clear', {});
   };
 }
